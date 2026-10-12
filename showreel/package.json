@@ -1,1 +1,20 @@
-{"name":"showreel","private":true,"version":"1.0.0","scripts":{"studio":"remotion studio src/index.ts","render":"remotion render src/index.ts Reel out/reel.mp4"},"dependencies":{"@remotion/cli":"^4.0.535","@types/react":"^18.3.31","react":"^18.3.1","react-dom":"^18.3.1","remotion":"^4.0.535","typescript":"^7.0.2"}}
+{
+  "name": "showreel",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "studio": "remotion studio src/index.ts",
+    "render": "remotion render src/index.ts Reel out/reel.mp4",
+    "render:semis": "remotion render src/index.ts NewsSemis out/semis_silent.mp4",
+    "render:ai": "remotion render src/index.ts NewsAi out/ai_silent.mp4"
+  },
+  "dependencies": {
+    "@remotion/cli": "^4.0.535",
+    "@types/react": "^18.3.31",
+    "pretendard": "^1.3.9",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "remotion": "^4.0.535",
+    "typescript": "^7.0.2"
+  }
+}
