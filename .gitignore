@@ -1,0 +1,3 @@
+node_modules/
+showreel/out/*
+!showreel/out/reel.mp4
