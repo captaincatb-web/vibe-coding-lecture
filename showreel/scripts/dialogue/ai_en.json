@@ -1,0 +1,13 @@
+{"id":"ai_en","lang":"en","lines":[
+{"spk":"A","scene":0,"text":"Why were AI stocks so shaky this week?"},
+{"spk":"B","scene":0,"text":"On Wednesday the Nasdaq fell 1.88%, and AI-related stocks dropped even harder."},
+{"spk":"B","scene":1,"text":"U.S. inflation came in higher than expected, stoking rate-hike worries."},
+{"spk":"A","scene":2,"text":"But new products still launched, right?"},
+{"spk":"B","scene":2,"text":"NVIDIA and Microsoft unveiled RTX Spark, a chip that runs AI agents right on your PC."},
+{"spk":"B","scene":2,"text":"Up to one petaflop, with pre-orders opening on the 16th."},
+{"spk":"A","scene":3,"text":"And ChatGPT?"},
+{"spk":"B","scene":3,"text":"ChatGPT now has Slides."},
+{"spk":"B","scene":3,"text":"Build a deck from a chat, edit it with teammates, and export to PowerPoint."},
+{"spk":"A","scene":4,"text":"Prices wobble, yet products keep coming."},
+{"spk":"B","scene":4,"text":"Yes. AI is moving from the cloud into your PC and your work tools."}
+]}

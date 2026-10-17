@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import {AbsoluteFill, Easing, Sequence, interpolate, spring, useCurrentFrame} from 'remotion';
 import {FONT, Theme, ThemeCtx, clamp, ease, prog, useT} from '../news/kit';
 
@@ -7,7 +7,10 @@ export type VoiceData = {fps: number; total: number; lines: VLine[]; scenes: {fr
 export type SceneProps = {L: number[]; E: number[]; dur: number};
 
 const OVER = 10;
-export const NAMES = {A: '진행', B: '해설'};
+export type Lang = {names: {A: string; B: string}; src: string; merge: number; max: number; font: number};
+export const KO: Lang = {names: {A: '진행', B: '해설'}, src: '출처', merge: 20, max: 28, font: 62};
+export const EN: Lang = {names: {A: 'Host', B: 'Analyst'}, src: 'Source', merge: 30, max: 46, font: 58};
+export const LangCtx = React.createContext<Lang>(KO);
 
 // ---------- scene stage ----------
 export const Stage: React.FC<{children: React.ReactNode; justify?: 'center' | 'flex-start'}> = ({children, justify = 'center'}) => (
@@ -62,7 +65,7 @@ export const Tile: React.FC<{k: string; v: string; sub?: string; delay?: number;
 export const Source: React.FC<{children: string}> = ({children}) => {
   const t = useT();
   const f = useCurrentFrame();
-  return <div style={{position: 'absolute', left: 64, right: 64, bottom: -6, fontFamily: FONT, fontSize: 26, fontWeight: 600, color: '#A9B3C4', opacity: prog(f, 10, 24)}}>출처 · {children}</div>;
+  return <div style={{position: 'absolute', left: 64, right: 64, bottom: -6, fontFamily: FONT, fontSize: 26, fontWeight: 600, color: '#A9B3C4', opacity: prog(f, 10, 24)}}>{useContext(LangCtx).src} · {children}</div>;
 };
 
 // horizontal bars with signed values (negative grow in warn color)
@@ -143,16 +146,16 @@ const Chrome: React.FC<{label: string; date: string; data: VoiceData}> = ({label
   );
 };
 
-const chunkify = (text: string): string[] => {
+const chunkify = (text: string, merge = 20, max = 28): string[] => {
   const raw = text.split(/(?<=[.,?!])\s+/).filter(Boolean);
   const out: string[] = [];
   for (const r of raw) {
-    if (out.length && out[out.length - 1].length + r.length + 1 <= 20) out[out.length - 1] += ' ' + r;
+    if (out.length && out[out.length - 1].length + r.length + 1 <= merge) out[out.length - 1] += ' ' + r;
     else out.push(r);
   }
   const res: string[] = [];
   for (const c of out) {
-    if (c.length <= 28) { res.push(c); continue; }
+    if (c.length <= max) { res.push(c); continue; }
     const w = c.split(' '); let acc = ''; let i = 0;
     for (; i < w.length; i++) { if (acc && (acc + ' ' + w[i]).length > c.length / 2) break; acc = acc ? acc + ' ' + w[i] : w[i]; }
     res.push(acc); res.push(w.slice(i).join(' '));
@@ -167,7 +170,8 @@ const Caption: React.FC<{data: VoiceData}> = ({data}) => {
   data.lines.forEach((l, i) => { if (f >= l.startF - 2) cur = i; });
   if (cur < 0) return null;
   const l = data.lines[cur];
-  const chunks = chunkify(l.text);
+  const LG = useContext(LangCtx);
+  const chunks = chunkify(l.text, LG.merge, LG.max);
   const wts = chunks.map((c) => c.replace(/\s/g, '').length + 2);
   const tot = wts.reduce((a, b) => a + b, 0);
   const span = Math.max(1, l.endF - l.startF - 4);
@@ -186,7 +190,7 @@ const Caption: React.FC<{data: VoiceData}> = ({data}) => {
   return (
     <AbsoluteFill style={{pointerEvents: 'none'}}>
       <div style={{position: 'absolute', left: 64, top: 930, width: 850, height: 196, boxSizing: 'border-box', padding: '0 34px', borderRadius: 28, background: 'rgba(4,6,12,0.78)', borderLeft: `10px solid ${col}`, display: 'flex', alignItems: 'center', opacity: fade, fontFamily: FONT}}>
-        <div style={{display: 'flex', flexWrap: 'wrap', columnGap: 16, rowGap: 2, fontSize: 62, fontWeight: 800, lineHeight: 1.22, letterSpacing: -1.5, opacity: 0.35 + 0.65 * enter, transform: `translateY(${(1 - enter) * 14}px)`}}>
+        <div style={{display: 'flex', flexWrap: 'wrap', columnGap: 16, rowGap: 2, fontSize: LG.font, fontWeight: 800, lineHeight: 1.22, letterSpacing: -1.5, opacity: 0.35 + 0.65 * enter, transform: `translateY(${(1 - enter) * 14}px)`}}>
           {words.map((w, i) => {
             const st = a2 / wt; a2 += ww[i];
             const state = p >= a2 / wt ? 'done' : p >= st ? 'now' : 'next';
@@ -199,6 +203,7 @@ const Caption: React.FC<{data: VoiceData}> = ({data}) => {
 };
 
 const Avatars: React.FC<{data: VoiceData}> = ({data}) => {
+  const LG = useContext(LangCtx);
   const f = useCurrentFrame();
   const t = useT();
   const sm = (a: number[]) => ((a[f - 1] ?? 0) + (a[f] ?? 0) * 2 + (a[f + 1] ?? 0)) / 4;
@@ -212,7 +217,7 @@ const Avatars: React.FC<{data: VoiceData}> = ({data}) => {
             <div key={i} style={{width: 7, height: 10 + e * 40 * m * (0.6 + 0.4 * Math.sin(f * 0.9 + i * 2)), borderRadius: 4, background: on ? t.bg : col}} />
           ))}
         </div>
-        <div style={{fontFamily: FONT, fontSize: 34, fontWeight: 800, color: on ? '#FFFFFF' : '#A9B3C4'}}>{NAMES[spk]}</div>
+        <div style={{fontFamily: FONT, fontSize: 34, fontWeight: 800, color: on ? '#FFFFFF' : '#A9B3C4'}}>{LG.names[spk]}</div>
       </div>
     );
   };
@@ -238,8 +243,8 @@ const Wipe: React.FC<{children: React.ReactNode}> = ({children}) => {
   );
 };
 
-export const Short: React.FC<{theme: Theme; label: string; date: string; data: VoiceData; scenes: React.FC<SceneProps>[]}> = ({theme, label, date, data, scenes}) => (
-  <ThemeCtx.Provider value={theme}>
+export const Short: React.FC<{theme: Theme; label: string; date: string; data: VoiceData; scenes: React.FC<SceneProps>[]; lang?: Lang}> = ({theme, label, date, data, scenes, lang = KO}) => (
+  <LangCtx.Provider value={lang}><ThemeCtx.Provider value={theme}>
     <AbsoluteFill style={{background: theme.bg}}>
       {scenes.map((S, i) => {
         const sc = data.scenes[i];
@@ -257,5 +262,5 @@ export const Short: React.FC<{theme: Theme; label: string; date: string; data: V
       <Caption data={data} />
       <Avatars data={data} />
     </AbsoluteFill>
-  </ThemeCtx.Provider>
+  </ThemeCtx.Provider></LangCtx.Provider>
 );
