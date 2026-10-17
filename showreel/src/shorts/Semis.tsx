@@ -14,9 +14,9 @@ const S0: React.FC<SceneProps> = ({L}) => {
     <Stage>
       <Label delay={4}>코스피 · 10.15(목) 종가</Label>
       <div style={{height: 14}} />
-      <Big to={-7.57} decimals={2} suffix="%" start={L[0]} dur={28} color={t.warn} shake size={250} />
-      <Pop delay={L[0] + 34}><div style={{fontFamily: FONT, fontSize: 44, fontWeight: 800, color: t.ink, margin: '10px 0 26px'}}>5,554.22 <span style={{color: t.dim, fontWeight: 600, fontSize: 32}}>마감</span></div></Pop>
-      <LineChart delay={L[0] + 20} h={230} pts={[{x: '10.5', y: 7003.74, est: true}, {x: '10.12', y: 6384.24}, {x: '10.14', y: 6008.81, est: true}, {x: '10.15', y: 5554.22}]} />
+      <Big to={-7.57} decimals={2} suffix="%" start={L[0]} dur={28} color={t.warn} shake size={230} />
+      <Pop delay={L[0] + 34}><div style={{fontFamily: FONT, fontSize: 44, fontWeight: 800, color: t.ink, margin: '6px 0 14px'}}>5,554.22 <span style={{color: t.dim, fontWeight: 600, fontSize: 32}}>마감</span></div></Pop>
+      <LineChart delay={L[0] + 20} h={180} pts={[{x: '10.5', y: 7003.74, est: true}, {x: '10.12', y: 6384.24}, {x: '10.14', y: 6008.81, est: true}, {x: '10.15', y: 5554.22}]} />
       <Source>연합뉴스·뉴스핌 · * 보도된 등락폭으로 환산한 종가</Source>
     </Stage>
   );
@@ -39,7 +39,7 @@ const S1: React.FC<SceneProps> = ({L, E}) => {
         <div style={{display: 'inline-flex', alignItems: 'center', gap: 16, padding: '20px 30px', borderRadius: 18, background: t.warn, color: '#fff', fontFamily: FONT, fontSize: 40, fontWeight: 900, opacity: 0.8 + 0.2 * Math.sin(f / 4)}}>
           <div style={{width: 18, height: 18, borderRadius: 9, background: '#fff'}} />장중 서킷브레이커 발동
         </div>
-        <div style={{fontFamily: FONT, fontSize: 28, fontWeight: 600, color: t.dim, marginTop: 14}}>코스피·코스닥 양 시장에서 발동</div>
+        <div style={{fontFamily: FONT, fontSize: 30, fontWeight: 600, color: '#A9B3C4', marginTop: 14}}>코스피·코스닥 양 시장에서 발동</div>
       </Pop>
       <Source>뉴스핌(한국거래소 집계) 2026.10.15</Source>
     </Stage>
@@ -50,13 +50,13 @@ const S1: React.FC<SceneProps> = ({L, E}) => {
 const S2: React.FC<SceneProps> = ({L, E}) => {
   const t = useT();
   const Card = ({d, k, v, s, hot}: {d: number; k: string; v: string; s: string; hot?: string}) => (
-    <Tile k={k} v={v} sub={s} delay={d} hot={hot ?? t.warn} w={undefined} vs={76} />
+    <Tile k={k} v={v} sub={s} delay={d} hot={hot ?? t.warn} w={undefined} vs={60} />
   );
   return (
     <Stage>
       <Label delay={4}>급락 배경 3가지</Label>
       <div style={{height: 22}} />
-      <div style={{display: 'flex', flexDirection: 'column', gap: 20}}>
+      <div style={{display: 'flex', flexDirection: 'column', gap: 14}}>
         <Card d={at(L, E, 1, 0.02)} k="① 미국 9월 소비자물가(CPI)" v="+3.7%" s="시장 예상 3.6% · 금리 인상 우려 확대" />
         <Card d={at(L, E, 1, 0.38)} k="② 필라델피아 반도체지수 (10.14)" v="-4.3%" s="엔비디아·AMD도 하락, 6거래일 연속 하락" />
         <Card d={at(L, E, 1, 0.66)} k="③ 중국 CXMT 메모리 추격" v="공급 우려" s="삼성·SK 주가 부담 요인으로 거론" hot={t.accent2} />
@@ -112,10 +112,10 @@ const S5: React.FC<SceneProps> = ({L, E}) => {
     <Stage>
       <Label delay={4}>코스피 · 10.16(금) · 8거래일 만에 반등</Label>
       <div style={{height: 8}} />
-      <Big to={2.05} decimals={2} sign suffix="%" start={L[1]} dur={22} color={t.accent} size={230} />
-      <div style={{height: 16}} />
+      <Big to={2.05} decimals={2} sign suffix="%" start={L[1]} dur={22} color={t.accent} size={200} />
+      <div style={{height: 10}} />
       <LineChart delay={L[1] + 8} color={t.accent} h={200} pts={[{x: '10.5', y: 7003.74, est: true}, {x: '10.12', y: 6384.24}, {x: '10.14', y: 6008.81, est: true}, {x: '10.15', y: 5554.22}, {x: '10.16', y: 5668.05}]} />
-      <div style={{display: 'flex', gap: 20, marginTop: 56}}>
+      <div style={{display: 'flex', gap: 20, marginTop: 34}}>
         <Tile k="삼성전자" v="+2.62%" delay={at(L, E, 1, 0.62)} hot={t.accent} vs={64} />
         <Tile k="SK하이닉스" v="+0.79%" sub="회복 상대적으로 약함" delay={at(L, E, 1, 0.72)} vs={64} />
       </div>
@@ -144,7 +144,7 @@ const S6: React.FC<SceneProps> = ({L, E}) => {
         <Row d={L[1] + 4} ok={false} k="수급" v="외국인 매도세가 잦아들지" />
         <Row d={at(L, E, 1, 0.55)} ok={false} k="변수" v="미국 물가·금리 경로" />
       </div>
-      <Pop delay={at(L, E, 1, 0.8)}><div style={{fontFamily: FONT, fontSize: 26, fontWeight: 600, color: t.dim, marginTop: 24}}>※ 투자 권유가 아닌 뉴스 요약입니다.</div></Pop>
+      <Pop delay={at(L, E, 1, 0.8)}><div style={{fontFamily: FONT, fontSize: 28, fontWeight: 600, color: '#A9B3C4', marginTop: 24}}>※ 투자 권유가 아닌 뉴스 요약입니다.</div></Pop>
     </Stage>
   );
 };

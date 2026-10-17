@@ -11,7 +11,7 @@ export const NAMES = {A: '진행', B: '해설'};
 
 // ---------- scene stage ----------
 export const Stage: React.FC<{children: React.ReactNode; justify?: 'center' | 'flex-start'}> = ({children, justify = 'center'}) => (
-  <AbsoluteFill style={{top: 250, height: 790, bottom: 'auto', padding: '0 64px', justifyContent: justify, alignItems: 'stretch', display: 'flex', flexDirection: 'column'}}>{children}</AbsoluteFill>
+  <AbsoluteFill style={{top: 232, height: 690, bottom: 'auto', padding: '0 64px', justifyContent: justify, alignItems: 'stretch', display: 'flex', flexDirection: 'column'}}>{children}</AbsoluteFill>
 );
 
 export const Label: React.FC<{children: React.ReactNode; delay?: number; color?: string}> = ({children, delay = 0, color}) => {
@@ -52,9 +52,9 @@ export const Tile: React.FC<{k: string; v: string; sub?: string; delay?: number;
   const t = useT();
   return (
     <Pop delay={delay} style={{flex: w ? undefined : 1, width: w, padding: '28px 30px', borderRadius: 26, background: t.panel, border: `2px solid ${hot ?? t.line}`, fontFamily: FONT}}>
-      <div style={{fontSize: 28, fontWeight: 600, color: t.dim}}>{k}</div>
+      <div style={{fontSize: 30, fontWeight: 700, color: t.dim}}>{k}</div>
       <div style={{fontSize: vs, fontWeight: 900, color: hot ?? t.ink, marginTop: 6, letterSpacing: -2, fontVariantNumeric: 'tabular-nums'}}>{v}</div>
-      {sub && <div style={{fontSize: 24, fontWeight: 600, color: t.dim, marginTop: 4}}>{sub}</div>}
+      {sub && <div style={{fontSize: 28, fontWeight: 600, color: '#A9B3C4', marginTop: 4}}>{sub}</div>}
     </Pop>
   );
 };
@@ -62,7 +62,7 @@ export const Tile: React.FC<{k: string; v: string; sub?: string; delay?: number;
 export const Source: React.FC<{children: string}> = ({children}) => {
   const t = useT();
   const f = useCurrentFrame();
-  return <div style={{position: 'absolute', left: 64, right: 64, bottom: -2, fontFamily: FONT, fontSize: 22, fontWeight: 500, color: t.dim, opacity: prog(f, 10, 24)}}>출처 · {children}</div>;
+  return <div style={{position: 'absolute', left: 64, right: 64, bottom: -6, fontFamily: FONT, fontSize: 26, fontWeight: 600, color: '#A9B3C4', opacity: prog(f, 10, 24)}}>출처 · {children}</div>;
 };
 
 // horizontal bars with signed values (negative grow in warn color)
@@ -90,7 +90,7 @@ export const SignedBars: React.FC<{rows: {label: string; value: number; hi?: boo
 export const LineChart: React.FC<{pts: {x: string; y: number; est?: boolean}[]; delay?: number; color?: string; h?: number; fmt?: (n: number) => string}> = ({pts, delay = 0, color, h = 300, fmt = (n) => n.toLocaleString('en-US')}) => {
   const f = useCurrentFrame();
   const t = useT();
-  const W = 952, pad = 30;
+  const W = 830, pad = 30;
   const ys = pts.map((p) => p.y), lo = Math.min(...ys), hi = Math.max(...ys);
   const X = (i: number) => pad + (i / (pts.length - 1)) * (W - pad * 2);
   const Y = (v: number) => 40 + (1 - (v - lo) / (hi - lo || 1)) * (h - 90);
@@ -106,7 +106,7 @@ export const LineChart: React.FC<{pts: {x: string; y: number; est?: boolean}[]; 
         return (
           <g key={i} opacity={on}>
             <circle cx={X(i)} cy={Y(q.y)} r={last ? 15 : 10} fill={last ? col : t.bg} stroke={col} strokeWidth={5} />
-            <text x={X(i)} y={h + 24} textAnchor="middle" fontSize={26} fontWeight={600} fill={t.dim}>{q.x}{q.est ? '*' : ''}</text>
+            <text x={X(i)} y={h + 24} textAnchor="middle" fontSize={30} fontWeight={700} fill="#A9B3C4">{q.x}{q.est ? '*' : ''}</text>
             {(last || i === 0) && <text x={X(i)} y={Y(q.y) - 26} textAnchor={i === 0 ? 'start' : 'end'} fontSize={32} fontWeight={800} fill={t.ink}>{fmt(q.y)}</text>}
           </g>
         );
@@ -143,6 +143,23 @@ const Chrome: React.FC<{label: string; date: string; data: VoiceData}> = ({label
   );
 };
 
+const chunkify = (text: string): string[] => {
+  const raw = text.split(/(?<=[.,?!])\s+/).filter(Boolean);
+  const out: string[] = [];
+  for (const r of raw) {
+    if (out.length && out[out.length - 1].length + r.length + 1 <= 20) out[out.length - 1] += ' ' + r;
+    else out.push(r);
+  }
+  const res: string[] = [];
+  for (const c of out) {
+    if (c.length <= 28) { res.push(c); continue; }
+    const w = c.split(' '); let acc = ''; let i = 0;
+    for (; i < w.length; i++) { if (acc && (acc + ' ' + w[i]).length > c.length / 2) break; acc = acc ? acc + ' ' + w[i] : w[i]; }
+    res.push(acc); res.push(w.slice(i).join(' '));
+  }
+  return res;
+};
+
 const Caption: React.FC<{data: VoiceData}> = ({data}) => {
   const f = useCurrentFrame();
   const t = useT();
@@ -150,25 +167,30 @@ const Caption: React.FC<{data: VoiceData}> = ({data}) => {
   data.lines.forEach((l, i) => { if (f >= l.startF - 2) cur = i; });
   if (cur < 0) return null;
   const l = data.lines[cur];
-  const fade = 1 - prog(f, l.endF + 30, l.endF + 46);
-  const words = l.text.split(' ');
-  const wts = words.map((w) => w.length + 1.5);
+  const chunks = chunkify(l.text);
+  const wts = chunks.map((c) => c.replace(/\s/g, '').length + 2);
   const tot = wts.reduce((a, b) => a + b, 0);
-  const p = Math.min(1, Math.max(0, (f - l.startF) / Math.max(1, l.endF - l.startF - 4)));
-  const enter = prog(f, l.startF - 2, l.startF + 8);
-  let acc = 0;
+  const span = Math.max(1, l.endF - l.startF - 4);
+  let ci = 0, c0 = 0, acc = 0;
+  chunks.forEach((_, i) => { const st = acc / tot; if ((f - l.startF) / span >= st) { ci = i; c0 = st; } acc += wts[i]; });
+  const c1 = c0 + wts[ci] / tot;
+  const cStart = l.startF + c0 * span;
+  const enter = prog(f, cStart - 1, cStart + 7);
+  const fade = 1 - prog(f, l.endF + 26, l.endF + 42);
+  const words = chunks[ci].split(' ');
+  const ww = words.map((w) => w.length + 1.2);
+  const wt = ww.reduce((a, b) => a + b, 0);
+  const p = Math.min(1, Math.max(0, ((f - l.startF) / span - c0) / (c1 - c0)));
   const col = l.spk === 'A' ? t.accent : t.accent2;
+  let a2 = 0;
   return (
     <AbsoluteFill style={{pointerEvents: 'none'}}>
-      <div style={{position: 'absolute', left: 64, right: 64, top: 1086, height: 300, opacity: fade * enter, transform: `translateY(${(1 - enter) * 24}px)`, fontFamily: FONT}}>
-        <div style={{display: 'flex', alignItems: 'center', gap: 12, fontSize: 28, fontWeight: 800, color: col, marginBottom: 14}}>
-          <div style={{width: 14, height: 14, borderRadius: 7, background: col}} />{NAMES[l.spk]}
-        </div>
-        <div style={{display: 'flex', flexWrap: 'wrap', columnGap: 16, rowGap: 6, fontSize: l.text.length > 60 ? 54 : 62, fontWeight: 800, lineHeight: 1.22, letterSpacing: -1.5}}>
+      <div style={{position: 'absolute', left: 64, top: 930, width: 850, height: 196, boxSizing: 'border-box', padding: '0 34px', borderRadius: 28, background: 'rgba(4,6,12,0.78)', borderLeft: `10px solid ${col}`, display: 'flex', alignItems: 'center', opacity: fade, fontFamily: FONT}}>
+        <div style={{display: 'flex', flexWrap: 'wrap', columnGap: 16, rowGap: 2, fontSize: 62, fontWeight: 800, lineHeight: 1.22, letterSpacing: -1.5, opacity: 0.35 + 0.65 * enter, transform: `translateY(${(1 - enter) * 14}px)`}}>
           {words.map((w, i) => {
-            const a = acc / tot; acc += wts[i];
-            const state = p >= acc / tot ? 'done' : p >= a ? 'now' : 'next';
-            return <span key={i} style={{color: state === 'now' ? col : t.ink, opacity: state === 'next' ? 0.38 : 1}}>{w}</span>;
+            const st = a2 / wt; a2 += ww[i];
+            const state = p >= a2 / wt ? 'done' : p >= st ? 'now' : 'next';
+            return <span key={i} style={{color: state === 'now' ? col : '#FFFFFF', opacity: state === 'next' ? 0.62 : 1}}>{w}</span>;
           })}
         </div>
       </div>
@@ -184,19 +206,19 @@ const Avatars: React.FC<{data: VoiceData}> = ({data}) => {
     const e = sm(data.env[spk]);
     const on = e > 0.04;
     return (
-      <div style={{display: 'flex', alignItems: 'center', gap: 22, opacity: on ? 1 : 0.5}}>
-        <div style={{width: 120, height: 120, borderRadius: 60, background: on ? col : t.panel, border: `4px solid ${col}`, transform: `scale(${1 + e * 0.14})`, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6}}>
+      <div style={{display: 'flex', alignItems: 'center', gap: 14, opacity: on ? 1 : 0.55}}>
+        <div style={{width: 76, height: 76, borderRadius: 38, background: on ? col : t.panel, border: `4px solid ${col}`, transform: `scale(${1 + e * 0.12})`, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5}}>
           {[0.5, 1, 0.7].map((m, i) => (
-            <div key={i} style={{width: 9, height: 14 + e * 60 * m * (0.6 + 0.4 * Math.sin(f * 0.9 + i * 2)), borderRadius: 5, background: on ? t.bg : col}} />
+            <div key={i} style={{width: 7, height: 10 + e * 40 * m * (0.6 + 0.4 * Math.sin(f * 0.9 + i * 2)), borderRadius: 4, background: on ? t.bg : col}} />
           ))}
         </div>
-        <div style={{fontFamily: FONT, fontSize: 32, fontWeight: 800, color: on ? t.ink : t.dim}}>{NAMES[spk]}</div>
+        <div style={{fontFamily: FONT, fontSize: 34, fontWeight: 800, color: on ? '#FFFFFF' : '#A9B3C4'}}>{NAMES[spk]}</div>
       </div>
     );
   };
   return (
     <AbsoluteFill style={{pointerEvents: 'none'}}>
-      <div style={{position: 'absolute', left: 64, right: 64, top: 1420, display: 'flex', justifyContent: 'space-between'}}>
+      <div style={{position: 'absolute', left: 64, top: 1150, display: 'flex', gap: 48}}>
         <Av spk="A" col={t.accent} />
         <Av spk="B" col={t.accent2} />
       </div>

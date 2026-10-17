@@ -90,13 +90,13 @@ const A3: React.FC<SceneProps> = ({L, E}) => {
     <Stage>
       <Label delay={4}>OpenAI · ChatGPT Slides (10.16)</Label>
       <Pop delay={L[1] - 2} style={{marginTop: 22}}>
-        <div style={{width: '100%', height: 470, borderRadius: 24, background: '#FFFFFF', position: 'relative', padding: 44, overflow: 'hidden'}}>
+        <div style={{width: '100%', height: 400, borderRadius: 24, background: '#FFFFFF', position: 'relative', padding: 44, overflow: 'hidden'}}>
           <div style={{fontFamily: FONT, fontSize: 70, fontWeight: 900, color: '#16111f', letterSpacing: -2}}>{title.slice(0, n)}<span style={{opacity: f % 16 < 8 ? 1 : 0, color: t.accent}}>|</span></div>
           {[0.75, 0.55, 0.65].map((w, i) => (
             <div key={i} style={{height: 20, borderRadius: 10, background: i === 0 ? t.accent : '#d9d4e6', width: `${w * 100 * prog(f, t0 + 30 + i * 10, t0 + 55 + i * 10)}%`, marginTop: 28}} />
           ))}
-          <div style={{display: 'flex', gap: 14, alignItems: 'flex-end', height: 120, marginTop: 30}}>
-            {[0.4, 0.7, 0.5, 0.9].map((h, i) => <div key={i} style={{width: 70, height: 120 * h * prog(f, t0 + 50 + i * 8, t0 + 76 + i * 8), background: t.accent2, borderRadius: 8}} />)}
+          <div style={{display: 'flex', gap: 14, alignItems: 'flex-end', height: 100, marginTop: 20}}>
+            {[0.4, 0.7, 0.5, 0.9].map((h, i) => <div key={i} style={{width: 70, height: 100 * h * prog(f, t0 + 50 + i * 8, t0 + 76 + i * 8), background: t.accent2, borderRadius: 8}} />)}
           </div>
           <div style={{position: 'absolute', left: cur1.x, top: cur1.y, opacity: showCur, transform: 'rotate(-20deg)'}}>
             <div style={{width: 0, height: 0, borderLeft: '16px solid transparent', borderRight: '16px solid transparent', borderBottom: `34px solid ${t.accent2}`}} />
@@ -112,7 +112,7 @@ const A3: React.FC<SceneProps> = ({L, E}) => {
           </Pop>
         ))}
       </div>
-      <Pop delay={at(L, E, 2, 0.85)}><div style={{fontFamily: FONT, fontSize: 24, fontWeight: 600, color: t.dim, marginTop: 16}}>Pro·Business·Enterprise 이용자부터 순차 적용</div></Pop>
+      <Pop delay={at(L, E, 2, 0.85)}><div style={{fontFamily: FONT, fontSize: 28, fontWeight: 600, color: '#A9B3C4', marginTop: 16}}>Pro·Business·Enterprise 이용자부터 순차 적용</div></Pop>
       <Source>OpenAI ChatGPT 릴리스 노트 2026.10.16</Source>
     </Stage>
   );
@@ -137,7 +137,7 @@ const A4: React.FC<SceneProps> = ({L, E}) => {
         <Row d={at(L, E, 1, 0.2)} a="클라우드" b="내 PC (RTX Spark)" />
         <Row d={at(L, E, 1, 0.5)} a="대화" b="업무 도구 (Slides)" hot={t.accent2} />
       </div>
-      <Pop delay={at(L, E, 1, 0.8)}><div style={{fontFamily: FONT, fontSize: 26, fontWeight: 600, color: t.dim, marginTop: 24}}>※ 투자 권유가 아닌 뉴스 요약입니다.</div></Pop>
+      <Pop delay={at(L, E, 1, 0.8)}><div style={{fontFamily: FONT, fontSize: 28, fontWeight: 600, color: '#A9B3C4', marginTop: 24}}>※ 투자 권유가 아닌 뉴스 요약입니다.</div></Pop>
     </Stage>
   );
 };
