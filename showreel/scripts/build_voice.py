@@ -11,7 +11,10 @@ ep = sys.argv[1]; target = float(sys.argv[2]) if len(sys.argv) > 2 else 50.0
 MODEL = os.environ.get("TTS_MODEL", "/tmp/claude-0/-home-user-vibe-coding-lecture/4359b5d2-d091-5ba6-bf7e-1637de926295/scratchpad/tts/sherpa-onnx-supertonic-3-tts-int8-2026-05-11")
 FPS = 30
 LEAD, TAIL, GAP_SAME, GAP_SWITCH, GAP_SCENE = 0.45, 1.4, 0.16, 0.24, 0.38
-SID = {"A": 0, "B": 6}   # Supertonic 3 voice styles: 0 = higher (female-range), 6 = lower (male-range)
+SID = {"A": 0, "B": 6}   # Supertonic 3 voice styles: 0 = higher (female-range), 6 = lower (male-range); 7 skips words at slow speed
+# measured syllables/sec at speed 1.0 per voice; we aim for the same slow, steady pace (A a bit slower)
+RATE = {"A": 4.5, "B": 4.6}   # measured for sid 0 / sid 6
+TARGET = {"A": 4.1, "B": 4.4}
 root = os.path.dirname(os.path.dirname(__file__))
 spec = json.load(open(f"{root}/scripts/dialogue/{ep}.json"))
 tts = sherpa_onnx.OfflineTts(sherpa_onnx.OfflineTtsConfig(model=sherpa_onnx.OfflineTtsModelConfig(supertonic=sherpa_onnx.OfflineTtsSupertonicModelConfig(
@@ -40,14 +43,14 @@ def _asr(x):
     return rec.get_result(st)
 
 def synth(text, speed, spk):
-    g = sherpa_onnx.GenerationConfig(); g.sid = SID[spk]; g.speed = speed; g.num_steps = 8; g.extra = {"lang": "ko"}
+    g = sherpa_onnx.GenerationConfig(); g.sid = SID[spk]; g.speed = float(np.clip(speed * TARGET[spk] / RATE[spk], 0.6, 1.4)); g.num_steps = 8; g.extra = {"lang": "ko"}
     x = np.array(tts.generate(to_reading(text), g).samples, dtype=np.float32)
     idx = np.where(np.abs(x) > 0.012)[0]   # trim silence (keep a little room so onsets are not clipped)
     if len(idx): x = x[max(0, idx[0] - int(0.08 * SR)): idx[-1] + int(0.15 * SR)]
     return x / max(1e-6, np.abs(x).max()) * 0.9
 
 CER = {}
-def synth_best(text, speed, spk, n=4):
+def synth_best(text, speed, spk, n=6):
     best, bc = None, 9
     for _ in range(n if rec else 1):
         x = synth(text, speed, spk)
@@ -72,7 +75,7 @@ clips, starts, total = layout(speed)
 for _ in range(2):  # re-fit speed so total ~= target
     speech = sum(len(c) for c in clips) / SR
     fixed = total - speech
-    speed = float(np.clip(speed * speech / max(1.0, target - fixed), 0.85, 1.2))
+    speed = float(np.clip(speed * speech / max(1.0, target - fixed), 0.9, 1.1))
     clips, starts, total = layout(speed)
 clips, starts, total = layout(speed, best=True)
 print(f"speed={speed:.3f} total={total:.2f}s lines={len(clips)}")
