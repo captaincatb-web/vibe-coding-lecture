@@ -5,3 +5,5 @@ showreel/out/*
 !showreel/out/news_ai.mp4
 !showreel/out/short_semis.mp4
 !showreel/out/short_ai.mp4
+__pycache__/
+*.whl
