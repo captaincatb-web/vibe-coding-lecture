@@ -9,3 +9,4 @@ showreel/out/*
 !showreel/out/short_ai_en.mp4
 __pycache__/
 *.whl
+!showreel/out/short_roadster.mp4

@@ -5,6 +5,8 @@ import {Ai, aiScenes} from './news/Ai';
 import {totalFrames} from './news/kit';
 import {ShortSemis} from './shorts/Semis';
 import {ShortAi} from './shorts/Ai';
+import {ShortRoadster} from './shorts/Roadster';
+import roadsterData from './shorts/data/roadster.json';
 import {ShortSemisEn} from './shorts/SemisEn';
 import {ShortAiEn} from './shorts/AiEn';
 import semisEnData from './shorts/data/semis_en.json';
@@ -20,5 +22,6 @@ export const Root = () => (
     <Composition id="ShortAi" component={ShortAi} durationInFrames={aiData.total} fps={30} width={1080} height={1920} />
     <Composition id="ShortSemisEn" component={ShortSemisEn} durationInFrames={semisEnData.total} fps={30} width={1080} height={1920} />
     <Composition id="ShortAiEn" component={ShortAiEn} durationInFrames={aiEnData.total} fps={30} width={1080} height={1920} />
+    <Composition id="ShortRoadster" component={ShortRoadster} durationInFrames={roadsterData.total} fps={30} width={1080} height={1920} />
   </>
 );

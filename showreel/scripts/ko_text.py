@@ -19,7 +19,7 @@ def sino(n):
             parts.append(g + u)
     if n: parts.append(_group(n))
     return " ".join(parts)
-TERMS = [("SK하이닉스", "에스케이하이닉스"), ("TSMC", "티에스엠씨"), ("CXMT", "씨엑스엠티"), ("CPI", "씨피아이"),
+TERMS = [("스페이스X", "스페이스엑스"), ("SK하이닉스", "에스케이하이닉스"), ("TSMC", "티에스엠씨"), ("CXMT", "씨엑스엠티"), ("CPI", "씨피아이"),
          ("RTX", "알티엑스"), ("챗GPT", "챗지피티"), ("GPT", "지피티"), ("PDF", "피디에프"), ("AI", "에이아이"),
          ("PC", "피씨"), ("HBM", "에이치비엠")]
 def to_reading(t):

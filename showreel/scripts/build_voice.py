@@ -12,14 +12,16 @@ ep = sys.argv[1]; target = float(sys.argv[2]) if len(sys.argv) > 2 else 50.0
 MODEL = os.environ.get("TTS_MODEL", "/tmp/claude-0/-home-user-vibe-coding-lecture/4359b5d2-d091-5ba6-bf7e-1637de926295/scratchpad/tts/sherpa-onnx-supertonic-3-tts-int8-2026-05-11")
 FPS = 30
 LEAD, TAIL, GAP_SAME, GAP_SWITCH, GAP_SCENE = 0.45, 1.4, 0.16, 0.24, 0.38
-SID = {"A": 0, "B": 6}   # Supertonic 3 voice styles: 0 = higher (female-range), 6 = lower (male-range); 7 skips words at slow speed
+SID = {"A": 0, "B": 5}   # Supertonic 3 voice styles: 0 = female-range, 5 = chosen male voice (7 and 9 skip words at slow speed)
 # measured syllables/sec at speed 1.0 per voice; we aim for the same slow, steady pace (A a bit slower)
-RATE = {"A": 4.5, "B": 4.6}   # measured for sid 0 / sid 6
+RATE = {"A": 4.5, "B": 4.5}   # measured for sid 0 / sid 5
 TARGET = {"A": 4.1, "B": 4.4}
 root = os.path.dirname(os.path.dirname(__file__))
 spec = json.load(open(f"{root}/scripts/dialogue/{ep}.json"))
 lang = spec.get("lang", "ko")
-read = to_reading if lang == "ko" else en_expand
+_base = to_reading if lang == "ko" else en_expand
+OVR = {l["text"]: l["tts"] for l in spec["lines"] if "tts" in l}
+read = lambda t: OVR.get(t, _base(t))
 if lang == "en": SID = {"A": 0, "B": 5}   # en: voice 5 = chosen male voice
 tts = sherpa_onnx.OfflineTts(sherpa_onnx.OfflineTtsConfig(model=sherpa_onnx.OfflineTtsModelConfig(supertonic=sherpa_onnx.OfflineTtsSupertonicModelConfig(
     duration_predictor=f"{MODEL}/duration_predictor.int8.onnx", text_encoder=f"{MODEL}/text_encoder.int8.onnx", vector_estimator=f"{MODEL}/vector_estimator.int8.onnx",
