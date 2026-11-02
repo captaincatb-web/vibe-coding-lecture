@@ -1,0 +1,18 @@
+name: silicon-library-validate
+on:
+  pull_request:
+    paths: ["silicon-library/**", "scripts/**", "tests/validator-negative.js", ".github/workflows/silicon-library-validate.yml"]
+  push:
+    paths: ["silicon-library/**", "scripts/**", "tests/validator-negative.js"]
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: 데이터 정합성 검사 (오류가 있으면 실패)
+        run: node scripts/validate-silicon-library.js
+      - name: 검사 스크립트 자체 검증 (일부러 망가뜨린 데이터를 잡는지)
+        run: node tests/validator-negative.js
