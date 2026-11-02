@@ -254,19 +254,74 @@ if (D.DEEP && D.DEEP.areas) {
   const SECS = ['concept', 'mechanism', 'materials', 'params', 'defects', 'trend', 'industry'];
   const LVS = ['입문', '실무', '심화', '산업'];
   const CS = ['원리', '근거', '전망', '불확실'];
-  const READS = ['원문 열람', '검색 발췌 열람', '미열람'];
-  const numUnit = /(\d[\d,.]*\s*(%|nm|μm|um|℃|°C|배|단|층|GB|Gb|TB|mm|Å|pJ|비트|채널|번|사이트|atoms))|(\d+\s*:\s*\d+)/;
-  const used = new Set(); let nItem = 0, nSrcItem = 0, nPrinciple = 0, nUnc = 0;
-  /* 열람 상태 */
+  const READS = ['원문 열람', '원문 일부 열람', '검색 발췌 열람', '미열람'];
+  const FULLREAD = ['원문 열람', '원문 일부 열람'];
+  const QT = ['원논문 실험', '리뷰 재인용', '시뮬레이션', '특허 실시예', '기업 발표', '일반화 가능 사실', '논문 서술'];
+  const VS = ['원문 확인', '발췌 확인', '미확인'];
+  const OLD_YEAR = 2012;
+  /* 수치(단위가 붙은 숫자, 비율, N 순도 등)가 있는 문장은 정량 주장으로 본다 */
+  const numUnit = /(\d[\d,.~]*\s*(%|nm|μm|um|℃|°C|배|단(?!계)|층|GB|Gb|TB|mm|Å|pJ|비트|채널|번|사이트|atoms|ppt|ppb|ppm|V\b|A\b|mbar|kPa|m\/s|rpm))|(\d+\s*:\s*\d+)|(\d+N\b)/;
+  const relative = /(배|%|감소|증가|줄|높|낮)/;
+  const yearOf = (s) => parseInt(String(s || '').slice(0, 4), 10) || 0;
+  const used = new Set(); let nItem = 0, nSrcItem = 0, nPrinciple = 0, nUnc = 0, nQuant = 0;
+  /* 출처 등록: URL 형식과 열람 상태를 분리해서 본다 */
   Object.keys(DS).forEach((id) => {
     const s = DS[id];
     ['t', 'u', 'pub', 'type', 'read', 'readAt'].forEach((k) => { if (!s[k]) E('DEEP_SRC', `출처 ${id}: ${k} 누락`); });
-    if (s.u && !/^https?:\/\//.test(s.u)) E('DEEP_SRC', `출처 ${id}: URL 형식 오류`);
+    if (s.u && !/^https?:\/\//.test(s.u)) E('DEEP_SRC', `출처 ${id}: URL 형식 오류(열람 여부와 별개)`);
     if (s.read && !READS.includes(s.read)) E('DEEP_SRC', `출처 ${id}: 열람 상태 값 오류 ${s.read}`);
     if (s.pub && !ISO.test(s.pub)) E('DEEP_SRC', `출처 ${id}: 발행일 형식 오류 ${s.pub}`);
     if (s.readAt && s.pub && s.pub > s.readAt) E('DEEP_SRC', `출처 ${id}: 발행일이 열람일보다 늦음`);
+    if (FULLREAD.includes(s.read) && !s.checked) E('DEEP_READ', `출처 ${id}: ${s.read}인데 확인한 내용(checked)이 없음`);
+    if (!FULLREAD.includes(s.read) && s.checked) E('DEEP_READ', `출처 ${id}: 원문을 열람하지 않았는데 확인한 내용이 적혀 있음`);
+    if (yearOf(s.pub) && yearOf(s.pub) <= OLD_YEAR && !/현재|다를 수 있음|일반화/.test(s.note || '')) E('DEEP_OLD', `출처 ${id}: ${s.pub} 자료인데 적용 한계(note)가 없음`);
   });
   const areas = D.DEEP.areas, prim = {};
+  const checkItem = (it, tag, isUnc) => {
+    nItem++;
+    if (!it.x) E('DEEP_ITEM', `${tag}: 본문 없음`);
+    if (!LVS.includes(it.lv)) E('DEEP_ITEM', `${tag}: 수준 값 오류 ${it.lv}`);
+    const srcs = it.s || [];
+    const c = it.c || (srcs.length ? '근거' : '원리');
+    if (!CS.includes(c)) E('DEEP_ITEM', `${tag}: 유형 값 오류 ${c}`);
+    if (isUnc && c !== '불확실') E('DEEP_UNC', `${tag}: 불확실성 항목은 c=불확실이어야 함`);
+    srcs.forEach((id) => { used.add(id); if (!DS[id] && !S[id]) E('DEEP_SRC_ID', `${tag}: 존재하지 않는 출처 ${id}`); });
+    if ((c === '근거' || c === '전망') && !srcs.length) E('DEEP_NOSRC', `${tag}: ${c} 문장인데 출처 없음`);
+    if (c === '원리' && srcs.length) E('DEEP_ITEM', `${tag}: 출처가 있는데 원리로 표시됨`);
+    const dsOf = (id) => DS[id];
+    const readOf = (id) => (DS[id] ? DS[id].read : '기존 출처');
+    /* 문장 단위 검증 상태: 출처가 등록됐다는 사실만으로 검증 처리하지 않는다 */
+    const q = it.q, v = it.v || (q && q.v);
+    if (v && !VS.includes(v)) E('DEEP_VS', `${tag}: 문장 검증 값 오류 ${v}`);
+    if (v === '원문 확인' && !srcs.some((id) => FULLREAD.includes(readOf(id)))) E('DEEP_VS', `${tag}: 원문 확인이라고 했지만 원문을 열람한 출처가 없음(검색 발췌·미열람 출처뿐)`);
+    if (v === '발췌 확인' && !srcs.length) E('DEEP_VS', `${tag}: 발췌 확인인데 출처 없음`);
+    if (c === '근거' && srcs.length && srcs.every((id) => DS[id] && DS[id].read === '미열람')) E('DEEP_UNREAD', `${tag}: 미열람 출처만으로 근거 표시`);
+    /* 오래된 자료 */
+    if (srcs.some((id) => DS[id] && yearOf(DS[id].pub) && yearOf(DS[id].pub) <= OLD_YEAR) && !(it.lim || (q && q.lim))) E('DEEP_OLD', `${tag}: ${OLD_YEAR}년 이전 자료를 인용하면서 적용 한계(lim)가 없음`);
+    /* 정량 주장: 유형(원 논문 실험·리뷰 재인용·시뮬레이션·특허 실시예·기업 발표·일반화 가능 사실)과 조건을 따로 관리 */
+    const quant = numUnit.test(it.x);
+    if (quant) {
+      nQuant++;
+      if (!q) { E('DEEP_NUM', `${tag}: 수치 문장에 정량 메타(q)가 없음 → ${(it.x.match(numUnit) || [''])[0]}`); }
+      else {
+        if (!QT.includes(q.t)) E('DEEP_Q', `${tag}: 정량 유형 값 오류 ${q.t}`);
+        if (!VS.includes(q.v)) E('DEEP_Q', `${tag}: 정량 검증 값 오류 ${q.v}`);
+        if (!q.yr || !/^\d{4}$/.test(q.yr)) E('DEEP_Q', `${tag}: 자료 발행연도(yr) 누락`);
+        if (q.t !== '일반화 가능 사실' && !q.cond) E('DEEP_Q', `${tag}: 조건·범위(cond) 누락`);
+        if (q.t === '일반화 가능 사실' && !(srcs.some((id) => /표준/.test((DS[id] || {}).type || '')) || srcs.length >= 2)) E('DEEP_Q', `${tag}: 일반화 가능 사실인데 표준 문서도 복수 출처도 아님`);
+        if (relative.test(it.x) && !q.cmp && q.t !== '일반화 가능 사실') W('DEEP_Q', `${tag}: 상대 수치인데 비교 대상(cmp)이 없음`);
+        if (q.t === '리뷰 재인용' && !q.orig) W('DEEP_Q', `${tag}: 리뷰 재인용인데 원 자료 열람 여부(orig)가 없음`);
+        if (c === '원리') E('DEEP_NUM', `${tag}: 수치가 있는데 출처 없는 일반 원리 문장`);
+        if (q.v !== '미확인' && !srcs.length) E('DEEP_Q', `${tag}: 출처 없이 ${q.v}`);
+        if (q.t === '시뮬레이션' && !/시뮬|모델/.test((q.cond || '') + (q.cmp || '') + it.x)) W('DEEP_Q', `${tag}: 시뮬레이션 유형인데 조건에 시뮬레이션 언급이 없음`);
+      }
+      /* '불확실' 표시만으로 검증되지 않은 정량 주장이 통과하지 못하게: 출처 없는 정량 불확실 문장은 미확인으로 명시돼야 하고 건수를 제한 */
+      if (c === '불확실' && !srcs.length && !(q && q.v === '미확인')) E('DEEP_UNC', `${tag}: 출처 없는 정량 문장은 불확실 표시만으로 통과할 수 없음(q.v=미확인 필요)`);
+    }
+    if (/거듭제곱|독립|곱셈/.test(it.x) && /수율/.test(it.x) && !(it.as && it.as.length >= 3)) E('DEEP_MODEL', `${tag}: 수율 모델 문장에는 가정(as)을 3개 이상 명시해야 함`);
+    if (/예측 공식|양산 수율/.test(it.x) === false && /수율/.test(it.x) && /거듭제곱/.test(it.x)) E('DEEP_MODEL', `${tag}: 거듭제곱 수율식을 양산 예측식이 아니라는 설명 없이 사용`);
+    if (c === '근거' || c === '전망') nSrcItem++; else if (c === '불확실') nUnc++; else nPrinciple++;
+  };
   Object.keys(areas).forEach((k) => {
     const a = areas[k];
     if (!(a.procs || []).length) E('DEEP_AREA', `${k}: procs 없음`);
@@ -277,34 +332,44 @@ if (D.DEEP && D.DEEP.areas) {
     if (JSON.stringify(ids) !== JSON.stringify(SECS)) E('DEEP_SECT', `${k}: 7개 관점이 순서대로 없음(${ids.join(',')})`);
     (a.sections || []).forEach((sc) => {
       if (!(sc.items || []).length) E('DEEP_SECT', `${k}/${sc.id}: 항목 없음`);
-      sc.items.forEach((it, n) => {
-        const tag = `${k}/${sc.id}#${n + 1}`;
-        nItem++;
-        if (!it.x) E('DEEP_ITEM', `${tag}: 본문 없음`);
-        if (!LVS.includes(it.lv)) E('DEEP_ITEM', `${tag}: 수준 값 오류 ${it.lv}`);
-        const c = it.c || ((it.s || []).length ? '근거' : '원리');
-        if (!CS.includes(c)) E('DEEP_ITEM', `${tag}: 유형 값 오류 ${c}`);
-        (it.s || []).forEach((id) => { used.add(id); if (!DS[id] && !S[id]) E('DEEP_SRC_ID', `${tag}: 존재하지 않는 출처 ${id}`); });
-        if ((c === '근거' || c === '전망') && !(it.s || []).length) E('DEEP_NOSRC', `${tag}: ${c} 문장인데 출처 없음`);
-        if (c === '원리' && (it.s || []).length) E('DEEP_ITEM', `${tag}: 출처가 있는데 원리로 표시됨`);
-        if (c === '원리' && numUnit.test(it.x)) E('DEEP_NUM', `${tag}: 수치가 있는데 출처 없는 일반 원리 문장 → ${(it.x.match(numUnit) || [''])[0]}`);
-        if (c === '근거' && (it.s || []).length && (it.s || []).every((id) => DS[id] && DS[id].read === '미열람')) E('DEEP_UNREAD', `${tag}: 미열람 출처만으로 근거 표시`);
-        if (c === '근거' || c === '전망') nSrcItem++; else if (c === '불확실') nUnc++; else nPrinciple++;
-        if (/확인됐|검증됐|입증/.test(it.x) && c === '원리') W('DEEP_CLAIM', `${tag}: 출처 없는 문장에 확정 표현`);
-      });
+      sc.items.forEach((it, n) => checkItem(it, `${k}/${sc.id}#${n + 1}`, false));
     });
-    (a.unc || []).forEach((it, n) => { if (it.c !== '불확실') E('DEEP_UNC', `${k}/unc#${n + 1}: 불확실성 항목은 c=불확실이어야 함`); (it.s || []).forEach((id) => { used.add(id); if (!DS[id] && !S[id]) E('DEEP_SRC_ID', `${k}/unc#${n + 1}: 존재하지 않는 출처 ${id}`); }); });
+    (a.unc || []).forEach((it, n) => checkItem(it, `${k}/unc#${n + 1}`, true));
   });
   Object.keys(DS).forEach((id) => { if (!used.has(id)) W('DEEP_SRC_UNUSED', `출처 ${id}를 어떤 문장도 인용하지 않음`); });
   /* 주입된 DEEP 블록과 JSON 원본 일치 */
   const js = JSON.parse(fs2.readFileSync(path2.join(__dirname, '..', 'silicon-library', 'data', 'deep-content.json'), 'utf8'));
   if (JSON.stringify(js) !== JSON.stringify(D.DEEP)) E('DEEP_SYNC', 'index.html 의 DEEP 블록이 data/deep-content.json 과 다름 → node scripts/build-deep.js');
-  /* 기존 공정·제품 연결 보존: 심화 영역의 제품은 대표 공정에 이미 연결돼 있거나 의도된 교차 연결이어야 함 */
   Object.keys(areas).forEach((k) => {
     const a = areas[k];
     (a.tx || []).forEach((x) => { if (!(procOf[x] || []).some((p) => a.procs.includes(p)) && !a.crossOk) W('DEEP_LINK', `${k}: 제품 ${x}가 이 영역의 공정(${a.procs.join(',')})에 연결돼 있지 않음 (연결 공정: ${(procOf[x] || []).join(',') || '없음'})`); });
   });
-  I('DEEP', `심화 영역 ${Object.keys(areas).length}개, 문장 ${nItem}개(출처 연결 ${nSrcItem} / 일반 원리 ${nPrinciple} / 불확실 ${nUnc}), 출처 ${Object.keys(DS).length}건(모두 '검색 발췌 열람' 상태인지: ${Object.values(DS).every((s) => s.read === '검색 발췌 열람')})`);
+  /* 기존 해설의 수치: 출처가 없으면 미검증으로 표시돼 있어야 한다 */
+  const legacyRe = /(\d[\d,.~\-]*\s*(%|nm|μm|um|℃|°C|배|단(?!계)|층|GB|Gb|TB|mm|Å|ppt|ppb|ppm|N\b|nm급|조분의|대 1))|\d+N\b|수백 대 1/g;
+  const J = (v2) => (Array.isArray(v2) ? v2.join(' | ') : String(v2 || ''));
+  const L = D.DEEP.legacyNum || [];
+  const covered = (where, text) => L.some((x) => x.where === where && x.text === text);
+  const hits = [];
+  D.PROC.forEach((p) => ['s', 'why', 'how', 'eq', 'mat', 'part', 'iss', 'fut'].forEach((f) => (J(p[f]).match(legacyRe) || []).forEach((m) => hits.push([`PROC.${p.id}.${f}`, m]))));
+  Object.keys(TX).forEach((k) => ['w', 'h', 'p', 'k', 'r'].forEach((f) => (J(TX[k][f]).match(legacyRe) || []).forEach((m) => hits.push([`TX.${k}.${f}`, m]))));
+  hits.forEach(([w, m]) => { if (!covered(w, m)) E('LEGACY_NUM', `기존 해설의 수치 "${m}"(${w})가 미검증 목록(legacyNum)에 없음`); });
+  L.forEach((x) => {
+    if (!['미검증', '검증'].includes(x.status)) E('LEGACY_NUM', `legacyNum ${x.where}: 상태 값 오류`);
+    if (x.status === '검증' && !(x.src || []).length) E('LEGACY_NUM', `legacyNum ${x.where}/${x.text}: 검증인데 출처 없음`);
+    if (!hits.some(([w, m]) => w === x.where && m === x.text)) W('LEGACY_NUM', `legacyNum ${x.where}/${x.text}: 본문에서 찾을 수 없음(수정됐다면 목록에서 제거)`);
+  });
+  /* 정정 기록: 고친 문장은 본문에서 사라지고 새 문장이 있어야 한다 */
+  const bodyOf = (target) => { const [kind, id, f] = target.split('.'); const o = kind === 'TX' ? TX[id] : D.PROC.find((p) => p.id === id); return o ? J(o[f]) : ''; };
+  (D.DEEP.corrections || []).forEach((c2) => {
+    const b2 = bodyOf(c2.target);
+    if (!b2) E('CORRECTION', `정정 대상 ${c2.target}을 찾을 수 없음`);
+    else { if (b2.includes(c2.old)) E('CORRECTION', `정정 대상 ${c2.target}에 정정 전 문장이 아직 남아 있음`); if (!b2.includes(c2.new)) E('CORRECTION', `정정 대상 ${c2.target}에 정정 후 문장이 없음`); }
+    (c2.src || []).forEach((id) => { if (!DS[id] && !S[id]) E('DEEP_SRC_ID', `정정 ${c2.target}: 존재하지 않는 출처 ${id}`); });
+  });
+  Object.keys(D.DEEP.notes || {}).forEach((k2) => { const [kind, id] = k2.split(':'); if (kind === 'proc' ? !procIds.includes(id) : !TX[id]) E('DEEP_NOTE', `notes 키 ${k2}의 대상이 없음`); });
+  const rc = {}; Object.keys(DS).forEach((id) => { rc[DS[id].read] = (rc[DS[id].read] || 0) + 1; });
+  I('DEEP', `심화 영역 ${Object.keys(areas).length}개, 문장 ${nItem}개(출처 연결 ${nSrcItem} / 일반 원리 ${nPrinciple} / 불확실 ${nUnc}, 정량 문장 ${nQuant}), 출처 ${Object.keys(DS).length}건 열람 상태 ${JSON.stringify(rc)}`);
+  I('LEGACY', `기존 해설 수치 ${hits.length}개 모두 미검증 목록에 표시됨(미검증 ${L.filter((x) => x.status === '미검증').length}), 정정 기록 ${(D.DEEP.corrections || []).length}건`);
 } else { E('DEEP_MISSING', 'DEEP(공정 심화 해설) 데이터가 없습니다'); }
 
 /* ---------- 출력 ---------- */

@@ -140,6 +140,35 @@ const ok = (name, cond, extra) => { results.push([name, !!cond, extra || '']); c
   { const dctx = await browser.newContext({ colorScheme: 'dark', viewport: { width: 400, height: 800 } }); const dd = await dctx.newPage(); const de2 = []; dd.on('pageerror', (e) => de2.push(String(e))); await dd.goto(URL + '#t-test');
     ok('다크 모드 심화 해설 오류 없음', de2.length === 0 && (await dd.locator('.deepbox').count()) === 1, de2.join('|')); await dctx.close(); }
 
+  /* PR2 정확성 검증 보완 */
+  await page.goto(URL + '#x-pre'); t = await text();
+  ok('전구체: 단순화 문장 정정(원자 1층 0.1nm 표현 제거)', !/원자 1층 두께\(약 0\.1nm\)/.test(t) && /보통 한 원자층 이하/.test(t));
+  ok('전구체: 출처 없는 기존 수치를 미검증으로 표시', /수치 검증 상태/.test(t) && /99\.9999%/.test(t) && (await page.locator('.ctag.unc', { hasText: '미검증' }).count()) > 0);
+  await page.goto(URL + '#t-dep'); t = await text();
+  ok('증착: 기존 공정 문장도 조건부 표현으로 정정', !/깊은 홈도 균일(?!하)/.test(t.replace(/깊은 홈도 비교적 고르게/, '')) && /노출량·반응물 조건에 따라 달라짐/.test(t));
+  ok('증착: CVD 반응 율속·물질 전달 율속 구분', /반응 율속/.test(t) && /물질 전달 율속/.test(t));
+  ok('증착: ALD 피복이 조건에 따라 달라진다는 설명(5:1~1750:1)', /5:1에서 1750:1/.test(t) && /보장한다는 뜻이 아닙니다/.test(t));
+  ok('증착: 정량 문장에 유형·조건·한계 표시', /유형 리뷰 재인용/.test(t) && /조건·범위/.test(t) && /원 자료/.test(t));
+  ok('문장별 확인 상태 표시(원문 확인·발췌 확인·출처 등록)', /원문 확인/.test(t) && /발췌 확인/.test(t) && /출처 등록 · 문장 대조 전/.test(t));
+  ok('서재 속 회사 연결이 납품 관계가 아니라는 안내(공정 페이지)', /실제 납품·공급 관계를 뜻하지 않습니다/.test(t));
+  await page.goto(URL + '#t-hbm'); t = await text();
+  ok('HBM: 수율 모델 가정 명시와 양산 예측식 금지', (await page.locator('.asl li').count()) >= 3 && /양산 수율 예측 공식으로 쓰면 안 됩니다/.test(t) && /독립/.test(t));
+  ok('HBM: ISSCC 논문 저자 SK hynix로 정정', /Cho 외\(SK hynix\)/.test(t) && !/Samsung, A 1\.2V/.test(t));
+  ok('HBM: 열람 상태 구분 표시(원문 열람·원문 일부·검색 발췌)', /원문 열람 \d+건/.test(t) && /검색 발췌 열람 \d+건/.test(t));
+  ok('HBM: 열저항 수치의 인용 구조(리뷰 재인용·시뮬레이션) 명시', /Mehta 외/.test(t) && /비교 대상이 다르고/.test(t) && /HBM4 [^\n]*12Gbps/.test(t) || /12Gbps/.test(t));
+  await page.goto(URL + '#t-cmp'); t = await text();
+  ok('CMP: 디싱 0.65배는 서로 다른 연구 간 비교·실험 조건 명시', /pH 7/.test(t) || /중성 pH/.test(t)) ;
+  ok('CMP: 0.65배의 한계 표시(2001년·비교 대상)', /서로 다른 연구 간 비교/.test(t) && /Park 외 1999/.test(t));
+  await page.goto(URL + '#t-etch'); t = await text();
+  ok('식각·세정: SC1 실험 조건·연도 한계 표시', /HF-last/.test(t) && /1990년대 실험실 조건/.test(t) && /표준 성능/.test(t));
+  ok('식각·세정: RIE lag 사례의 조건(QALE, low-k)과 한계', /준-ALE\(QALE\)/.test(t) && /ALE 일반의 성능이 아닙니다/.test(t));
+  await page.goto(URL + '#t-clean'); t = await text();
+  ok('세정 공정: 부품 세정과 웨이퍼 세정의 차이 안내와 에이텍솔루션 연결 보존', /부품 세정은 세정 공정의 장비·부품을 유지하는 서비스/.test(t) && /에이텍솔루션/.test(t));
+  await page.goto(URL + '#x-clean'); t = await text();
+  ok('장비 부품 세정 기술 페이지: 웨이퍼 세정 재료가 아니라는 안내', /웨이퍼를 씻는 세정 공정 재료가 아닙니다/.test(t));
+  await page.goto(URL + '#x-hbmfilm'); t = await text();
+  ok('다른 기술 페이지에도 수치 미검증 표시', /수치 검증 상태/.test(t) && /250℃/.test(t));
+
   /* 즐겨찾기 */
   await page.goto(URL);
   await page.evaluate(() => localStorage.setItem('semiPartners:fav:v1', JSON.stringify(['삼화전기', '린데', '에이텍솔루션 (세정)', '덕산테코피아'])));
