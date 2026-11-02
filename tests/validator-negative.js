@@ -7,12 +7,15 @@ const cases = [
   ['존재하지 않는 제품 참조', (s) => s.replace('"덕산테코피아": ["pre"]', '"덕산테코피아": ["nope"]'), 'TXN_PROD'],
   ['잘못된 분류', (s) => s.replace('id: "c03", row: "디엔에프", cat: "소재"', 'id: "c03", row: "디엔에프", cat: "재료"'), 'ENT_CAT'],
   ['유효하지 않은 출처 ID', (s) => s.replace('src: ["dst", "pre"]', 'src: ["dst", "zzz"]'), 'SRC_ID'],
-  ['같은 법인이 두 기업에 등록', (s) => s.replace('legal: "Linde AMT Chonan Co., Ltd.", legalVerified: true, products: ["target"]', 'legal: "린데코리아 주식회사", legalVerified: true, products: ["target"]').replace('id: "c01", row: "덕산테코피아", cat: "소재", sub: [], chain: "직접", vs: "검증", products: ["pre"]', 'id: "c01", row: "덕산테코피아", cat: "소재", sub: [], chain: "직접", vs: "검증", legal: "린데코리아 주식회사", products: ["pre"]'), 'ENT_LEGAL_DUP'],
+  ['같은 법인이 두 기업에 등록', (s) => s.replace('legal: "Linde AMT Chonan Co., Ltd.", legalVerified: true, products: ["target"]', 'legal: "린데코리아 주식회사", legalVerified: true, products: ["target"]').replace('id: "c01", row: "덕산테코피아", cat: "소재", sub: [], chain: "직접", chainBasis: "공정 지도 연결", vs: "검증", products: ["pre"]', 'id: "c01", row: "덕산테코피아", cat: "소재", sub: [], chain: "직접", chainBasis: "공정 지도 연결", vs: "검증", legal: "린데코리아 주식회사", products: ["pre"]'), 'ENT_LEGAL_DUP'],
   ['관련 산업인데 공정에 연결', (s) => s.replace('"삼화전기": ["alcap"]', '"삼화전기": ["alcap", "probe"]').replace('products: ["alcap"]', 'products: ["alcap", "probe"]'), 'ENT_CHAIN'],
   ['기대 고유 기업 수 불일치', (s) => s.replace('unique: 45', 'unique: 44'), 'ENT_COUNT'],
   ['사실 출처 누락', (s) => s.replace('src: ["lk_gl", "lk_mo"], pub: null', 'src: [], pub: null'), 'FACT_SRC'],
   ['발행일이 확인일보다 늦음', (s) => s.replace('pub: "2024-06-04"', 'pub: "2027-01-01"'), 'FACT_DATE'],
-  ['제품-기업 products 불일치', (s) => s.replace('row: "린데", cat: "소재", sub: [], chain: "직접", vs: "부분 검증", products: ["gasBulk", "target"]', 'row: "린데", cat: "소재", sub: [], chain: "직접", vs: "부분 검증", products: ["gasBulk"]'), 'ENT_PROD'],
+  ['제품-기업 products 불일치', (s) => s.replace('row: "린데", cat: "소재", sub: [], chain: "직접", chainBasis: "사실 근거", chainFacts: ["f002"], vs: "부분 검증", products: ["gasBulk", "target"]', 'row: "린데", cat: "소재", sub: [], chain: "직접", chainBasis: "사실 근거", chainFacts: ["f002"], vs: "부분 검증", products: ["gasBulk"]'), 'ENT_PROD'],
+  ['인프라 장비를 근거 없이 직접으로 분류', (s) => s.replace(/(row: "EDWARDS", cat: "장비", sub: \[\], )chain: "검증 필요", chainBasis: "근거 부족"/, '$1chain: "직접", chainBasis: "공정 지도 연결"'), 'ENT_CHAIN_INFRA'],
+  ['법인이 여럿인데 unit 없는 법인 단위 사실', (s) => s.replace('scope: "법인", unit: "linde-korea", ', 'scope: "법인", '), 'FACT_SCOPE'],
+  ['레코드 수 설명 삭제', (s) => s.replace('법인 수가 아닙니다', '법인 수입니다'), 'ENT_NOTE'],
   ['ref 행 별칭 누락', (s) => s.replace('alias: ["에이텍솔루션 (세정)"], ', ''), 'ENT_ALIAS'],
 ];
 let fail = 0;

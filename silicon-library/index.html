@@ -487,7 +487,7 @@ dl.facts dd { margin: 0; }
     { n: "린데", reg: "천안", item: "Target", g: "sub", conf: "C",
       one: "글로벌 특수가스 1위 Linde. 목록 품목은 스퍼터링 타겟",
       facts: [], tech: ["Linde Korea는 공기분리(ASU) 플랜트를 운영하는 것으로 확인(시공사 자료)"],
-      mkt: ["Linde는 글로벌 특수가스 상위 6개사 중 하나"], watch: ["천안 사업장의 타겟 재질과 생산 여부"], src: ["wm2"] },
+      mkt: ["Linde는 글로벌 특수가스 상위 6개사 중 하나(린데 그룹 단위 설명이며 린데코리아 단독 수치가 아님)"], watch: ["천안 사업장의 타겟 재질과 생산 여부"], src: ["wm2"] },
     { n: "Solstice", reg: "진천", item: "Target", g: "sub", conf: "C",
       one: "Honeywell에서 분사한 Solstice Advanced Materials로 추정. 공개 자료를 찾지 못함",
       facts: [], tech: [], mkt: [], watch: ["진천 사업장의 법인과 품목"], src: [] },
@@ -1152,8 +1152,8 @@ dl.facts dd { margin: 0; }
     var cnt = { A: 0, B: 0, C: 0 };
     B.forEach(function (b) { if (!b.ref) cnt[b.conf]++; });
     var h = head("") +
-      '<p class="lede">협력사 46행(중복 1곳 제외 45개 사)을 품목별 책장에 꽂았습니다. 책등을 누르면 회사 한 권이 열립니다.</p>' +
-      '<div class="legend"><span><span class="chip A">자료 확인</span> ' + cnt.A + '개 사</span><span><span class="chip B">부분 확인</span> ' + cnt.B + '개 사</span><span><span class="chip C">미검증</span> ' + cnt.C + '개 사</span><span style="color:var(--muted)">책등의 점: 꽉 참 = 확인, 반 = 부분, 빈 원 = 미검증</span></div>' +
+      '<p class="lede">협력사 46행(같은 기업의 두 번째 사업 1행 제외, 고유 기업 레코드 45건)을 품목별 책장에 꽂았습니다. 책등을 누르면 회사 한 권이 열립니다.</p><p class="ent-n">' + esc(ENT.recordNote) + '</p>' +
+      '<div class="legend"><span><span class="chip A">자료 확인</span> ' + cnt.A + '개 사</span><span><span class="chip B">부분 확인</span> ' + cnt.B + '개 사</span><span><span class="chip C">미검증</span> ' + cnt.C + '개 사</span><span style="color:var(--muted)">신뢰도는 자료를 확보한 정도이며, 문장별 원문 대조는 ' + ENT.facts.length + '건(' + Object.keys(ENT.facts.reduce(function (o, f) { o[f.ent] = 1; return o; }, {})).length + '개 기업)뿐입니다.</span><span style="color:var(--muted)">책등의 점: 꽉 참 = 확인, 반 = 부분, 빈 원 = 미검증</span></div>' +
       viewTabs("shelf") +
       '<div class="tools"><input id="q" type="search" placeholder="회사·품목·기술·공정 찾기 (예: ALD, FFKM, HBM)" aria-label="책 찾기"><select id="fc" aria-label="신뢰도"><option value="">신뢰도 전체</option><option value="A">자료 확인</option><option value="B">부분 확인</option><option value="C">미검증</option><option value="F">★ 즐겨찾기만</option></select></div>' +
       '<div id="hits" class="hits" hidden></div><div class="case">';
@@ -1236,16 +1236,26 @@ dl.facts dd { margin: 0; }
   function reduced() { try { return window.matchMedia("(prefers-reduced-motion: reduce)").matches; } catch (e) { return false; } }
   function turn(p) { dir = p > cur.p ? "fwd" : "back"; cur.p = p; renderBook(); }
   var CHAIN_CLS = { "직접": "", "간접": "", "관련 산업": " rel", "검증 필요": " chk" };
+  function factStat(en) {
+    var F = ENT.facts.filter(function (f) { return f.ent === en.id; });
+    if (!F.length) return '대조한 사실 없음. 이 기업의 내용은 기존에 수집한 자료이며 문장별 원문 대조 전입니다.';
+    var c = { "검증": 0, "부분 검증": 0, "미검증": 0 }; F.forEach(function (f) { c[f.vs]++; });
+    return F.length + '건 등록 (원문 확인 ' + c["검증"] + ' · 부분 ' + c["부분 검증"] + ' · 미확인 ' + c["미검증"] + '). 그 밖의 내용은 기존 수집 자료이며 문장별 대조 전입니다.';
+  }
+  function chainDefs() {
+    return '<details class="ent-n"><summary>공급망 구분 정의</summary><ul>' + ENT.chain.map(function (k) { return '<li><b>' + esc(k) + '</b>: ' + esc(ENT.chainDesc[k]) + '</li>'; }).join("") + '</ul></details>';
+  }
   function entBox(en, b) {
     var h = '<h3>분류</h3><dl class="facts"><dt>주 분류</dt><dd>' + esc(en.cat) + '</dd>' +
       (en.sub.length ? '<dt>보조 분류</dt><dd>' + esc(en.sub.join(", ")) + '</dd>' : '') +
-      '<dt>공급망 구분</dt><dd><span class="cx' + CHAIN_CLS[en.chain] + '">' + esc(en.chain) + '</span> <small>' + esc(ENT.chainDesc[en.chain]) + '</small></dd>' +
+      '<dt>공급망 구분</dt><dd><span class="cx' + CHAIN_CLS[en.chain] + '">' + esc(en.chain) + '</span> <small>' + esc(ENT.chainDesc[en.chain]) + '</small><br><small>판단 근거: <b>' + esc(en.chainBasis) + '</b>. ' + esc(ENT.basisDesc[en.chainBasis]) + (en.chainFacts ? ' (' + esc(en.chainFacts.join(", ")) + ')' : '') + '</small></dd>' +
       '<dt>공정 영역</dt><dd>' + (en.areas.length ? esc(en.areas.join(" · ")) : '제조공정에 연결되지 않음') + '</dd>' +
       '<dt>연결 제품</dt><dd>' + (en.products.length ? '<span class="kchips">' + en.products.map(txLink).join("") + '</span>' : '없음') + '</dd>' +
       '<dt>연결 공정</dt><dd>' + (en.processes.length ? '<span class="kchips">' + en.processes.map(pLink).join("") + '</span>' : '없음') + '</dd>' +
-      '<dt>검증 상태</dt><dd>' + esc(en.vs) + ' <small>(기업 단위 표시. 개별 사실의 검증 상태는 참고자료 쪽에서 확인)</small></dd>' +
+      '<dt>검증 상태</dt><dd>' + esc(en.vs) + ' <small>(기업에 관한 자료를 확보한 정도이며, 문장별 원문 대조와는 다릅니다)</small></dd>' +
+      '<dt>원문 대조</dt><dd>' + factStat(en) + '</dd>' +
       '<dt>기업 ID</dt><dd>' + esc(en.id) + '</dd></dl>' +
-      '<p class="ent-n">' + esc(en.why) + '</p>' + (en.shelfNote ? '<p class="ent-n">' + esc(en.shelfNote) + '</p>' : '');
+      chainDefs() + '<p class="ent-n">' + esc(en.why) + '</p>' + (en.shelfNote ? '<p class="ent-n">' + esc(en.shelfNote) + '</p>' : '');
     if (en.units && en.units.length) {
       h += '<h3>법인·사업 구분</h3><p class="ent-n">' + (en.sameLegal === false
         ? '법인이 다르므로 매출·제품·사업장을 합산하지 않았고, 같은 린데 그룹이라는 이유로 하나의 실적으로 읽으면 안 됩니다.'
@@ -1262,10 +1272,10 @@ dl.facts dd { margin: 0; }
   function factsBox(en) {
     var F = ENT.facts.filter(function (f) { return f.ent === en.id; });
     if (!F.length) return '<p class="empty">이 기업은 아직 사실 단위 근거를 연결하지 않았습니다. 위 출처 목록은 기업 전체에 대한 참고자료이며 문장별로 대조한 것이 아닙니다.</p>';
-    return '<table class="rt"><thead><tr><th>내용</th><th>자료 유형</th><th>출처 · 날짜</th><th>검증</th></tr></thead><tbody>' + F.map(function (f) {
+    return '<table class="rt"><thead><tr><th>내용</th><th>범위 · 자료 유형</th><th>출처 · 날짜</th><th>검증</th></tr></thead><tbody>' + F.map(function (f) {
       var ss = (f.src || []).map(function (k) { var x = S[k]; return x ? '<a class="cite" href="' + x[1] + '" target="_blank" rel="noopener">' + esc(x[0]) + '</a>' : ''; }).join("<br>");
       var dt = [f.pub ? "발행 " + f.pub : "", f.asof ? "기준 " + f.asof : "", "확인 " + f.checked].filter(Boolean).join(" · ");
-      return '<tr><td class="wr">' + esc(f.text) + '<br><small>' + esc(f.id) + '</small></td><td class="wr">' + esc(f.kind) + '</td><td class="wr">' + (ss || '<small>원문 없음</small>') + '<br><small>' + esc(dt) + '</small></td><td class="wr">' + esc(f.vs) + '</td></tr>';
+      return '<tr><td class="wr">' + esc(f.text) + '<br><small>' + esc(f.id) + '</small></td><td class="wr">' + esc(f.scope) + (f.unit ? ' (' + esc(f.unit) + ')' : '') + '<br>' + esc(f.kind) + '</td><td class="wr">' + (ss || '<small>원문 없음</small>') + '<br><small>' + esc(dt) + '</small></td><td class="wr">' + esc(f.vs) + '</td></tr>';
     }).join("") + '</tbody></table>';
   }
   function pagesOf(b) {
@@ -1328,7 +1338,7 @@ dl.facts dd { margin: 0; }
     var src = srcKeys.map(function (k) { return S[k]; }).filter(Boolean);
     var ty = {}; src.forEach(function (s3) { var t3 = srcType(s3); ty[t3] = (ty[t3] || 0) + 1; });
     var unk = b.facts.concat(b.tech, b.mkt).map(function (f) { return Array.isArray(f) ? f.join(" ") : f; }).filter(function (t4) { return /추정|미검증|확인 필요|가능성|일반 지식/.test(t4); }).length;
-    var dq = '<h3>데이터 품질</h3><table class="rt"><tbody><tr><th>정보 기준일</th><td>' + (xa.chk ? "2026-10-31 (웹 검색으로 갱신. 문장별 원문 대조는 아래 사실 표에 있는 항목만)" : "2026-10 이전 수집 자료") + "</td></tr><tr><th>신뢰도</th><td>" + chips[b.conf] + "</td></tr><tr><th>출처 수</th><td>" + src.length + "건</td></tr><tr><th>출처 유형</th><td>" + (Object.keys(ty).map(function (k5) { return k5 + " " + ty[k5]; }).join(" · ") || "없음") + "</td></tr><tr><th>확인된 정보</th><td>기본 정보 " + b.facts.length + "항목, 최근 동향 " + ((xa.news || []).length) + "건</td></tr><tr><th>추정·미확인 표시</th><td>" + unk + "건</td></tr><tr><th>추가 조사 필요</th><td>" + (b.watch.length ? esc(b.watch.join(" / ")) : "없음") + '</td></tr></tbody></table><p class="note">신뢰도 A: 공식자료와 복수 자료로 핵심 확인 · B: 사업·제품은 확인, 일부 수치 부족 · C: 실체·제품 검증 부족. 기업 우수성과 무관합니다.</p><p class="note">A는 "기업의 핵심 사업이 자료로 확인됨"이라는 뜻이며, 모든 수치와 미래 전망이 검증됐다는 뜻이 아닙니다. 실적(과거 사실)과 전망(추정)은 다르고, 전망은 자료 발행 시점의 추정입니다. 사실별 검증 상태는 아래 표에서 따로 봅니다.</p>' + (en ? '<h3>사실 단위 근거</h3>' + factsBox(en) : '');
+    var dq = '<h3>데이터 품질</h3><table class="rt"><tbody><tr><th>정보 기준일</th><td>' + (xa.chk ? "2026-10-31 (웹 검색으로 갱신. 문장별 원문 대조는 아래 사실 표에 있는 항목만)" : "2026-10 이전 수집 자료") + "</td></tr><tr><th>신뢰도</th><td>" + chips[b.conf] + " <small>(자료 확보 수준)</small></td></tr><tr><th>원문 대조</th><td>" + (en ? factStat(en) : "대조한 사실 없음") + "</td></tr><tr><th>출처 수</th><td>" + src.length + "건</td></tr><tr><th>출처 유형</th><td>" + (Object.keys(ty).map(function (k5) { return k5 + " " + ty[k5]; }).join(" · ") || "없음") + "</td></tr><tr><th>확인된 정보</th><td>기본 정보 " + b.facts.length + "항목, 최근 동향 " + ((xa.news || []).length) + "건</td></tr><tr><th>추정·미확인 표시</th><td>" + unk + "건</td></tr><tr><th>추가 조사 필요</th><td>" + (b.watch.length ? esc(b.watch.join(" / ")) : "없음") + '</td></tr></tbody></table><p class="note">신뢰도 A: 공식자료와 복수 자료로 핵심 확인 · B: 사업·제품은 확인, 일부 수치 부족 · C: 실체·제품 검증 부족. 기업 우수성과 무관합니다.</p><p class="note">A는 "기업의 핵심 사업이 자료로 확인됨"이라는 뜻이며, 모든 수치와 미래 전망이 검증됐다는 뜻이 아닙니다. 실적(과거 사실)과 전망(추정)은 다르고, 전망은 자료 발행 시점의 추정입니다. 사실별 검증 상태는 아래 표에서 따로 봅니다.</p>' + (en ? '<h3>사실 단위 근거</h3>' + factsBox(en) : '');
     P.push(["참고자료", dq + "<h3>출처</h3>" + (src.length ? '<ul class="src">' + src.map(function (s) { return '<li><span class="stype">' + srcType(s) + '</span> <a href="' + s[1] + '" target="_blank" rel="noopener">' + esc(s[0]) + "</a></li>"; }).join("") + "</ul>" : '<p class="empty">근거 자료를 찾지 못했습니다. 이 책의 내용은 일반 지식이나 추정이며 사실로 쓰면 안 됩니다.</p>')]);
     return P;
   }
@@ -1629,80 +1639,88 @@ dl.facts dd { margin: 0; }
     areas: ["FAB", "P&T", "인프라"],
     vstat: ["검증", "부분 검증", "미검증"],
     kinds: ["공식 확인 사실", "기업 발표 또는 주장", "증권사·기관 추정", "편집 분석", "확인 불가"],
+    basis: ["공정 지도 연결", "사실 근거", "근거 부족"],
+    scopes: ["법인", "사업장", "그룹"],
+    recordNote: "45는 서재의 고유 기업 레코드 수이며 법인 수가 아닙니다. 린데 레코드 1건에는 법인 2곳(린데코리아 주식회사, Linde AMT Chonan Co., Ltd.)이 들어 있고, 다른 기업의 법인·그룹 관계는 대부분 확인 전입니다. 법인별 데이터와 그룹 단위 데이터는 사실 표에서 범위(법인·사업장·그룹)로 구분합니다.",
+    basisDesc: {
+      "공정 지도 연결": "기존 공정 지도의 제품→공정 연결에서 계산한 값입니다. 실제 공급 상대와 공급 지위는 확인 전입니다.",
+      "사실 근거": "아래 사실 표의 항목이 근거입니다.",
+      "근거 부족": "공급망 구분을 판단할 자료가 부족해 보류했습니다."
+    },
     chainDesc: {
-      "직접": "제조공정(FAB·P&T·테스트)에 투입되는 소재·부품·장비",
-      "간접": "팹 인프라·유틸리티(공정 지도의 '팹 인프라' 단계에만 연결)",
+      "직접": "제품이 제조공정(FAB·P&T·테스트)에 투입되는 소재·부품·장비로 자료에 나타남. 공급 상대·물량·공급 지위는 이 구분이 확정하지 않음",
+      "간접": "제품이 팹 인프라·유틸리티로 쓰인다는 근거가 자료로 확인됨",
       "관련 산업": "반도체 제조공정이 아니라 반도체 제품(SSD 등)·서버에 탑재되는 전자부품 등",
-      "검증 필요": "실제 공급 품목이나 공정 연결을 확인하지 못함"
+      "검증 필요": "공정 연결만으로는 공급 지위를 판단할 수 없거나(팹 인프라·장비·서비스) 자료가 부족함"
     },
     list: [
-    { id: "c01", row: "덕산테코피아", cat: "소재", sub: [], chain: "직접", vs: "검증", products: ["pre"], why: "연결 제품(ALD·CVD 전구체)이 증착·배선 공정에 쓰임(기존 공정 지도 기준)" },
-    { id: "c02", row: "레이크머티리얼즈", cat: "소재", sub: [], chain: "직접", vs: "검증", products: ["pre"], why: "연결 제품(ALD·CVD 전구체)이 증착·배선 공정에 쓰임(기존 공정 지도 기준)" },
-    { id: "c03", row: "디엔에프", cat: "소재", sub: [], chain: "직접", vs: "검증", products: ["pre"], why: "연결 제품(ALD·CVD 전구체)이 증착·배선 공정에 쓰임(기존 공정 지도 기준)" },
-    { id: "c04", row: "Merck (한국머크)", cat: "소재", sub: [], chain: "직접", vs: "검증", products: ["pre"], why: "연결 제품(ALD·CVD 전구체)이 증착·배선 공정에 쓰임(기존 공정 지도 기준)" },
-    { id: "c05", row: "솔브레인", cat: "소재", sub: [], chain: "직접", vs: "검증", products: ["etch", "pre", "cmp"], why: "연결 제품(식각·세정액, 전구체, CMP 슬러리)이 식각, 증착·배선, 세정, CMP 공정에 쓰임(기존 공정 지도 기준)" },
-    { id: "c06", row: "원익머트리얼즈", cat: "소재", sub: [], chain: "직접", vs: "검증", products: ["gasDep", "gasEtch", "gasRare"], why: "연결 제품(증착·도핑용 특수가스, 식각·세정용 불화가스, 희귀가스(Ne·Kr·Xe))이 증착·배선, 이온주입, 식각, 노광(포토) 공정에 쓰임(기존 공정 지도 기준)" },
-    { id: "c07", row: "솔머티리얼즈", cat: "소재", sub: [], chain: "직접", vs: "부분 검증", products: ["gasDep", "gasEtch"], why: "연결 제품(증착·도핑용 특수가스, 식각·세정용 불화가스)이 증착·배선, 이온주입, 식각 공정에 쓰임(기존 공정 지도 기준)" },
-    { id: "c08", row: "티이엠씨", cat: "소재", sub: [], chain: "직접", vs: "검증", products: ["gasRare", "gasEtch"], why: "연결 제품(희귀가스(Ne·Kr·Xe), 식각·세정용 불화가스)이 노광(포토), 식각 공정에 쓰임(기존 공정 지도 기준)" },
-    { id: "c09", row: "효성네오켐", cat: "소재", sub: [], chain: "직접", vs: "부분 검증", products: ["gasEtch"], why: "연결 제품(식각·세정용 불화가스)이 식각 공정에 쓰임(기존 공정 지도 기준)" },
-    { id: "c10", row: "Nippon Sanso Matheson", cat: "소재", sub: [], chain: "직접", vs: "부분 검증", products: ["gasDep", "gasBulk"], why: "연결 제품(증착·도핑용 특수가스, 벌크가스·온사이트 공급)이 증착·배선, 이온주입, 확산·열처리, 팹 인프라 공정에 쓰임(기존 공정 지도 기준)" },
-    { id: "c11", row: "에어리퀴드코리아", cat: "소재", sub: [], chain: "직접", vs: "검증", products: ["gasRare", "gasDep", "gasBulk"], why: "연결 제품(희귀가스(Ne·Kr·Xe), 증착·도핑용 특수가스, 벌크가스·온사이트 공급)이 노광(포토), 증착·배선, 이온주입, 확산·열처리, 팹 인프라 공정에 쓰임(기존 공정 지도 기준)" },
-    { id: "c12", row: "에어프로덕츠코리아", cat: "소재", sub: [], chain: "직접", vs: "부분 검증", products: ["gasBulk"], why: "연결 제품(벌크가스·온사이트 공급)이 확산·열처리, 팹 인프라 공정에 쓰임(기존 공정 지도 기준)" },
-    { id: "c13", row: "다이킨첨단머티리얼즈", cat: "소재", sub: [], chain: "직접", vs: "부분 검증", products: ["gasEtch"], why: "연결 제품(식각·세정용 불화가스)이 식각 공정에 쓰임(기존 공정 지도 기준)" },
-    { id: "c14", row: "칸토덴카", cat: "소재", sub: [], chain: "직접", vs: "부분 검증", products: ["gasEtch"], why: "연결 제품(식각·세정용 불화가스)이 식각 공정에 쓰임(기존 공정 지도 기준)" },
-    { id: "c15", row: "㈜케이씨인더스트리얼", cat: "소재", sub: [], chain: "직접", vs: "부분 검증", products: ["gasDep"], why: "연결 제품(증착·도핑용 특수가스)이 증착·배선, 이온주입 공정에 쓰임(기존 공정 지도 기준)" },
-    { id: "c16", row: "JSR", cat: "소재", sub: [], chain: "직접", vs: "검증", products: ["pr"], why: "연결 제품(포토레지스트(PR))이 노광(포토) 공정에 쓰임(기존 공정 지도 기준)" },
-    { id: "c17", row: "Qnity", cat: "소재", sub: [], chain: "직접", vs: "검증", products: ["pr", "cmp", "oring"], why: "연결 제품(포토레지스트(PR), CMP 슬러리·패드, 반도체용 O-링·실(Seal))이 노광(포토), CMP(평탄화), 범핑·TSV·HBM, 식각 공정에 쓰임(기존 공정 지도 기준)" },
-    { id: "c18", row: "NCK", cat: "소재", sub: [], chain: "직접", vs: "검증", products: ["barc"], why: "연결 제품(반사방지 코팅(BARC))이 노광(포토) 공정에 쓰임(기존 공정 지도 기준)" },
-    { id: "c19", row: "FNSTech (에프엔에스테크)", cat: "소재", sub: [], chain: "직접", vs: "검증", products: ["cmp"], why: "연결 제품(CMP 슬러리·패드)이 CMP(평탄화), 범핑·TSV·HBM 공정에 쓰임(기존 공정 지도 기준)" },
-    { id: "c20", row: "FFEM", cat: "소재", sub: [], chain: "직접", vs: "부분 검증", products: ["cmp", "pr"], why: "연결 제품(CMP 슬러리·패드, 포토레지스트(PR))이 CMP(평탄화), 범핑·TSV·HBM, 노광(포토) 공정에 쓰임(기존 공정 지도 기준)" },
-    { id: "c21", row: "GlobalWafers (MEMC코리아)", cat: "소재", sub: [], chain: "직접", vs: "부분 검증", products: ["wafer"], why: "연결 제품(실리콘 웨이퍼)이 웨이퍼 제조 공정에 쓰임(기존 공정 지도 기준)" },
-    { id: "c22", row: "에이텍솔루션", cat: "소재", sub: ["부품"], chain: "직접", vs: "검증", products: ["reclaim", "clean"], why: "재생 웨이퍼(웨이퍼 제조·세정 공정)와 반도체 부품 정밀세정(세정 공정)을 한 법인이 함께 영위. 책장의 \"에이텍솔루션 (세정)\"은 같은 법인의 두 번째 사업이라 별도 기업으로 세지 않음", alias: ["에이텍솔루션 (세정)"], sameLegal: true, units: [
+    { id: "c01", row: "덕산테코피아", cat: "소재", sub: [], chain: "직접", chainBasis: "공정 지도 연결", vs: "검증", products: ["pre"], why: "연결 제품(ALD·CVD 전구체)이 증착·배선 공정에 쓰임(기존 공정 지도 기준)" },
+    { id: "c02", row: "레이크머티리얼즈", cat: "소재", sub: [], chain: "직접", chainBasis: "공정 지도 연결", vs: "검증", products: ["pre"], why: "연결 제품(ALD·CVD 전구체)이 증착·배선 공정에 쓰임(기존 공정 지도 기준)" },
+    { id: "c03", row: "디엔에프", cat: "소재", sub: [], chain: "직접", chainBasis: "공정 지도 연결", vs: "검증", products: ["pre"], why: "연결 제품(ALD·CVD 전구체)이 증착·배선 공정에 쓰임(기존 공정 지도 기준)" },
+    { id: "c04", row: "Merck (한국머크)", cat: "소재", sub: [], chain: "직접", chainBasis: "공정 지도 연결", vs: "검증", products: ["pre"], why: "연결 제품(ALD·CVD 전구체)이 증착·배선 공정에 쓰임(기존 공정 지도 기준)" },
+    { id: "c05", row: "솔브레인", cat: "소재", sub: [], chain: "직접", chainBasis: "공정 지도 연결", vs: "검증", products: ["etch", "pre", "cmp"], why: "연결 제품(식각·세정액, 전구체, CMP 슬러리)이 식각, 증착·배선, 세정, CMP 공정에 쓰임(기존 공정 지도 기준)" },
+    { id: "c06", row: "원익머트리얼즈", cat: "소재", sub: [], chain: "직접", chainBasis: "공정 지도 연결", vs: "검증", products: ["gasDep", "gasEtch", "gasRare"], why: "연결 제품(증착·도핑용 특수가스, 식각·세정용 불화가스, 희귀가스(Ne·Kr·Xe))이 증착·배선, 이온주입, 식각, 노광(포토) 공정에 쓰임(기존 공정 지도 기준)" },
+    { id: "c07", row: "솔머티리얼즈", cat: "소재", sub: [], chain: "직접", chainBasis: "공정 지도 연결", vs: "부분 검증", products: ["gasDep", "gasEtch"], why: "연결 제품(증착·도핑용 특수가스, 식각·세정용 불화가스)이 증착·배선, 이온주입, 식각 공정에 쓰임(기존 공정 지도 기준)" },
+    { id: "c08", row: "티이엠씨", cat: "소재", sub: [], chain: "직접", chainBasis: "공정 지도 연결", vs: "검증", products: ["gasRare", "gasEtch"], why: "연결 제품(희귀가스(Ne·Kr·Xe), 식각·세정용 불화가스)이 노광(포토), 식각 공정에 쓰임(기존 공정 지도 기준)" },
+    { id: "c09", row: "효성네오켐", cat: "소재", sub: [], chain: "직접", chainBasis: "공정 지도 연결", vs: "부분 검증", products: ["gasEtch"], why: "연결 제품(식각·세정용 불화가스)이 식각 공정에 쓰임(기존 공정 지도 기준)" },
+    { id: "c10", row: "Nippon Sanso Matheson", cat: "소재", sub: [], chain: "직접", chainBasis: "공정 지도 연결", vs: "부분 검증", products: ["gasDep", "gasBulk"], why: "연결 제품(증착·도핑용 특수가스, 벌크가스·온사이트 공급)이 증착·배선, 이온주입, 확산·열처리, 팹 인프라 공정에 쓰임(기존 공정 지도 기준)" },
+    { id: "c11", row: "에어리퀴드코리아", cat: "소재", sub: [], chain: "직접", chainBasis: "공정 지도 연결", vs: "검증", products: ["gasRare", "gasDep", "gasBulk"], why: "연결 제품(희귀가스(Ne·Kr·Xe), 증착·도핑용 특수가스, 벌크가스·온사이트 공급)이 노광(포토), 증착·배선, 이온주입, 확산·열처리, 팹 인프라 공정에 쓰임(기존 공정 지도 기준)" },
+    { id: "c12", row: "에어프로덕츠코리아", cat: "소재", sub: [], chain: "검증 필요", chainBasis: "근거 부족", vs: "부분 검증", products: ["gasBulk"], why: "벌크가스는 팹 옆 현장 플랜트로 공급하는 방식이 일반적이며(품목군 설명), 공정 지도에서는 확산·열처리와 팹 인프라에 연결됨. 이 회사의 공급 지위를 자료로 확인하지 못해 보류(편집 판단)" },
+    { id: "c13", row: "다이킨첨단머티리얼즈", cat: "소재", sub: [], chain: "직접", chainBasis: "공정 지도 연결", vs: "부분 검증", products: ["gasEtch"], why: "연결 제품(식각·세정용 불화가스)이 식각 공정에 쓰임(기존 공정 지도 기준)" },
+    { id: "c14", row: "칸토덴카", cat: "소재", sub: [], chain: "직접", chainBasis: "공정 지도 연결", vs: "부분 검증", products: ["gasEtch"], why: "연결 제품(식각·세정용 불화가스)이 식각 공정에 쓰임(기존 공정 지도 기준)" },
+    { id: "c15", row: "㈜케이씨인더스트리얼", cat: "소재", sub: [], chain: "직접", chainBasis: "공정 지도 연결", vs: "부분 검증", products: ["gasDep"], why: "연결 제품(증착·도핑용 특수가스)이 증착·배선, 이온주입 공정에 쓰임(기존 공정 지도 기준)" },
+    { id: "c16", row: "JSR", cat: "소재", sub: [], chain: "직접", chainBasis: "공정 지도 연결", vs: "검증", products: ["pr"], why: "연결 제품(포토레지스트(PR))이 노광(포토) 공정에 쓰임(기존 공정 지도 기준)" },
+    { id: "c17", row: "Qnity", cat: "소재", sub: [], chain: "직접", chainBasis: "공정 지도 연결", vs: "검증", products: ["pr", "cmp", "oring"], why: "연결 제품(포토레지스트(PR), CMP 슬러리·패드, 반도체용 O-링·실(Seal))이 노광(포토), CMP(평탄화), 범핑·TSV·HBM, 식각 공정에 쓰임(기존 공정 지도 기준)" },
+    { id: "c18", row: "NCK", cat: "소재", sub: [], chain: "직접", chainBasis: "공정 지도 연결", vs: "검증", products: ["barc"], why: "연결 제품(반사방지 코팅(BARC))이 노광(포토) 공정에 쓰임(기존 공정 지도 기준)" },
+    { id: "c19", row: "FNSTech (에프엔에스테크)", cat: "소재", sub: [], chain: "직접", chainBasis: "공정 지도 연결", vs: "검증", products: ["cmp"], why: "연결 제품(CMP 슬러리·패드)이 CMP(평탄화), 범핑·TSV·HBM 공정에 쓰임(기존 공정 지도 기준)" },
+    { id: "c20", row: "FFEM", cat: "소재", sub: [], chain: "직접", chainBasis: "공정 지도 연결", vs: "부분 검증", products: ["cmp", "pr"], why: "연결 제품(CMP 슬러리·패드, 포토레지스트(PR))이 CMP(평탄화), 범핑·TSV·HBM, 노광(포토) 공정에 쓰임(기존 공정 지도 기준)" },
+    { id: "c21", row: "GlobalWafers (MEMC코리아)", cat: "소재", sub: [], chain: "직접", chainBasis: "공정 지도 연결", vs: "부분 검증", products: ["wafer"], why: "연결 제품(실리콘 웨이퍼)이 웨이퍼 제조 공정에 쓰임(기존 공정 지도 기준)" },
+    { id: "c22", row: "에이텍솔루션", cat: "소재", sub: ["부품"], chain: "직접", chainBasis: "공정 지도 연결", vs: "검증", products: ["reclaim", "clean"], why: "재생 웨이퍼(웨이퍼 제조·세정 공정)와 반도체 부품 정밀세정(세정 공정)을 한 법인이 함께 영위. 책장의 \"에이텍솔루션 (세정)\"은 같은 법인의 두 번째 사업이라 별도 기업으로 세지 않음", alias: ["에이텍솔루션 (세정)"], sameLegal: true, units: [
       { id: "aets-reclaim", name: "재생 웨이퍼", biz: "모니터링 웨이퍼 재생(리클레임)", legal: "㈜에이텍솔루션", legalVerified: false, products: ["reclaim"], regions: ["천안", "아산"], row: "에이텍솔루션" },
       { id: "aets-clean", name: "부품 정밀세정", biz: "반도체 장비 부품 정밀 세정", legal: "㈜에이텍솔루션", legalVerified: false, products: ["clean"], regions: ["천안"], row: "에이텍솔루션 (세정)" }] },
-    { id: "c23", row: "삼성전기", cat: "소재", sub: [], chain: "직접", vs: "검증", products: ["substrate"], why: "연결 제품(반도체 패키지 기판)이 패키징 공정에 쓰임(기존 공정 지도 기준)" },
-    { id: "c24", row: "심텍", cat: "소재", sub: [], chain: "직접", vs: "검증", products: ["substrate"], why: "연결 제품(반도체 패키지 기판)이 패키징 공정에 쓰임(기존 공정 지도 기준)" },
-    { id: "c25", row: "㈜피케이엘", cat: "소재", sub: [], chain: "직접", vs: "검증", products: ["mask"], why: "연결 제품(포토마스크)이 노광(포토) 공정에 쓰임(기존 공정 지도 기준)" },
-    { id: "c26", row: "LG화학", cat: "소재", sub: [], chain: "직접", vs: "부분 검증", products: ["pid", "film"], why: "연결 제품(PID(감광성 절연재), 반도체 공정·패키징 필름)이 패키징, 범핑·TSV·HBM 공정에 쓰임(기존 공정 지도 기준)" },
-    { id: "c27", row: "린데", cat: "소재", sub: [], chain: "직접", vs: "부분 검증", products: ["gasBulk", "target"], why: "린데코리아(산업가스)와 Linde AMT Chonan(스퍼터링 타겟)은 법인명이 다른 린데 그룹 회사. 책 목록의 품목(Target)·지역(천안)은 Linde AMT Chonan 사업장 기준이며, 두 법인의 실적·제품·사업장은 합산하지 않음. 별도 기업으로 분리할 근거(독립 공급 계약·지분 관계)는 확인하지 못해 고유 기업 수는 늘리지 않음", sameLegal: false, units: [
+    { id: "c23", row: "삼성전기", cat: "소재", sub: [], chain: "직접", chainBasis: "공정 지도 연결", vs: "검증", products: ["substrate"], why: "연결 제품(반도체 패키지 기판)이 패키징 공정에 쓰임(기존 공정 지도 기준)" },
+    { id: "c24", row: "심텍", cat: "소재", sub: [], chain: "직접", chainBasis: "공정 지도 연결", vs: "검증", products: ["substrate"], why: "연결 제품(반도체 패키지 기판)이 패키징 공정에 쓰임(기존 공정 지도 기준)" },
+    { id: "c25", row: "㈜피케이엘", cat: "소재", sub: [], chain: "직접", chainBasis: "공정 지도 연결", vs: "검증", products: ["mask"], why: "연결 제품(포토마스크)이 노광(포토) 공정에 쓰임(기존 공정 지도 기준)" },
+    { id: "c26", row: "LG화학", cat: "소재", sub: [], chain: "직접", chainBasis: "공정 지도 연결", vs: "부분 검증", products: ["pid", "film"], why: "연결 제품(PID(감광성 절연재), 반도체 공정·패키징 필름)이 패키징, 범핑·TSV·HBM 공정에 쓰임(기존 공정 지도 기준)" },
+    { id: "c27", row: "린데", cat: "소재", sub: [], chain: "직접", chainBasis: "사실 근거", chainFacts: ["f002"], vs: "부분 검증", products: ["gasBulk", "target"], why: "린데코리아(산업가스)와 Linde AMT Chonan(스퍼터링 타겟)은 법인명이 다른 린데 그룹 회사. 책 목록의 품목(Target)·지역(천안)은 Linde AMT Chonan 사업장 기준이며, 두 법인의 실적·제품·사업장은 합산하지 않음. 별도 기업으로 분리할 근거(독립 공급 계약·지분 관계)는 확인하지 못해 고유 기업 수는 늘리지 않음", sameLegal: false, units: [
       { id: "linde-korea", name: "린데코리아", biz: "산업·특수·의료용 가스, 현장 플랜트(ASU 등)", legal: "린데코리아 주식회사", legalVerified: true, bizNo: "120-81-17541", products: ["gasBulk"], regions: ["평택", "아산(탕정)", "그 외 국내 사업장(본사 소재지는 자료마다 달라 확정하지 않음)"], listed: false },
       { id: "linde-amt-chonan", name: "Linde AMT Chonan", biz: "PVD 스퍼터링 타겟 제조", legal: "Linde AMT Chonan Co., Ltd.", legalVerified: true, products: ["target"], regions: ["충남 천안시 서북구"], listed: true }] },
-    { id: "c28", row: "Solstice", cat: "소재", sub: [], chain: "직접", vs: "부분 검증", products: ["target"], why: "연결 제품(스퍼터링 타겟)이 증착·배선 공정에 쓰임(기존 공정 지도 기준)" },
-    { id: "c29", row: "삼화전기", cat: "기타", sub: [], chain: "관련 산업", vs: "검증", products: ["alcap"], why: "주요 제품(SSD용 S-CAP, 전해 커패시터, 하이브리드·EDLC)은 SSD·서버·자동차·가전 등에 탑재되는 전자부품이며, 반도체 제조공정(FAB·P&T)에 투입된다는 근거는 확인하지 못함. 그래서 직접 소부장이 아니라 반도체 관련 전자부품으로 분류", shelfNote: "기존 책장 호환을 위해 '기판·마스크·필름·타겟' 칸에 그대로 둠(책 위치·URL 불변)" },
-    { id: "c30", row: "TSE", cat: "부품", sub: [], chain: "직접", vs: "검증", products: ["socket", "probe"], why: "연결 제품(테스트 인터페이스(보드·소켓), 프로브카드)이 테스트, 범핑·TSV·HBM 공정에 쓰임(기존 공정 지도 기준)" },
-    { id: "c31", row: "피엠티", cat: "부품", sub: [], chain: "직접", vs: "검증", products: ["probe"], why: "연결 제품(프로브카드)이 범핑·TSV·HBM, 테스트 공정에 쓰임(기존 공정 지도 기준)" },
-    { id: "c32", row: "디에스테크노", cat: "부품", sub: [], chain: "직접", vs: "검증", products: ["sisic"], why: "연결 제품(실리콘·SiC 식각 부품)이 식각, 확산·열처리 공정에 쓰임(기존 공정 지도 기준)" },
-    { id: "c33", row: "영신쿼츠", cat: "부품", sub: [], chain: "직접", vs: "검증", products: ["quartz"], why: "연결 제품(쿼츠(석영) 부품)이 식각, 확산·열처리 공정에 쓰임(기존 공정 지도 기준)" },
-    { id: "c34", row: "와이컴", cat: "부품", sub: [], chain: "검증 필요", vs: "미검증", products: ["sisic"], why: "실제 공급 품목·공정 연결을 확인하지 못해 공급망 구분을 보류(목록 품목 기준 연결만 표시)" },
-    { id: "c35", row: "이노레스", cat: "부품", sub: [], chain: "직접", vs: "검증", products: ["oring"], why: "연결 제품(반도체용 O-링·실(Seal))이 식각 공정에 쓰임(기존 공정 지도 기준)" },
-    { id: "c36", row: "GT", cat: "부품", sub: [], chain: "검증 필요", vs: "미검증", products: ["oring"], why: "실제 공급 품목·공정 연결을 확인하지 못해 공급망 구분을 보류(목록 품목 기준 연결만 표시)" },
-    { id: "c37", row: "한솔아이원스", cat: "부품", sub: [], chain: "직접", vs: "검증", products: ["clean", "metal"], why: "연결 제품(장비 부품 세정·코팅, 장비용 정밀 가공 부품)이 세정, 이온주입 공정에 쓰임(기존 공정 지도 기준)" },
-    { id: "c38", row: "거성", cat: "부품", sub: [], chain: "직접", vs: "검증", products: ["metal"], why: "연결 제품(장비용 정밀 가공 부품)이 이온주입 공정에 쓰임(기존 공정 지도 기준)" },
-    { id: "c39", row: "AMMK", cat: "부품", sub: [], chain: "직접", vs: "부분 검증", products: ["hbmfilm"], why: "연결 제품(HBM용 내열 필름)이 범핑·TSV·HBM 공정에 쓰임(기존 공정 지도 기준)" },
-    { id: "c40", row: "EDWARDS", cat: "장비", sub: [], chain: "간접", vs: "검증", products: ["pump"], why: "연결 제품(건식 진공펌프·가스처리장치)이 공정 지도의 팹 인프라 단계에만 연결됨" },
-    { id: "c41", row: "쿠리타한수", cat: "장비", sub: [], chain: "직접", vs: "검증", products: ["upw"], why: "연결 제품(초순수(UPW))이 세정, 팹 인프라 공정에 쓰임(기존 공정 지도 기준)" },
-    { id: "c42", row: "세메스", cat: "장비", sub: [], chain: "간접", vs: "검증", products: ["amhs"], why: "연결 제품(반도체 물류자동화(AMHS))이 공정 지도의 팹 인프라 단계에만 연결됨" },
-    { id: "c43", row: "와이씨", cat: "장비", sub: [], chain: "직접", vs: "검증", products: ["wtester"], why: "연결 제품(웨이퍼 테스터)이 테스트 공정에 쓰임(기존 공정 지도 기준)" },
-    { id: "c44", row: "엑시콘", cat: "장비", sub: [], chain: "직접", vs: "검증", products: ["ptester"], why: "연결 제품(패키지·모듈 테스터)이 테스트 공정에 쓰임(기존 공정 지도 기준)" },
-    { id: "c45", row: "제이티", cat: "장비", sub: [], chain: "직접", vs: "검증", products: ["handler"], why: "연결 제품(번인 소터·검사 장비)이 테스트 공정에 쓰임(기존 공정 지도 기준)" }
+    { id: "c28", row: "Solstice", cat: "소재", sub: [], chain: "직접", chainBasis: "공정 지도 연결", vs: "부분 검증", products: ["target"], why: "연결 제품(스퍼터링 타겟)이 증착·배선 공정에 쓰임(기존 공정 지도 기준)" },
+    { id: "c29", row: "삼화전기", cat: "기타", sub: [], chain: "관련 산업", chainBasis: "사실 근거", chainFacts: ["f013", "f015"], vs: "검증", products: ["alcap"], why: "주요 제품(SSD용 S-CAP, 전해 커패시터, 하이브리드·EDLC)은 SSD·서버·자동차·가전 등에 탑재되는 전자부품이며, 반도체 제조공정(FAB·P&T)에 투입된다는 근거는 확인하지 못함. 그래서 직접 소부장이 아니라 반도체 관련 전자부품으로 분류", shelfNote: "기존 책장 호환을 위해 '기판·마스크·필름·타겟' 칸에 그대로 둠(책 위치·URL 불변)" },
+    { id: "c30", row: "TSE", cat: "부품", sub: [], chain: "직접", chainBasis: "공정 지도 연결", vs: "검증", products: ["socket", "probe"], why: "연결 제품(테스트 인터페이스(보드·소켓), 프로브카드)이 테스트, 범핑·TSV·HBM 공정에 쓰임(기존 공정 지도 기준)" },
+    { id: "c31", row: "피엠티", cat: "부품", sub: [], chain: "직접", chainBasis: "공정 지도 연결", vs: "검증", products: ["probe"], why: "연결 제품(프로브카드)이 범핑·TSV·HBM, 테스트 공정에 쓰임(기존 공정 지도 기준)" },
+    { id: "c32", row: "디에스테크노", cat: "부품", sub: [], chain: "직접", chainBasis: "공정 지도 연결", vs: "검증", products: ["sisic"], why: "연결 제품(실리콘·SiC 식각 부품)이 식각, 확산·열처리 공정에 쓰임(기존 공정 지도 기준)" },
+    { id: "c33", row: "영신쿼츠", cat: "부품", sub: [], chain: "직접", chainBasis: "공정 지도 연결", vs: "검증", products: ["quartz"], why: "연결 제품(쿼츠(석영) 부품)이 식각, 확산·열처리 공정에 쓰임(기존 공정 지도 기준)" },
+    { id: "c34", row: "와이컴", cat: "부품", sub: [], chain: "검증 필요", chainBasis: "근거 부족", vs: "미검증", products: ["sisic"], why: "실제 공급 품목·공정 연결을 확인하지 못해 공급망 구분을 보류(목록 품목 기준 연결만 표시)" },
+    { id: "c35", row: "이노레스", cat: "부품", sub: [], chain: "직접", chainBasis: "공정 지도 연결", vs: "검증", products: ["oring"], why: "연결 제품(반도체용 O-링·실(Seal))이 식각 공정에 쓰임(기존 공정 지도 기준)" },
+    { id: "c36", row: "GT", cat: "부품", sub: [], chain: "검증 필요", chainBasis: "근거 부족", vs: "미검증", products: ["oring"], why: "실제 공급 품목·공정 연결을 확인하지 못해 공급망 구분을 보류(목록 품목 기준 연결만 표시)" },
+    { id: "c37", row: "한솔아이원스", cat: "부품", sub: [], chain: "직접", chainBasis: "공정 지도 연결", vs: "검증", products: ["clean", "metal"], why: "연결 제품(장비 부품 세정·코팅, 장비용 정밀 가공 부품)이 세정, 이온주입 공정에 쓰임(기존 공정 지도 기준)" },
+    { id: "c38", row: "거성", cat: "부품", sub: [], chain: "직접", chainBasis: "공정 지도 연결", vs: "검증", products: ["metal"], why: "연결 제품(장비용 정밀 가공 부품)이 이온주입 공정에 쓰임(기존 공정 지도 기준)" },
+    { id: "c39", row: "AMMK", cat: "부품", sub: [], chain: "직접", chainBasis: "공정 지도 연결", vs: "부분 검증", products: ["hbmfilm"], why: "연결 제품(HBM용 내열 필름)이 범핑·TSV·HBM 공정에 쓰임(기존 공정 지도 기준)" },
+    { id: "c40", row: "EDWARDS", cat: "장비", sub: [], chain: "검증 필요", chainBasis: "근거 부족", vs: "검증", products: ["pump"], why: "진공펌프는 공정 장비에 붙는 장비이지만 공정 지도에서는 팹 인프라 단계에만 연결돼 있음. 팹 인프라 설비인지 공정 장비 부속인지 자료로 확인하지 못해 공급망 구분을 보류(편집 판단)" },
+    { id: "c41", row: "쿠리타한수", cat: "장비", sub: [], chain: "검증 필요", chainBasis: "근거 부족", vs: "검증", products: ["upw"], why: "초순수 설비는 세정 공정의 용수를 공급하는 팹 유틸리티 성격이 있음. 공정 지도에는 세정·인프라 양쪽에 연결돼 있으나 공정 투입 장비인지 인프라 서비스인지 구분할 자료가 없어 보류(편집 판단)" },
+    { id: "c42", row: "세메스", cat: "장비", sub: [], chain: "검증 필요", chainBasis: "근거 부족", vs: "검증", products: ["amhs"], why: "물류자동화(반송) 설비로 공정 지도에서는 팹 인프라 단계에만 연결돼 있음. 제조공정 투입 장비인지 팹 운영 설비인지 확인하지 못해 공급망 구분을 보류(편집 판단)" },
+    { id: "c43", row: "와이씨", cat: "장비", sub: [], chain: "직접", chainBasis: "공정 지도 연결", vs: "검증", products: ["wtester"], why: "연결 제품(웨이퍼 테스터)이 테스트 공정에 쓰임(기존 공정 지도 기준)" },
+    { id: "c44", row: "엑시콘", cat: "장비", sub: [], chain: "직접", chainBasis: "공정 지도 연결", vs: "검증", products: ["ptester"], why: "연결 제품(패키지·모듈 테스터)이 테스트 공정에 쓰임(기존 공정 지도 기준)" },
+    { id: "c45", row: "제이티", cat: "장비", sub: [], chain: "직접", chainBasis: "공정 지도 연결", vs: "검증", products: ["handler"], why: "연결 제품(번인 소터·검사 장비)이 테스트 공정에 쓰임(기존 공정 지도 기준)" }
     ],
     facts: [
     /* kind: 자료 유형 / vs: 이 문장이 원문과 맞는지 확인한 정도 / pub: 자료 발행일 / asof: 사실 기준일 / checked: 최종 확인일 */
-    { id: "f001", ent: "c27", text: "린데코리아 주식회사(사업자 120-81-17541)는 산업용 가스 제조 법인이며, 직상위 모회사는 Linde Inc., 최상위 모회사는 Linde plc로 등록돼 있다.", kind: "공식 확인 사실", src: ["lk_gl", "lk_mo"], pub: null, asof: null, checked: "2026-11-02", vs: "검증" },
-    { id: "f002", ent: "c27", text: "Linde AMT Chonan Co., Ltd.(충남 천안시 서북구 3공단2로 7)는 Linde AMT의 한국 사업장으로 Linde AMT 공식 사이트에 등재돼 있다(IATF 16949, ISO 9001).", kind: "공식 확인 사실", src: ["lk_amt"], pub: null, asof: null, checked: "2026-11-02", vs: "검증" },
-    { id: "f003", ent: "c27", text: "린데코리아(가스)와 천안 스퍼터링 타겟 사업장(Linde AMT Chonan)은 서로 다른 법인명이다. 두 법인 사이의 지분 관계는 확인하지 못했다.", kind: "편집 분석", src: ["lk_gl", "lk_amt"], pub: null, asof: null, checked: "2026-11-02", vs: "부분 검증" },
-    { id: "f004", ent: "c27", text: "Linde AMT 브로슈어는 천안 공장을 1997년 건설, 2010~2012년 확장, 2024년 신규 제조 플랜트 개설로 소개한다.", kind: "기업 발표 또는 주장", src: ["y_ld4"], pub: "2024", asof: "2024", checked: "2026-11-02", vs: "검증" },
-    { id: "f005", ent: "c27", text: "린데 그룹의 국내 사업 소개 자료는 타겟(충남 천안) 직원 47명(2024.05 기준)을 가스 사업과 구분해 표기한다. 이 직원 수가 어느 법인 소속인지는 자료에 적혀 있지 않다.", kind: "기업 발표 또는 주장", src: ["lk_kr"], pub: "2024-08-19", asof: "2024-05", checked: "2026-11-02", vs: "부분 검증" },
-    { id: "f006", ent: "c27", text: "천안 타겟 사업의 매출·영업이익은 공개자료에서 확인하지 못했다. 린데코리아의 매출(2024년 1조 1,660억 원)은 이 사업장 실적이 아니다.", kind: "확인 불가", src: [], pub: null, asof: null, checked: "2026-11-02", vs: "미검증" },
-    { id: "f010", ent: "c29", text: "S-CAP은 기업용 SSD(eSSD)에 들어가 정전 시 전력을 유지하는 전해 커패시터이며, 삼성 반도체 부문에 2020.11, SK하이닉스에 2024.05 공급을 시작했다고 회사가 밝혔다.", kind: "기업 발표 또는 주장", src: ["shw"], pub: "2024-06-04", asof: "2024-05", checked: "2026-11-02", vs: "검증" },
-    { id: "f011", ent: "c29", text: "한국IR협의회 리포트도 S-Cap을 eSSD용 부품으로 설명하고 삼성전자·SK하이닉스 납품을 기재했다.", kind: "증권사·기관 추정", src: ["sw_kirs"], pub: "2024-09-03", asof: "2024-06", checked: "2026-11-02", vs: "검증" },
-    { id: "f012", ent: "c29", text: "2025년 연결 매출 2,301억 원 중 전해콘덴서 51.5%, Green-Cap 2.4%, 상품·기타 46.1%다(삼화전기 IR을 인용한 리서치 자료).", kind: "증권사·기관 추정", src: ["sw_fin"], pub: "2026-04-14", asof: "2025-12-31", checked: "2026-11-02", vs: "부분 검증" },
-    { id: "f013", ent: "c29", text: "확인한 자료(회사 IR, 리서치 2건)에서 삼화전기 제품을 반도체 제조공정(FAB·P&T)에 투입하는 소재·부품으로 설명한 대목은 찾지 못했다.", kind: "확인 불가", src: [], pub: null, asof: null, checked: "2026-11-02", vs: "미검증" },
-    { id: "f014", ent: "c29", text: "회사 연혁에 '소재부품장비산업 발전 유공 대통령 표창(2023.10)'이 있다. 표창 사실만으로는 제품이 제조공정에 투입되는지 판단할 수 없다.", kind: "기업 발표 또는 주장", src: ["sw_kirs"], pub: "2024-09-03", asof: "2023-10", checked: "2026-11-02", vs: "검증" },
-    { id: "f015", ent: "c29", text: "분류 판단: SSD·서버·자동차 등에 탑재되는 전자부품이므로 공급망 구분을 '관련 산업'으로 둔다. 제조공정 투입 근거가 확인되면 재분류한다.", kind: "편집 분석", src: [], pub: null, asof: null, checked: "2026-11-02", vs: "부분 검증" },
-    { id: "f020", ent: "c22", text: "에이텍솔루션은 한 회사가 모니터링 웨이퍼 재생, MFC 판매, 반도체 부품 정밀세정, 실리콘 부품 공급을 함께 한다고 보도자료에서 밝혔다.", kind: "기업 발표 또는 주장", src: ["at2"], pub: "2025-08-25", asof: "2025-08", checked: "2026-11-02", vs: "검증" },
-    { id: "f021", ent: "c22", text: "재생 웨이퍼와 부품 정밀세정은 별도 법인이 아니라 한 법인의 두 사업으로 본다. 책 목록의 '에이텍솔루션 (세정)'은 같은 법인의 두 번째 사업이다.", kind: "편집 분석", src: ["at2"], pub: null, asof: null, checked: "2026-11-02", vs: "부분 검증" },
-    { id: "f022", ent: "c22", text: "목록의 사업장(천안·아산)과 별개로, 정리 사이트(THE VC)는 본사 소재지를 경기도 화성시 동탄으로 적는다. 본사와 사업장 위치를 구분해 읽어야 하며, 본사 소재지는 1차 자료로 확인하지 못했다.", kind: "확인 불가", src: ["at3"], pub: null, asof: "2026-08", checked: "2026-11-02", vs: "부분 검증" }
+    { id: "f001", scope: "법인", unit: "linde-korea", ent: "c27", text: "린데코리아 주식회사(사업자 120-81-17541)는 산업용 가스 제조 법인이며, 직상위 모회사는 Linde Inc., 최상위 모회사는 Linde plc로 등록돼 있다.", kind: "공식 확인 사실", src: ["lk_gl", "lk_mo"], pub: null, asof: null, checked: "2026-11-02", vs: "검증" },
+    { id: "f002", scope: "법인", unit: "linde-amt-chonan", ent: "c27", text: "Linde AMT Chonan Co., Ltd.(충남 천안시 서북구 3공단2로 7)는 Linde AMT의 한국 사업장으로 Linde AMT 공식 사이트에 등재돼 있다(IATF 16949, ISO 9001).", kind: "공식 확인 사실", src: ["lk_amt"], pub: null, asof: null, checked: "2026-11-02", vs: "검증" },
+    { id: "f003", scope: "그룹", ent: "c27", text: "린데코리아(가스)와 천안 스퍼터링 타겟 사업장(Linde AMT Chonan)은 서로 다른 법인명이다. 두 법인 사이의 지분 관계는 확인하지 못했다.", kind: "편집 분석", src: ["lk_gl", "lk_amt"], pub: null, asof: null, checked: "2026-11-02", vs: "부분 검증" },
+    { id: "f004", scope: "사업장", unit: "linde-amt-chonan", ent: "c27", text: "Linde AMT 브로슈어는 천안 공장을 1997년 건설, 2010~2012년 확장, 2024년 신규 제조 플랜트 개설로 소개한다.", kind: "기업 발표 또는 주장", src: ["y_ld4"], pub: "2024", asof: "2024", checked: "2026-11-02", vs: "검증" },
+    { id: "f005", scope: "그룹", ent: "c27", text: "린데 그룹의 국내 사업 소개 자료는 타겟(충남 천안) 직원 47명(2024.05 기준)을 가스 사업과 구분해 표기한다. 이 직원 수가 어느 법인 소속인지는 자료에 적혀 있지 않다.", kind: "기업 발표 또는 주장", src: ["lk_kr"], pub: "2024-08-19", asof: "2024-05", checked: "2026-11-02", vs: "부분 검증" },
+    { id: "f006", scope: "법인", unit: "linde-amt-chonan", ent: "c27", text: "천안 타겟 사업의 매출·영업이익은 공개자료에서 확인하지 못했다. 린데코리아의 매출(2024년 1조 1,660억 원)은 이 사업장 실적이 아니다.", kind: "확인 불가", src: [], pub: null, asof: null, checked: "2026-11-02", vs: "미검증" },
+    { id: "f010", scope: "법인", ent: "c29", text: "S-CAP은 기업용 SSD(eSSD)에 들어가 정전 시 전력을 유지하는 전해 커패시터이며, 삼성 반도체 부문에 2020.11, SK하이닉스에 2024.05 공급을 시작했다고 회사가 밝혔다.", kind: "기업 발표 또는 주장", src: ["shw"], pub: "2024-06-04", asof: "2024-05", checked: "2026-11-02", vs: "검증" },
+    { id: "f011", scope: "법인", ent: "c29", text: "한국IR협의회 리포트도 S-Cap을 eSSD용 부품으로 설명하고 삼성전자·SK하이닉스 납품을 기재했다.", kind: "증권사·기관 추정", src: ["sw_kirs"], pub: "2024-09-03", asof: "2024-06", checked: "2026-11-02", vs: "검증" },
+    { id: "f012", scope: "법인", ent: "c29", text: "2025년 연결 매출 2,301억 원 중 전해콘덴서 51.5%, Green-Cap 2.4%, 상품·기타 46.1%다(삼화전기 IR을 인용한 리서치 자료).", kind: "증권사·기관 추정", src: ["sw_fin"], pub: "2026-04-14", asof: "2025-12-31", checked: "2026-11-02", vs: "부분 검증" },
+    { id: "f013", scope: "법인", ent: "c29", text: "확인한 자료(회사 IR, 리서치 2건)에서 삼화전기 제품을 반도체 제조공정(FAB·P&T)에 투입하는 소재·부품으로 설명한 대목은 찾지 못했다.", kind: "확인 불가", src: [], pub: null, asof: null, checked: "2026-11-02", vs: "미검증" },
+    { id: "f014", scope: "법인", ent: "c29", text: "회사 연혁에 '소재부품장비산업 발전 유공 대통령 표창(2023.10)'이 있다. 표창 사실만으로는 제품이 제조공정에 투입되는지 판단할 수 없다.", kind: "기업 발표 또는 주장", src: ["sw_kirs"], pub: "2024-09-03", asof: "2023-10", checked: "2026-11-02", vs: "검증" },
+    { id: "f015", scope: "법인", ent: "c29", text: "분류 판단: SSD·서버·자동차 등에 탑재되는 전자부품이므로 공급망 구분을 '관련 산업'으로 둔다. 제조공정 투입 근거가 확인되면 재분류한다.", kind: "편집 분석", src: [], pub: null, asof: null, checked: "2026-11-02", vs: "부분 검증" },
+    { id: "f020", scope: "법인", ent: "c22", text: "에이텍솔루션은 한 회사가 모니터링 웨이퍼 재생, MFC 판매, 반도체 부품 정밀세정, 실리콘 부품 공급을 함께 한다고 보도자료에서 밝혔다.", kind: "기업 발표 또는 주장", src: ["at2"], pub: "2025-08-25", asof: "2025-08", checked: "2026-11-02", vs: "검증" },
+    { id: "f021", scope: "법인", ent: "c22", text: "재생 웨이퍼와 부품 정밀세정은 별도 법인이 아니라 한 법인의 두 사업으로 본다. 책 목록의 '에이텍솔루션 (세정)'은 같은 법인의 두 번째 사업이다.", kind: "편집 분석", src: ["at2"], pub: null, asof: null, checked: "2026-11-02", vs: "부분 검증" },
+    { id: "f022", scope: "법인", ent: "c22", text: "목록의 사업장(천안·아산)과 별개로, 정리 사이트(THE VC)는 본사 소재지를 경기도 화성시 동탄으로 적는다. 본사와 사업장 위치를 구분해 읽어야 하며, 본사 소재지는 1차 자료로 확인하지 못했다.", kind: "확인 불가", src: ["at3"], pub: null, asof: "2026-08", checked: "2026-11-02", vs: "부분 검증" }
     ]
   };
   (function () {

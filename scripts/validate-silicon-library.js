@@ -155,6 +155,17 @@ if (!ENT) {
     if (e.chain === '직접' && !procs.some((p) => p !== 'infra')) E('ENT_CHAIN', `${tag}: 직접으로 분류했지만 제조공정에 연결된 제품이 없음`);
     if (e.chain === '간접' && procs.some((p) => p !== 'infra')) W('ENT_CHAIN', `${tag}: 간접으로 분류했지만 인프라 외 공정에 연결됨`);
     if (e.chain === '관련 산업' && procs.length) E('ENT_CHAIN', `${tag}: 관련 산업인데 제조공정(${procs.join(',')})에 연결됨`);
+    /* 공급망 구분은 공정 지도 연결만으로 확정하지 않는다 */
+    if (!(ENT.basis || []).includes(e.chainBasis)) E('ENT_BASIS', `${tag}: 판단 근거(chainBasis) 값 오류 ${e.chainBasis}`);
+    if (e.chain === '검증 필요' && e.chainBasis !== '근거 부족') E('ENT_BASIS', `${tag}: 검증 필요인데 판단 근거가 ${e.chainBasis}`);
+    if (['직접', '간접', '관련 산업'].includes(e.chain) && e.chainBasis === '근거 부족') E('ENT_BASIS', `${tag}: ${e.chain}으로 확정했지만 판단 근거가 부족함`);
+    if (e.chainBasis === '사실 근거') {
+      if (!(e.chainFacts || []).length) E('ENT_BASIS', `${tag}: 사실 근거인데 chainFacts 없음`);
+      (e.chainFacts || []).forEach((id) => { const f = (ENT.facts || []).find((x) => x.id === id); if (!f) E('ENT_BASIS', `${tag}: 존재하지 않는 근거 사실 ${id}`); else if (f.ent !== e.id) E('ENT_BASIS', `${tag}: 근거 사실 ${id}는 다른 기업(${f.ent})의 것`); });
+    }
+    const infraOnly = (e.products || []).length && e.products.every((k) => (procOf[k] || []).includes('infra'));
+    if (infraOnly && e.chain !== '검증 필요' && e.chainBasis !== '사실 근거') E('ENT_CHAIN_INFRA', `${tag}: 팹 인프라에 연결된 제품만 있는데 사실 근거 없이 ${e.chain}으로 분류함`);
+    if (e.cat === '장비' && (e.processes || []).includes('infra') && e.chain !== '검증 필요' && e.chainBasis !== '사실 근거') E('ENT_CHAIN_INFRA', `${tag}: 인프라 연결 장비를 사실 근거 없이 ${e.chain}으로 분류함`);
     const b = B.find((x) => x.n === e.row);
     if (b) {
       const want = { A: '검증', B: '부분 검증', C: '미검증' }[b.conf];
@@ -212,6 +223,11 @@ if (!ENT) {
     if (!ENT.vstat.includes(f.vs)) E('FACT_VS', `${t}: 검증 상태 오류 ${f.vs}`);
     ['pub', 'asof', 'checked'].forEach((k) => { if (f[k] != null && !ISO.test(f[k])) E('FACT_DATE', `${t}: ${k} 날짜 형식 오류 ${f[k]}`); });
     (f.src || []).forEach((k) => { if (!S[k]) E('SRC_ID', `${t}: 출처 ID ${k} 없음`); });
+    if (!(ENT.scopes || []).includes(f.scope)) E('FACT_SCOPE', `${t}: 범위(scope) 값 오류 ${f.scope}`);
+    const fe = ENT.list.find((x) => x.id === f.ent);
+    if (fe && f.unit && !(fe.units || []).some((u) => u.id === f.unit)) E('FACT_SCOPE', `${t}: 존재하지 않는 사업 단위 ${f.unit}`);
+    if (fe && f.scope === '법인' && !f.unit && new Set((fe.units || []).map((u) => u.legal)).size > 1) E('FACT_SCOPE', `${t}: 법인이 여럿인 기업(${fe.row})의 법인 단위 사실에 unit이 없음 — 법인·그룹 데이터 혼합 방지`);
+
     if (f.kind !== '확인 불가' && f.kind !== '편집 분석' && !(f.src || []).length) E('FACT_SRC', `${t}: ${f.kind}인데 원문 출처 없음`);
     if (f.vs === '검증' && !(f.src || []).length) E('FACT_SRC', `${t}: 검증 상태인데 원문 출처 없음`);
     if (f.vs === '검증' && (f.kind === '확인 불가')) E('FACT_VS', `${t}: 확인 불가 유형을 검증으로 표시할 수 없음`);
@@ -220,6 +236,13 @@ if (!ENT) {
     if ((f.src || []).length && f.pub == null && f.kind !== '확인 불가') I('FACT_PUB', `${t}: 발행일 미기재`);
     if (f.kind === '증권사·기관 추정' && f.vs === '검증' && /전망|목표|예상/.test(f.text) && !/전망/.test(f.kindNote || '')) W('FACT_FWD', `${t}: 전망성 문장은 kindNote로 전망임을 밝혀야 함`);
   });
+  const lg = new Set(); ENT.list.forEach((e) => (e.units || []).forEach((u) => { if (u.legalVerified && u.legal) lg.add(u.legal); }));
+  I('RECORDS', `고유 기업 레코드 ${ENT.list.length}건 ≠ 법인 수. 법인명이 확인된 사업 단위 법인 ${lg.size}곳(${[...lg].join(', ')}). 전체 법인 수는 집계하지 않음`);
+  if (!ENT.recordNote || !/법인 수가 아닙니다/.test(ENT.recordNote)) E('ENT_NOTE', 'recordNote(레코드 수≠법인 수 설명)가 없음');
+  const fs = require('fs'), path = require('path');
+  const doc = fs.readFileSync(path.join(__dirname, '..', 'silicon-library', 'docs', 'pr1-data-quality.md'), 'utf8');
+  ENT.chain.forEach((k) => { if (!doc.includes(`**${k}**: ${ENT.chainDesc[k]}`)) E('DOC_SYNC', `문서의 공급망 구분 정의가 UI와 다름: ${k}`); });
+  if (!doc.includes(ENT.recordNote)) E('DOC_SYNC', '문서의 레코드 수 설명이 UI(recordNote)와 다름');
   const nVer = F.filter((f) => f.vs === '검증').length;
   I('FACT_COUNT', `사실 ${F.length}건 (검증 ${nVer} / 부분 검증 ${F.filter((f) => f.vs === '부분 검증').length} / 미검증 ${F.filter((f) => f.vs === '미검증').length})`);
 }

@@ -78,6 +78,24 @@ const ok = (name, cond, extra) => { results.push([name, !!cond, extra || '']); c
   ok('삼화전기: 사실 단위 근거 표', /사실 단위 근거/.test(t) && /f010/.test(t) && /기업 발표 또는 주장/.test(t) && /확인 불가/.test(t));
   ok('참고자료: A등급 의미 설명', /모든 수치와 미래 전망이 검증됐다는 뜻이 아닙니다/.test(t));
 
+  /* PR1 마무리: 집계 기준·공급망·원문 대조 표시 */
+  await page.goto(URL);
+  ok('레코드 수가 법인 수가 아니라는 설명', /법인 수가 아닙니다/.test(await text()));
+  ok('신뢰도가 원문 대조가 아니라는 안내와 대조 건수', /문장별 원문 대조는 15건\(3개 기업\)뿐/.test(await text()));
+  for (const nm of ['EDWARDS', '세메스', '쿠리타한수', '에어프로덕츠코리아']) {
+    const k = +(await page.evaluate((nm) => [...document.querySelectorAll('.spine')].find((e) => e.getAttribute('aria-label').startsWith(nm + ',')).dataset.i, nm));
+    await page.goto(URL + '#b' + k); const tt = await text();
+    ok(nm + ': 공급망 구분 검증 필요(근거 부족)', /공급망 구분\s*검증 필요/.test(tt) && /근거 부족/.test(tt), tt.slice(0, 0));
+    await page.goto(URL);
+  }
+  await page.goto(URL + '#b' + li); t = await text();
+  ok('린데: 원문 대조 건수 표시', /원문 대조\s*6건 등록/.test(t));
+  ok('린데: 공급망 구분 정의 포함', /공급망 구분 정의/.test(t));
+  await page.click('.tabs button:nth-child(8)'); t = await text();
+  ok('린데: 사실 표에 범위(법인·그룹) 구분', /법인 \(linde-korea\)/.test(t) && /법인 \(linde-amt-chonan\)/.test(t) && /그룹/.test(t));
+  await page.goto(URL + '#b0'); t = await text();
+  ok('대조하지 않은 기업은 "대조한 사실 없음" 표시', /대조한 사실 없음/.test(t));
+
   /* 즐겨찾기 */
   await page.goto(URL);
   await page.evaluate(() => localStorage.setItem('semiPartners:fav:v1', JSON.stringify(['삼화전기', '린데', '에이텍솔루션 (세정)', '덕산테코피아'])));
