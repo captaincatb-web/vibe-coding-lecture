@@ -1,0 +1,1790 @@
+{
+ "version": 1,
+ "asof": "2026-11-02",
+ "note": "출처 연결 문장은 인용한 자료의 핵심 주장만 근거로 하며, 부연 설명에는 편집자의 일반 원리 서술이 섞여 있을 수 있음",
+ "legacyRead": {
+  "at2": "PR1에서 열람",
+  "lk_amt": "PR1에서 열람"
+ },
+ "sources": {
+  "d_ald1": {
+   "t": "Cremers·Puurunen·Dendooven, Conformality in atomic layer deposition: Current status overview of analysis and modelling (Applied Physics Reviews 6, 021302)",
+   "u": "https://pubs.aip.org/aip/apr/article/6/2/021302/570185/Conformality-in-atomic-layer-deposition-Current",
+   "pub": "2019-04-04",
+   "type": "학술논문(리뷰)",
+   "read": "검색 발췌 열람",
+   "readAt": "2026-11-02",
+   "note": ""
+  },
+  "d_ald2": {
+   "t": "Johnson·Hultqvist·Bent, A brief review of atomic layer deposition: from fundamentals to applications (Materials Today 17(5))",
+   "u": "https://www.sciencedirect.com/science/article/pii/S1369702114001436",
+   "pub": "2014-06",
+   "type": "학술논문(리뷰)",
+   "read": "검색 발췌 열람",
+   "readAt": "2026-11-02",
+   "note": ""
+  },
+  "d_ald3": {
+   "t": "Parsons Research Group(NC State), Basics of ALD",
+   "u": "https://thinfilm.wordpress.ncsu.edu/research/basics-of-ald",
+   "pub": "2015-11-16",
+   "type": "대학 연구실 교육자료",
+   "read": "검색 발췌 열람",
+   "readAt": "2026-11-02",
+   "note": ""
+  },
+  "d_ald4": {
+   "t": "EPFL CMi, Atomic Layer Deposition Process Development",
+   "u": "https://www.epfl.ch/research/facilities/cmi/wp-content/uploads/2020/07/ALD-Process-Development.pdf",
+   "pub": "2019-02-15",
+   "type": "대학 시설 기술문서",
+   "read": "검색 발췌 열람",
+   "readAt": "2026-11-02",
+   "note": ""
+  },
+  "d_ald5": {
+   "t": "Kim 외, Enhancement of Conformality of Silicon Nitride Thin Films by ABC-Type Atomic Layer Deposition (Advanced Electronic Materials)",
+   "u": "https://advanced.onlinelibrary.wiley.com/doi/10.1002/aelm.202300722",
+   "pub": "2024-03",
+   "type": "학술논문",
+   "read": "검색 발췌 열람",
+   "readAt": "2026-11-02",
+   "note": ""
+  },
+  "d_ald6": {
+   "t": "Aalto University 학위논문, ALD process development with an organometallic hafnium oxide precursor in a batch reactor",
+   "u": "https://aaltodoc.aalto.fi/bitstreams/c1314b34-64f2-4875-9d28-28e5db80779d/download",
+   "pub": "2025-07-30",
+   "type": "학위논문",
+   "read": "검색 발췌 열람",
+   "readAt": "2026-11-02",
+   "note": "학위논문이라 동료 심사를 거친 자료가 아님"
+  },
+  "d_ald7": {
+   "t": "Mattinen 외, Atomic Layer Deposition of Crystalline MoS2 Thin Films: New Molybdenum Precursor for Low-Temperature Film Growth (Advanced Materials Interfaces)",
+   "u": "https://advanced.onlinelibrary.wiley.com/doi/10.1002/admi.201700123",
+   "pub": "2017-09",
+   "type": "학술논문",
+   "read": "검색 발췌 열람",
+   "readAt": "2026-11-02",
+   "note": ""
+  },
+  "d_ald8": {
+   "t": "3D system integration on 300 mm wafer level: High-aspect-ratio TSVs with ruthenium seed layer by thermal ALD and subsequent copper electroplating (Microelectronic Engineering)",
+   "u": "https://www.sciencedirect.com/science/article/abs/pii/S0167931718304945",
+   "pub": "2019-01-15",
+   "type": "학술논문",
+   "read": "검색 발췌 열람",
+   "readAt": "2026-11-02",
+   "note": ""
+  },
+  "d_et1": {
+   "t": "Fischer 외, Thermal atomic layer etching: A review (J. Vac. Sci. Technol. A 39(3))",
+   "u": "https://www.colorado.edu/lab/georgegroup/sites/default/files/attached-files/466.pdf",
+   "pub": "2021-03-11",
+   "type": "학술논문(리뷰)",
+   "read": "검색 발췌 열람",
+   "readAt": "2026-11-02",
+   "note": "저자 소속에 장비사(Lam Research)가 포함됨"
+  },
+  "d_et2": {
+   "t": "Atomic Layer Etching for Extreme Manufacturing: Pushing the Limits of Atomic Scale Precision (Nanomanufacturing and Metrology)",
+   "u": "https://link.springer.com/article/10.1007/s41871-026-00297-w",
+   "pub": "2026-03-23",
+   "type": "학술논문(리뷰)",
+   "read": "검색 발췌 열람",
+   "readAt": "2026-11-02",
+   "note": "수치는 리뷰가 인용한 보고값이며 원 실험을 확인하지 않음"
+  },
+  "d_et3": {
+   "t": "Vanraes 외, Assessing neutral transport mechanisms in aspect ratio dependent etching by means of experiments and multiscale plasma modeling (Plasma Sources Sci. Technol.)",
+   "u": "https://repository.uantwerpen.be/link/irua/197760",
+   "pub": "2023-07-26",
+   "type": "학술논문",
+   "read": "검색 발췌 열람",
+   "readAt": "2026-11-02",
+   "note": ""
+  },
+  "d_et4": {
+   "t": "High aspect ratio SiO2/SiN (ON) stacked layer etching using C3HF5, C4H2F6, and C4H4F6 (Japanese Journal of Applied Physics)",
+   "u": "https://iopscience.iop.org/article/10.35848/1347-4065/ad4f95/pdf",
+   "pub": "2024-06-20",
+   "type": "학술논문",
+   "read": "검색 발췌 열람",
+   "readAt": "2026-11-02",
+   "note": ""
+  },
+  "d_cl1": {
+   "t": "The Electrochemical Society, Cleaning Technology in Semiconductor Device Manufacturing III (Proceedings Vol. 94-07)",
+   "u": "https://www.electrochem.org/semiconductor_cleaning/pv_94_07.pdf",
+   "pub": "1994",
+   "type": "학회 논문집",
+   "read": "검색 발췌 열람",
+   "readAt": "2026-11-02",
+   "note": "오래된 자료라 현재 양산 공정과 조건이 다를 수 있음"
+  },
+  "d_cl2": {
+   "t": "The Electrochemical Society, Cleaning Technology in Semiconductor Device Manufacturing VII (Proceedings Vol. 2001-26)",
+   "u": "https://www.electrochem.org/semiconductor_cleaning/pv_2001_26.pdf",
+   "pub": "2001",
+   "type": "학회 논문집",
+   "read": "검색 발췌 열람",
+   "readAt": "2026-11-02",
+   "note": "오래된 자료라 현재 양산 공정과 조건이 다를 수 있음"
+  },
+  "d_cl3": {
+   "t": "Pall Corporation, Dilute HF Aqueous Cleaning Using Asymmetric Polyarylsulfone Membrane Filtration",
+   "u": "https://www.pall.com/content/dam/pall/microelectronics/literature-library/non-gated/Dilute%20HF%20Aqueous%20Cleaning%20Using%20Asymmetric%20Polyarylsulfone%20Membrane%20Filtration.pdf",
+   "pub": "2009-11-25",
+   "type": "기업 기술문서",
+   "read": "검색 발췌 열람",
+   "readAt": "2026-11-02",
+   "note": "필터 공급사 자료로 제품 홍보 목적이 섞여 있음"
+  },
+  "d_cm1": {
+   "t": "Seo, A review on chemical and mechanical phenomena at the wafer interface during chemical mechanical planarization (J. Mater. Res.)",
+   "u": "https://link.springer.com/article/10.1557/s43578-020-00060-x",
+   "pub": "2020-09-14",
+   "type": "학술논문(리뷰)",
+   "read": "검색 발췌 열람",
+   "readAt": "2026-11-02",
+   "note": ""
+  },
+  "d_cm2": {
+   "t": "Scratch formation and its mechanism in chemical mechanical planarization (CMP) (Friction 1(4))",
+   "u": "https://link.springer.com/content/pdf/10.1007/s40544-013-0026-y.pdf",
+   "pub": "2013-12",
+   "type": "학술논문(리뷰)",
+   "read": "검색 발췌 열람",
+   "readAt": "2026-11-02",
+   "note": ""
+  },
+  "d_cm3": {
+   "t": "Lai, Dishing and Overpolishing in the Copper Chemical Mechanical Polishing Process (MIT 학위논문 5장)",
+   "u": "https://web.mit.edu/cmp/publications/thesis/jiunyulai/ch5.pdf",
+   "pub": "2001-02-22",
+   "type": "학위논문",
+   "read": "검색 발췌 열람",
+   "readAt": "2026-11-02",
+   "note": ""
+  },
+  "d_cm4": {
+   "t": "A Review of the Cu Chemical Mechanical Planarization Process in Hybrid Bonding Technology (J. Electron. Packag. 147(3))",
+   "u": "https://asmedigitalcollection.asme.org/electronicpackaging/article/147/3/030801/1218733/A-Review-of-the-Cu-Chemical-Mechanical",
+   "pub": "2025-06-27",
+   "type": "학술논문(리뷰)",
+   "read": "검색 발췌 열람",
+   "readAt": "2026-11-02",
+   "note": "목표값은 논문이 인용한 보고값"
+  },
+  "d_cm5": {
+   "t": "Effect of Controlling Abrasive Size in Slurry for Tungsten Contact CMP Process (ECS J. Solid State Sci. Technol. 8(5))",
+   "u": "https://iopscience.iop.org/article/10.1149/2.0311905jss",
+   "pub": "2019-06-05",
+   "type": "학술논문",
+   "read": "검색 발췌 열람",
+   "readAt": "2026-11-02",
+   "note": ""
+  },
+  "d_cm6": {
+   "t": "GLOBALFOUNDRIES, Three Complementary Strategies for Micro-scratch Reduction during CMP (AVS CMP Users Group 발표)",
+   "u": "https://nccavs-usergroups.avs.org/wp-content/uploads/CMPUG2016/CMP2016_4Lee_microscratch_stratagies.pdf",
+   "pub": "2016-03-31",
+   "type": "기업 학회 발표",
+   "read": "검색 발췌 열람",
+   "readAt": "2026-11-02",
+   "note": "동료 심사 전 발표 자료"
+  },
+  "d_cm7": {
+   "t": "Gamagedara 외, Mechanisms of Chemically Promoted Material Removal Examined for Molybdenum and Copper CMP in Weakly Alkaline Citrate-Based Slurries (Materials 17(19))",
+   "u": "https://www.mdpi.com/1996-1944/17/19/4905",
+   "pub": "2024-10-07",
+   "type": "학술논문",
+   "read": "검색 발췌 열람",
+   "readAt": "2026-11-02",
+   "note": ""
+  },
+  "d_hb1": {
+   "t": "JEDEC, JESD235D High Bandwidth Memory DRAM (HBM1, HBM2)",
+   "u": "https://www.jedec.org/sites/default/files/docs/JESD235D.pdf",
+   "pub": "2021-02",
+   "type": "표준(JEDEC)",
+   "read": "검색 발췌 열람",
+   "readAt": "2026-11-02",
+   "note": "HBM3 이후 표준 원문은 열람하지 못함"
+  },
+  "d_hb2": {
+   "t": "JEDEC, JESD270-4 HBM4 표준 발표 보도자료",
+   "u": "https://www.jedec.org/news/pressreleases/jedec%C2%AE-and-industry-leaders-collaborate-release-jesd270-4-hbm4-standard-advancing",
+   "pub": "2025-04-16",
+   "type": "표준 기관 보도자료",
+   "read": "검색 발췌 열람",
+   "readAt": "2026-11-02",
+   "note": "표준 본문이 아니라 보도자료 요약"
+  },
+  "d_hb3": {
+   "t": "SK hynix, Advanced Packaging Technologies in Memory Applications for Future Generation Platforms (IEDM 2023)",
+   "u": "https://iedm23.mapyourshow.com/mys_shared/iedm23/handouts/15-6_Tue_14482.pdf",
+   "pub": "2023",
+   "type": "기업 학회 논문",
+   "read": "검색 발췌 열람",
+   "readAt": "2026-11-02",
+   "note": "회사 자체 방식(MR-MUF)에 대한 회사 발표이며 제3자 검증이 아님"
+  },
+  "d_hb4": {
+   "t": "Thermal Issues Related to Hybrid Bonding of 3D-Stacked High Bandwidth Memory: A Comprehensive Review (Electronics 14(13))",
+   "u": "https://www.mdpi.com/2079-9292/14/13/2682",
+   "pub": "2025-07",
+   "type": "학술논문(리뷰)",
+   "read": "검색 발췌 열람",
+   "readAt": "2026-11-02",
+   "note": "시뮬레이션 결과가 포함됨"
+  },
+  "d_hb5": {
+   "t": "Samsung, A 1.2V 64Gb 341GB/s HBM2 stacked DRAM with spiral point-to-point TSV structure and improved bank group data control (ISSCC 2018)",
+   "u": "https://ptacts.uspto.gov/ptacts/public-informations/petitions/1550170/download-documents?artifactId=DLGDQKKEe6N85dmlDZoTlEV5Pyh63bqdtkGoD2bFJ3THml-V7iVEL1Q",
+   "pub": "2018-03-06",
+   "type": "기업 학회 논문",
+   "read": "검색 발췌 열람",
+   "readAt": "2026-11-02",
+   "note": "특허 심판 증거 사본으로 열람"
+  },
+  "d_hb6": {
+   "t": "Thermal Characterization of HBMs Integrated via Hybrid Bonding (IEEE ECTC 2025) 초록",
+   "u": "https://ieeexplore.ieee.org/iel8/11037936/11037952/11038390.pdf",
+   "pub": "2025-05-30",
+   "type": "학회 논문(초록)",
+   "read": "검색 발췌 열람",
+   "readAt": "2026-11-02",
+   "note": "본문은 구독이 필요해 초록만 확인"
+  },
+  "d_hb7": {
+   "t": "Nomad Semi, Deep Dive on HBM",
+   "u": "https://www.nomadsemi.com/p/deep-dive-on-hbm",
+   "pub": "2025-06-03",
+   "type": "제3자 분석 매체",
+   "read": "검색 발췌 열람",
+   "readAt": "2026-11-02",
+   "note": "정량 주장은 원 출처가 확인되지 않아 근거로 쓰지 않음"
+  },
+  "d_hb8": {
+   "t": "The Elec, Samsung considers applying MUF to server DRAM",
+   "u": "https://www.thelec.net/news/articleView.html?idxno=4746",
+   "pub": "2024-03-03",
+   "type": "언론 보도(익명 소식통)",
+   "read": "검색 발췌 열람",
+   "readAt": "2026-11-02",
+   "note": "익명 소식통 보도이며 회사 확인이 없음"
+  },
+  "d_ts1": {
+   "t": "IEEE EPS, Heterogeneous Integration Roadmap 2024, Chapter 17: Test Technology",
+   "u": "https://eps.ieee.org/wp-content/uploads/2025/11/HIR_2024_ch17_Test_Technology.pdf",
+   "pub": "2024-11-25",
+   "type": "로드맵(IEEE EPS)",
+   "read": "검색 발췌 열람",
+   "readAt": "2026-11-02",
+   "note": ""
+  },
+  "d_ts2": {
+   "t": "IEEE EPS Test, Heterogeneous Integrated Product Testability Best-Known Methods",
+   "u": "https://cmte.ieee.org/eps-test/wp-content/uploads/sites/132/2022/01/IEEE_EPS_Test_Het_Int_Product_Testability_BKM_Final_v1_0-1-14-22-1.pdf",
+   "pub": "2022-01-14",
+   "type": "기술 가이드(IEEE EPS)",
+   "read": "검색 발췌 열람",
+   "readAt": "2026-11-02",
+   "note": ""
+  },
+  "d_ts3": {
+   "t": "US 7,750,651 B2, Wafer level test probe card (배경 설명)",
+   "u": "https://image-ppubs.uspto.gov/dirsearch-public/print/downloadPdf/7750651",
+   "pub": "2010-07-06",
+   "type": "특허",
+   "read": "검색 발췌 열람",
+   "readAt": "2026-11-02",
+   "note": "특허 배경 설명은 출원인의 서술이며 중립적 검증이 아님"
+  },
+  "d_ts4": {
+   "t": "Probe Card Technologies in Advanced Semiconductor Testing for Wide Band Gap Devices",
+   "u": "https://www.mdpi.com/2674-0729/5/3/18",
+   "pub": "2026-07-09",
+   "type": "학술논문(리뷰)",
+   "read": "검색 발췌 열람",
+   "readAt": "2026-11-02",
+   "note": "광대역 갭 전력반도체 맥락의 분류와 수치"
+  },
+  "d_ts5": {
+   "t": "US 8,832,933 B2, Method of fabricating a semiconductor test probe head (배경 설명)",
+   "u": "https://image-ppubs.uspto.gov/dirsearch-public/print/downloadPdf/8832933",
+   "pub": "2014-09-16",
+   "type": "특허",
+   "read": "검색 발췌 열람",
+   "readAt": "2026-11-02",
+   "note": "특허 배경 설명은 출원인의 서술이며 중립적 검증이 아님"
+  },
+  "d_hb9": {
+   "t": "A Study on the Effectiveness of Underfills in the High Bandwidth Memory with TSV (IMAPS)",
+   "u": "https://imapsource.org/article/57356-a-study-on-the-effectiveness-of-underfill-in-the-high-bandwidth-memory-with-tsv.pdf",
+   "pub": "2013-09-19",
+   "type": "학회 논문",
+   "read": "검색 발췌 열람",
+   "readAt": "2026-11-02",
+   "note": "2013년 초기 HBM 구조 기준"
+  }
+ },
+ "areas": {
+  "dep": {
+   "n": "증착: ALD·CVD·PVD",
+   "procs": [
+    "dep"
+   ],
+   "tx": [
+    "pre",
+    "gasDep",
+    "target"
+   ],
+   "intro": "ALD의 자기제한 반응을 중심으로 CVD·PVD와의 차이를 비교합니다.",
+   "sections": [
+    {
+     "id": "concept",
+     "t": "기본 개념",
+     "items": [
+      {
+       "x": "증착은 웨이퍼 위에 절연막·도체막을 원하는 두께와 조성으로 쌓는 공정입니다. 칩은 얇은 막을 겹쳐 만들기 때문에 거의 모든 층이 증착을 거칩니다.",
+       "lv": "입문"
+      },
+      {
+       "x": "방식은 크게 셋입니다. PVD는 고체 타겟에서 원자를 물리적으로 떼어 쌓고, CVD는 기체 반응물이 표면 근처에서 반응해 막이 되며, ALD는 그 반응을 두 반쪽으로 쪼개 번갈아 넣습니다.",
+       "lv": "입문"
+      },
+      {
+       "x": "ALD는 CVD를 발전시킨 방식으로 설명되며, 기체 전구체를 번갈아 펄스로 넣는 자기제한(self-limiting) 표면 반응에 기반합니다.",
+       "lv": "입문",
+       "s": [
+        "d_ald7"
+       ]
+      },
+      {
+       "x": "소자가 작아지면서 종횡비가 큰 3차원 구조가 늘었고, ALD는 자기제한 표면 반응 덕분에 이런 구조에 얇은 막을 입히는 데 가장 적합한 방식의 하나로 꼽힙니다.",
+       "lv": "실무",
+       "s": [
+        "d_ald1"
+       ]
+      },
+      {
+       "x": "방식 선택은 '얼마나 깊고 좁은 구조를 덮어야 하는가'와 '얼마나 빨리 쌓아야 하는가'의 교환입니다. 일반적으로 ALD는 균일도에 강하고 느리며, PVD·CVD는 빠르지만 복잡한 형상에서 덮이는 정도가 떨어집니다.",
+       "lv": "심화"
+      }
+     ]
+    },
+    {
+     "id": "mechanism",
+     "t": "동작 원리",
+     "items": [
+      {
+       "x": "ALD 한 사이클은 전구체 노출 → 퍼지 → 반응가스 노출 → 퍼지입니다. 첫 반쪽 반응에서 전구체는 완전히 분해되지 않은 채 표면에 결합하고, 표면 종단이 바뀌어 다음 반응물과 반응할 준비가 됩니다.",
+       "lv": "입문",
+       "s": [
+        "d_ald3"
+       ]
+      },
+      {
+       "x": "자기제한이란 표면의 반응 자리가 소진되면 반응물을 더 넣어도 더 쌓이지 않는 성질입니다. 이를 확인하려면 도즈(주입량)와 퍼지 시간을 바꿔도 사이클당 성장량(GPC)이 변하지 않는 포화 구간이 있는지 봅니다.",
+       "lv": "실무",
+       "s": [
+        "d_ald4"
+       ]
+      },
+      {
+       "x": "정정: '한 사이클에 원자 1층'은 단순화된 표현입니다. 알루미나 표면에서 TMA와 반응하는 OH 자리는 nm²당 7~9개인데 사이클당 증착되는 Al 원자는 nm²당 약 4.5개로, GPC를 한 단분자층으로 보는 것은 과도한 단순화라고 리뷰 저자들이 지적합니다. 서재 '전구체' 해설의 '사이클당 원자 1층(약 0.1nm)' 표현도 이런 단순화입니다.",
+       "lv": "심화",
+       "s": [
+        "d_ald1"
+       ]
+      },
+      {
+       "x": "CVD는 기체 공급량(flux)이 성장 속도를 좌우하고 ALD는 표면 반응이 좌우합니다. 그래서 ALD는 복잡한 3차원 형상에서도 두께가 고르게 나옵니다.",
+       "lv": "실무",
+       "s": [
+        "d_ald6"
+       ]
+      },
+      {
+       "x": "PVD는 원자가 직선으로 날아가는(line-of-sight) 공정이어서 고종횡비 구조에서 피복 균일도를 맞추기 어렵습니다.",
+       "lv": "실무",
+       "s": [
+        "d_ald6"
+       ]
+      },
+      {
+       "x": "ALD는 열 ALD, 오존 기반 ALD, 플라즈마 강화 ALD로 나뉘고, 방식에 따라 균일 피복에 영향이 다릅니다. 플라즈마 등 에너지를 더하는 ALD는 반응의 열역학을 바꿔 다른 반응물을 쓸 수 있게 합니다.",
+       "lv": "심화",
+       "s": [
+        "d_ald1",
+        "d_ald3"
+       ]
+      },
+      {
+       "x": "공정 사이클에 제3의 반응물을 추가한 ABC형 ALD는 증착 화학, 선택성, 성장 속도를 조절할 수 있습니다. 억제제를 먼저 올려 특정 표면의 성장만 막는 영역 선택적 ALD(AS-ALD)가 대표 예입니다.",
+       "lv": "심화",
+       "s": [
+        "d_ald5"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "materials",
+     "t": "핵심 소재·부품·장비",
+     "items": [
+      {
+       "x": "전구체는 금속·실리콘을 표면까지 실어 나르는 기체 분자이고, 공반응물은 산소원이나 환원제 역할을 합니다. 전구체와 공반응물이 시간을 나눠 들어가고 사이에 비활성 가스로 퍼지합니다.",
+       "lv": "입문",
+       "s": [
+        "d_ald3"
+       ]
+      },
+      {
+       "x": "전구체의 요건: 표면 반응 자리와 반응해야 하고, 반응 뒤에 다음 반쪽 반응이 쓸 수 있는 반응 자리를 남겨야 하며, 휘발성·열안정성·반응성이 모두 충분해야 합니다.",
+       "lv": "실무",
+       "s": [
+        "d_ald4"
+       ]
+      },
+      {
+       "x": "반응성과 열안정성은 서로 교환 관계입니다. 열안정성이 높고 반응성이 낮은 전구체를 쓰면 더 반응성 높은 공반응물이 필요해지고, 막 순도와 전구체 가격 사이에서도 사례별 절충이 필요합니다.",
+       "lv": "심화",
+       "s": [
+        "d_ald6"
+       ]
+      },
+      {
+       "x": "전구체가 비쌀수록 사용 효율이 중요해져, 반응기 부피를 줄이고 과다 주입을 피하는 설계가 쓰입니다.",
+       "lv": "실무",
+       "s": [
+        "d_ald4"
+       ]
+      },
+      {
+       "x": "전구체 열안정성은 새 재료 개발의 제약이 됩니다. MoS₂ ALD 연구에서는 기존 Mo 전구체의 열안정성 한계가 결정성 높은 막을 얻는 데 걸림돌이었고 더 열안정적인 전구체가 필요하다고 결론냈습니다.",
+       "lv": "심화",
+       "s": [
+        "d_ald7"
+       ]
+      },
+      {
+       "x": "장비와 부품: ALD·CVD·PECVD 반응기(매엽식·배치식), PVD 스퍼터, 가스 공급계(MFC·밸브·기화기), 히터·서셉터, 샤워헤드, 진공펌프. PVD의 원료는 고순도 금속 타겟입니다.",
+       "lv": "실무"
+      }
+     ]
+    },
+    {
+     "id": "params",
+     "t": "주요 공정 변수",
+     "items": [
+      {
+       "x": "ALD에서 먼저 보는 변수는 전구체 도즈, 퍼지 시간, 기판 온도, 압력, 공반응물 종류(열/플라즈마)입니다. 도즈와 퍼지를 늘려도 GPC가 변하지 않는 구간이 공정 창입니다.",
+       "lv": "실무",
+       "s": [
+        "d_ald4"
+       ]
+      },
+      {
+       "x": "ALD는 비교적 낮은 온도에서 고품질 막을 얻을 수 있는 경우가 많고, 일반적으로 100~400℃ 범위로 보고됩니다. 같은 막이라도 CVD보다 낮은 온도에서 반응이 진행되는 경우가 많습니다.",
+       "lv": "실무",
+       "s": [
+        "d_ald7",
+        "d_ald3"
+       ]
+      },
+      {
+       "x": "GPC는 사이클당 두께(nm 또는 Å)로 표시하며, 두께는 GPC × 사이클 수로 정해져 옹스트롬 수준의 두께 제어가 가능합니다.",
+       "lv": "실무",
+       "s": [
+        "d_ald6",
+        "d_ald2"
+       ]
+      },
+      {
+       "x": "Conformality(균일 피복)는 구조 안쪽 두께와 바깥쪽 두께의 비입니다. step coverage는 측벽 중간 두께 대 상단 두께의 비(%)로 정의하며 PVD·PECVD에서 주로 쓰는 말입니다. 종횡비 5:1 정도는 ALD가 보통 100% 덮으므로 ALD 평가에는 더 까다로운 측정 구조가 필요합니다.",
+       "lv": "심화",
+       "s": [
+        "d_ald1"
+       ]
+      },
+      {
+       "x": "증착이 진행되며 구조의 유효 종횡비가 커져 전구체 확산이 더 막히므로, 사이클 수가 늘수록 깊은 곳의 포화가 어려워집니다.",
+       "lv": "심화",
+       "s": [
+        "d_ald1"
+       ]
+      },
+      {
+       "x": "PVD는 파워·압력·타겟-기판 거리가, CVD는 온도·압력·가스 유량·(PECVD의 경우) 플라즈마 파워가 핵심 관리 항목입니다. 구체적 수치는 막과 장비마다 달라 일반화하지 않습니다.",
+       "lv": "실무"
+      }
+     ]
+    },
+    {
+     "id": "defects",
+     "t": "품질·불량 메커니즘",
+     "items": [
+      {
+       "x": "고종횡비 기판에서는 깊이 들어갈수록 증착 속도가 줄어 이음매(seam)나 빈 공간(void)이 생길 수 있습니다. 원인은 구조 안쪽으로 들어가는 전구체 분자의 확산 제한, 또는 자기제한이 아닌 기생 CVD 반응입니다.",
+       "lv": "심화",
+       "s": [
+        "d_ald5"
+       ]
+      },
+      {
+       "x": "ALD 공정 창 안에서도 식각 반응이 GPC를 낮출 수 있어서, 성장은 늘 일정하다고 가정하면 안 됩니다.",
+       "lv": "심화",
+       "s": [
+        "d_ald6"
+       ]
+      },
+      {
+       "x": "전구체 리간드가 덜 빠지면 탄소·할로겐 같은 불순물이 막에 남습니다. 막 조성은 XPS, RBS 같은 분석으로 확인합니다.",
+       "lv": "실무",
+       "s": [
+        "d_ald4"
+       ]
+      },
+      {
+       "x": "PVD는 직진성 때문에 구멍 입구에 막이 먼저 쌓여 안쪽이 비는 현상(오버행)이 대표 불량입니다.",
+       "lv": "실무",
+       "s": [
+        "d_ald6"
+       ]
+      },
+      {
+       "x": "TSV처럼 종횡비 10 이상인 구조에서는 PVD·CVD가 한계에 이르고 일정 종횡비를 넘으면 ALD만이 고품질 피복을 줄 수 있다고 보고됩니다. 한 연구는 열 ALD로 TaN 계열 배리어 약 6nm와 Ru 시드 약 9nm를 올려 종횡비 10~12의 TSV를 도금했습니다.",
+       "lv": "심화",
+       "s": [
+        "d_ald8"
+       ]
+      },
+      {
+       "x": "공통 불량: 막 응력으로 인한 웨이퍼 휨, 챔버 벽·샤워헤드에서 떨어진 막 조각에 의한 파티클. 이를 줄이는 방법은 챔버 세정 주기와 부품 관리에 달려 있습니다.",
+       "lv": "실무"
+      }
+     ]
+    },
+    {
+     "id": "trend",
+     "t": "기술 발전 방향",
+     "items": [
+      {
+       "x": "영역 선택적 증착(AS-ALD)은 표면 성질 차이로 특정 영역에서만 막이 자라게 해, 패터닝 단계를 줄이려는 시도입니다. 억제제 단계(A)를 두는 ABC형 사이클이 한 방법으로 연구되고 있습니다.",
+       "lv": "심화",
+       "s": [
+        "d_ald5"
+       ]
+      },
+      {
+       "x": "깊은 구조에서 균일도를 높이기 위해 사이클 구성(추가 반응물 단계)을 조절하는 연구가 진행됩니다. 한 연구는 SiN을 ABC형 ALD로 올려 고종횡비 구조에서의 피복을 개선하는 방법을 제안했습니다.",
+       "lv": "심화",
+       "s": [
+        "d_ald5"
+       ]
+      },
+      {
+       "x": "서재의 전구체 품목군 해설은 몰리브덴(Mo)을 3D NAND 워드라인에서 텅스텐을 대체하기 시작한 신규 금속 전구체로 소개합니다. 이 내용은 기존 해설을 옮긴 것이며 이번 PR에서 원문을 다시 대조하지 않았습니다.",
+       "lv": "산업",
+       "c": "불확실"
+      },
+      {
+       "x": "ALD는 CVD보다 낮은 온도에서 가능한 경우가 많아, 온도에 민감한 재료·구조와의 집적에 유리하다는 점이 장점으로 꼽힙니다.",
+       "lv": "실무",
+       "s": [
+        "d_ald3"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "industry",
+     "t": "산업·기업 연계",
+     "items": [
+      {
+       "x": "증착 공급망은 증착 장비, 소재(전구체·특수가스·타겟), 부품(히터·샤워헤드·실·밸브)으로 나뉩니다. 소재·부품은 공정마다 승인(퀄) 절차를 거쳐 들어갑니다.",
+       "lv": "산업"
+      },
+      {
+       "x": "서재의 덕산테코피아 책은 HCDS를 합성부터 정제까지 일괄 국산화한 실리콘 전구체로, 저온 SiN·SiO₂·SiON 증착에 쓰이고 DRAM과 NAND에 적용된다고 회사 자료를 인용해 소개합니다.",
+       "lv": "산업",
+       "s": [
+        "dst"
+       ]
+      },
+      {
+       "x": "서재의 레이크머티리얼즈 책은 반도체 High-k 전구체 양산을 천안 사업장에서 수행한다고 회사 자료를 인용해 소개합니다. 'TMA 글로벌 4개 공급사 중 하나'는 회사 주장입니다.",
+       "lv": "산업",
+       "s": [
+        "lake"
+       ]
+      },
+      {
+       "x": "스퍼터링 타겟은 서재에서 린데와 Solstice 책이 다룹니다. 린데 책의 천안 타겟 사업장은 Linde AMT Chonan Co., Ltd.이며 린데코리아와는 법인명이 다르다는 점을 공식 사이트에서 확인했습니다.",
+       "lv": "산업",
+       "s": [
+        "lk_amt"
+       ]
+      },
+      {
+       "x": "고객사, 공급 관계, 시장점유율은 확인된 자료가 없어 서술하지 않습니다.",
+       "lv": "산업",
+       "c": "불확실"
+      }
+     ]
+    }
+   ],
+   "unc": [
+    {
+     "x": "영역 선택적 증착과 Mo 전구체의 양산 적용 시점은 이번에 확인하지 못했습니다.",
+     "lv": "심화",
+     "c": "불확실"
+    },
+    {
+     "x": "PVD·CVD의 정량 비교(속도·균일도)는 이번 조사에서 1차 출처를 확보하지 못해 정성 설명만 했습니다.",
+     "lv": "심화",
+     "c": "불확실"
+    },
+    {
+     "x": "PE-ALD와 열 ALD의 구체 장비·소재 사양은 다루지 않았습니다.",
+     "lv": "심화",
+     "c": "불확실"
+    }
+   ]
+  },
+  "etch": {
+   "n": "식각 및 세정",
+   "procs": [
+    "etch",
+    "clean"
+   ],
+   "tx": [
+    "gasEtch",
+    "etch",
+    "sisic",
+    "quartz",
+    "oring",
+    "upw",
+    "clean"
+   ],
+   "intro": "식각의 선택비·이방성·ARDE와 세정의 입자·금속 제거를 묶어 설명합니다.",
+   "sections": [
+    {
+     "id": "concept",
+     "t": "기본 개념",
+     "items": [
+      {
+       "x": "식각은 마스크가 덮지 않은 막을 선택적으로 제거해 패턴을 실제 구조로 옮기는 공정이고, 세정은 공정 사이사이 입자·금속·유기물·자연산화막을 제거해 다음 공정의 바탕을 만드는 공정입니다.",
+       "lv": "입문"
+      },
+      {
+       "x": "식각은 플라즈마를 쓰는 건식과 약액을 쓰는 습식으로 나뉩니다. 건식은 방향성(이방성)을 만들 수 있고 습식은 모든 방향으로 녹이는(등방성) 대신 선택비가 높은 경우가 많습니다.",
+       "lv": "입문"
+      },
+      {
+       "x": "이방성은 수평 방향 식각량이 수직 방향 식각량에 비해 얼마나 작은지로 정의합니다. 한 리뷰는 사이클당 식각량(EPC)으로 A = (EPCv − EPCh) / EPCv 라고 씁니다. 1에 가까울수록 수직으로만 깎입니다.",
+       "lv": "실무",
+       "s": [
+        "d_et1"
+       ]
+      },
+      {
+       "x": "최첨단 고종횡비 플라즈마 식각은 목표 종횡비가 100에 가까워지고, 이를 위해 이방성이 1에 아주 가까워야 하며 초고 이온 에너지와 정밀한 화학 제어가 필요합니다.",
+       "lv": "심화",
+       "s": [
+        "d_et1"
+       ]
+      },
+      {
+       "x": "전통적 RCA 세정은 SC1(암모니아+과산화수소) 단계 뒤에 SC2(염산+과산화수소) 단계가 붙는 구성입니다. 이후 공정에 따라 묽은 불산(DHF)이나 황산계 SPM이 앞뒤에 더해집니다.",
+       "lv": "실무",
+       "s": [
+        "d_cl2",
+        "d_cl3"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "mechanism",
+     "t": "동작 원리",
+     "items": [
+      {
+       "x": "플라즈마 식각에서 이온은 방향성을 주는 물리적 역할을, 라디칼은 막과 반응하는 화학적 역할을 하고, 둘이 함께 작용해 수직 측벽을 만듭니다.",
+       "lv": "입문"
+      },
+      {
+       "x": "폴리머화가 강한 HFC 계열 가스는 표면에 보호성 고분자층을 만들어 마스크 선택비를 높입니다. 반면 (F−H)/C 비가 커질수록 마스크 선택비는 낮아졌습니다.",
+       "lv": "심화",
+       "s": [
+        "d_et4"
+       ]
+      },
+      {
+       "x": "SiO₂와 SiN은 같은 가스에서도 다르게 반응합니다. CF 이온의 식각 수율은 SiO₂에서는 F 이온보다 크고 SiN에서는 작아, 탄소가 SiO₂ 식각은 돕고 SiN 식각은 억제합니다. 그래서 산화막/질화막 교대 적층(ON) 식각에서는 SiN 식각이 속도를 제한했습니다.",
+       "lv": "심화",
+       "s": [
+        "d_et4"
+       ]
+      },
+      {
+       "x": "ARDE(종횡비 의존 식각)의 원인으로, 한 시뮬레이션 연구는 중성종의 그림자 효과와 확산 반사를 주된 기구로 제시했습니다. 같은 연구의 실험에서는 종횡비 1 부근에서 식각 속도가 극대가 되는, 정·역 RIE lag이 함께 나타나는 조건도 확인됐습니다.",
+       "lv": "심화",
+       "s": [
+        "d_et3"
+       ]
+      },
+      {
+       "x": "열 식각에서는 고종횡비 구조 안의 가스 분자 수송이 식각 속도를 제한해 ARDE를 일으킬 수 있습니다.",
+       "lv": "심화",
+       "s": [
+        "d_et1"
+       ]
+      },
+      {
+       "x": "원자층 식각(ALE)은 표면 개질 → 제거를 반복하는 자기제한 순차 반응입니다. 열 ALE는 등방적이고, 방향성 ALE는 이온으로 개질된 층을 제거합니다. 플라즈마 ALE에서는 입자 에너지가 정밀도를 결정하는 핵심 요소입니다.",
+       "lv": "심화",
+       "s": [
+        "d_et1",
+        "d_et2"
+       ]
+      },
+      {
+       "x": "SC1에서는 과산화수소의 산화와 암모니아의 식각이 연속해 일어나 입자 밑을 파고들어 떨어뜨립니다. 입자 제거 효율은 식각 속도가 아니라 식각된 산화막 깊이에 의존했고, 열산화막을 1.5~2nm 식각하면 0.8~0.9에 이르렀다는 실험이 있습니다(1994년 자료, 현재 조건과 다를 수 있음).",
+       "lv": "실무",
+       "s": [
+        "d_cl1"
+       ]
+      },
+      {
+       "x": "묽은 불산으로 자연산화막을 벗기면 표면이 소수성이 되어, 반대 전하의 입자를 강하게 끌어당기고 유기 오염에도 민감해집니다. 그래서 약액을 입자 없이 유지해야 합니다.",
+       "lv": "실무",
+       "s": [
+        "d_cl3"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "materials",
+     "t": "핵심 소재·부품·장비",
+     "items": [
+      {
+       "x": "가스: 불화가스(CF₄, C₄F₆, C₄F₈, NF₃, SF₆ 등)와 Cl₂, HBr. 약액: 질화막용 인산, 산화막용 HF·BOE, 세정용 SC1·SC2·IPA와 초순수. 서재의 '식각·세정용 불화가스', '고선택비 식각액' 해설과 연결됩니다.",
+       "lv": "실무"
+      },
+      {
+       "x": "챔버 안 플라즈마에 노출되는 부품(포커스 링·샤워헤드의 Si·SiC, 쿼츠, 정전척, FFKM O-링)은 식각이 강해질수록 소모가 빨라져 교체 주기와 파티클 발생이 문제가 됩니다. 이 부분은 이번에 1차 출처를 확보하지 못해 일반 원리로만 적었습니다.",
+       "lv": "실무"
+      },
+      {
+       "x": "점 사용(point-of-use) 여과는 세정 약액의 오염을 낮추는 수단이고, 필터는 화학 호환성과 입자 포집, 이온 순도가 요구됩니다.",
+       "lv": "실무",
+       "s": [
+        "d_cl3"
+       ]
+      },
+      {
+       "x": "장비: CCP 식각기(산화막·고종횡비), ICP 식각기(실리콘·금속), 매엽식/배치식 세정기, 스크러버, ALE 장비.",
+       "lv": "실무"
+      },
+      {
+       "x": "세정에서 매엽식 장비 전환은 2001년 자료가 pre-gate 세정을 배치식에서 매엽식으로 바꾸는 추세로 전망했습니다. 현재 점유는 확인하지 못했습니다.",
+       "lv": "심화",
+       "s": [
+        "d_cl2"
+       ],
+       "c": "전망"
+      }
+     ]
+    },
+    {
+     "id": "params",
+     "t": "주요 공정 변수",
+     "items": [
+      {
+       "x": "식각의 핵심 지표: 식각률, 선택비(깎을 막과 남길 막의 속도 비), 이방성, 균일도(웨이퍼·다이·ARDE), 프로파일(CD·측벽 각), 마스크 손실. 단위와 목표값은 막과 세대마다 다릅니다.",
+       "lv": "실무"
+      },
+      {
+       "x": "조절 노브: 이온 에너지(바이어스), 압력, 가스 조성·유량, 온도(극저온 포함), ALE에서는 사이클 구성. ALE에서 입자 에너지가 정밀도의 핵심입니다.",
+       "lv": "실무",
+       "s": [
+        "d_et2"
+       ]
+      },
+      {
+       "x": "가스 조성만으로도 속도와 마스크 선택비가 함께 움직이므로, 식각 속도만 높이는 선택은 마스크 손실을 키울 수 있습니다.",
+       "lv": "심화",
+       "s": [
+        "d_et4"
+       ]
+      },
+      {
+       "x": "세정 변수: 약액 농도·온도·시간, 산화막 식각 깊이, 헹굼·건조 방식. 입자 제거는 식각된 산화막 깊이가 결정 변수였다는 점에서 단순히 온도·시간을 올리는 것이 답이 아닙니다.",
+       "lv": "실무",
+       "s": [
+        "d_cl1"
+       ]
+      },
+      {
+       "x": "금속 오염은 단위 면적당 원자 수(atoms/cm²)로 표면 농도를 관리합니다.",
+       "lv": "실무",
+       "s": [
+        "d_cl2"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "defects",
+     "t": "품질·불량 메커니즘",
+     "items": [
+      {
+       "x": "종횡비가 커지면 식각 속도가 떨어지는 ARDE는 식각의 대표 문제입니다. 한 리뷰는 일반 플라즈마 식각에서 약 11.9nm의 RIE lag이 ALE에서는 약 1.3nm로 줄었다는 값을 인용합니다(리뷰가 옮긴 값이며 원 실험은 확인하지 못함).",
+       "lv": "심화",
+       "s": [
+        "d_et2"
+       ]
+      },
+      {
+       "x": "고종횡비 식각의 대표 불량: 구멍 휨, 입구 막힘, 바닥 미식각, 선택비 부족에 의한 마스크 소진. 3D NAND에서는 수십 개의 오버행과 리세스가 반응종의 경로를 복잡하게 만듭니다.",
+       "lv": "심화",
+       "s": [
+        "d_et1"
+       ]
+      },
+      {
+       "x": "플라즈마 손상과 잔류물: 방향성 식각은 이온 충돌 손상을 남길 수 있고, 열 ALE는 표면 침식 없이 잔류물 없는 제거가 가능하다고 설명됩니다.",
+       "lv": "심화",
+       "s": [
+        "d_et1"
+       ]
+      },
+      {
+       "x": "침지식 RCA 세정에서는 금속 오염이 약액에 쌓일 수 있고, 한 연구는 이를 줄인 방식에서 게이트 산화막 절연 특성이 개선됐다고 보고했습니다(2001년 자료).",
+       "lv": "실무",
+       "s": [
+        "d_cl2"
+       ]
+      },
+      {
+       "x": "패턴 붕괴(leaning)는 고종횡비 패턴이 건조 중 모세관력으로 쓰러지는 불량이고, 초임계 건조가 대응책으로 쓰입니다(기존 해설 내용, 이번 PR에서 출처 확보 안 됨).",
+       "lv": "실무"
+      }
+     ]
+    },
+    {
+     "id": "trend",
+     "t": "기술 발전 방향",
+     "items": [
+      {
+       "x": "ALE는 자기제한 순차 반응으로 식각 균일도를 높이고 ARDE를 줄이는 것을 목표로 연구됩니다. 열 ALE는 반응종 수송이 속도를 제한하는 문제를 피할 수 있습니다.",
+       "lv": "심화",
+       "s": [
+        "d_et1"
+       ]
+      },
+      {
+       "x": "무손상·정밀 제거가 요구되는 재료(SiC, GaN 등)에서도 ALE가 대안으로 검토됩니다.",
+       "lv": "심화",
+       "s": [
+        "d_et2"
+       ],
+       "c": "전망"
+      },
+      {
+       "x": "극저온 식각, GAA 구조용 선택 식각은 기존 해설이 다룬 방향이며, 이번에 별도 출처를 확보하지 못했습니다.",
+       "lv": "심화",
+       "c": "불확실"
+      }
+     ]
+    },
+    {
+     "id": "industry",
+     "t": "산업·기업 연계",
+     "items": [
+      {
+       "x": "공급망: 식각 장비, 가스·약액, 챔버 소모 부품, 부품 정밀세정·코팅·재생, 초순수 설비로 나뉩니다. 공정이 거칠어질수록 소모 부품과 가스의 승인 절차가 중요해집니다.",
+       "lv": "산업"
+      },
+      {
+       "x": "서재 책 중 식각·세정 소재와 부품을 다루는 곳은 아래 표의 기업입니다. 연결은 품목 단위이며 공급 상대와 점유율을 뜻하지 않습니다.",
+       "lv": "산업"
+      },
+      {
+       "x": "에이텍솔루션은 한 법인이 재생 웨이퍼와 반도체 부품 정밀세정 사업을 함께 한다고 보도자료에서 밝혔습니다.",
+       "lv": "산업",
+       "s": [
+        "at2"
+       ]
+      }
+     ]
+    }
+   ],
+   "unc": [
+    {
+     "x": "챔버 소모 부품(Si·SiC·쿼츠·FFKM)의 소모·파티클 정량 근거는 확보하지 못했습니다.",
+     "lv": "심화",
+     "c": "불확실"
+    },
+    {
+     "x": "세정 조건 수치(농도·온도)는 연구실 절차나 오래된 자료뿐이어서 양산 조건으로 일반화하지 않았습니다.",
+     "lv": "실무",
+     "c": "불확실"
+    },
+    {
+     "x": "ALE의 양산 적용 범위는 리뷰 수준의 정보만 확인했습니다.",
+     "lv": "심화",
+     "c": "불확실"
+    }
+   ]
+  },
+  "cmp": {
+   "n": "CMP",
+   "procs": [
+    "cmp"
+   ],
+   "tx": [
+    "cmp"
+   ],
+   "intro": "제거율·선택비·디싱/에로전·결함을 함께 놓고 CMP의 교환 관계를 설명합니다.",
+   "sections": [
+    {
+     "id": "concept",
+     "t": "기본 개념",
+     "items": [
+      {
+       "x": "CMP(화학적 기계적 평탄화)는 화학 반응으로 표면을 무르게 하고 연마 입자와 패드로 깎아 웨이퍼를 평평하게 만드는 공정입니다. 층이 쌓일수록 굴곡이 커져 다음 노광의 초점이 어긋나고, 금속을 홈 안에만 남기는 다마신 배선에도 필수입니다.",
+       "lv": "입문"
+      },
+      {
+       "x": "CMP는 FEOL·MOL·BEOL 전반에서 쓰이며, 공정마다 필요한 제거율, 선택비, 평탄도가 다릅니다. 소자가 작아질수록 막별로 정밀하게 조절된 선택적 연마가 더 중요해집니다.",
+       "lv": "실무",
+       "s": [
+        "d_cm1"
+       ]
+      },
+      {
+       "x": "CMP 품질은 크게 네 가지로 봅니다. 제거율, 선택비, 평탄도(디싱·에로전), 결함입니다. 한 지표를 올리면 다른 지표가 나빠지는 교환 관계가 흔합니다.",
+       "lv": "실무"
+      },
+      {
+       "x": "하이브리드 본딩에서는 Cu 디싱(Cu 리세스)을 수 nm 수준으로 낮춰야 하는 등 CMP 요구가 훨씬 엄격해집니다.",
+       "lv": "심화",
+       "s": [
+        "d_cm4"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "mechanism",
+     "t": "동작 원리",
+     "items": [
+      {
+       "x": "회전하는 패드 위에 웨이퍼를 눌러 대고 슬러리를 흘립니다. 슬러리의 화학 성분이 표면을 약하게 만들고 연마 입자가 그 층을 깎아내며, 패드 컨디셔너가 패드 표면을 계속 되살립니다.",
+       "lv": "입문"
+      },
+      {
+       "x": "Preston 식은 MRR = K·P·V (K 프레스톤 계수, P 웨이퍼에 가해진 압력, V 패드-웨이퍼 상대 속도)로, 초기 유전체 제거율을 잘 설명했습니다. K는 마찰력과 화학 등 여러 요인에 의존합니다.",
+       "lv": "실무",
+       "s": [
+        "d_cm1",
+        "d_cm2"
+       ]
+      },
+      {
+       "x": "Preston 식만으로는 부족합니다. 연마가 진행되며 실제 접촉 면적 비가 줄어 제거율이 떨어지고, 화학 반응과 기계 작용이 서로 영향을 주기 때문입니다.",
+       "lv": "심화",
+       "s": [
+        "d_cm1"
+       ]
+      },
+      {
+       "x": "금속 CMP는 표면에 약한 막(산화막·부동태막)을 만들고 그 막을 기계적으로 벗겨내는 방식입니다. 막이 만들어지는 속도가 제거율을 제한할 수 있습니다.",
+       "lv": "심화",
+       "s": [
+        "d_cm7"
+       ]
+      },
+      {
+       "x": "Cu에서는 BTA 계열 부동태제가 구리 표면에 고분자성 보호막을 만든다고 설명됩니다. 마찰과 화학 반응으로 접촉 계면 온도가 올라가는 점도 고려 대상입니다.",
+       "lv": "심화",
+       "s": [
+        "d_cm1"
+       ]
+      },
+      {
+       "x": "텅스텐 접점 CMP 사례: 벌크 단계에서 선택비가 높은 슬러리로 종점 검출까지 깎아 산화막을 노출시킨 뒤, 선택비가 낮은 슬러리로 버프 단계를 거쳐 목표 두께를 맞춥니다.",
+       "lv": "실무",
+       "s": [
+        "d_cm5"
+       ]
+      },
+      {
+       "x": "연마 뒤에는 입자와 유기 잔류물을 제거하는 후세정이 필수입니다.",
+       "lv": "실무",
+       "s": [
+        "d_cm1"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "materials",
+     "t": "핵심 소재·부품·장비",
+     "items": [
+      {
+       "x": "슬러리는 연마 입자(실리카·세리아·알루미나)와 산화제·착화제·부동태제·pH 조절제로 구성됩니다. 연마 대상 막마다 배합이 다릅니다.",
+       "lv": "실무"
+      },
+      {
+       "x": "패드는 미세 기공과 그루브로 슬러리를 붙잡아 두는 폴리우레탄계 소모품이고, 컨디셔너는 패드 표면 거칠기를 유지합니다. 패드와 후세정 브러시 자체도 결함 발생원이 될 수 있습니다.",
+       "lv": "실무",
+       "s": [
+        "d_cm6"
+       ]
+      },
+      {
+       "x": "장비는 연마부와 후세정부가 통합된 구조이며, 종점 검출(광학·모터 전류)이 정지 시점을 정합니다.",
+       "lv": "실무",
+       "s": [
+        "d_cm5"
+       ]
+      },
+      {
+       "x": "Cu와 배리어의 제거 선택비는 디싱 방향을 가릅니다. 선택비에 따라 Cu가 움푹 들어가거나(dished) 튀어나옵니다.",
+       "lv": "심화",
+       "s": [
+        "d_cm4"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "params",
+     "t": "주요 공정 변수",
+     "items": [
+      {
+       "x": "대표 조절 변수: 압력(다운포스), 상대 속도, 슬러리 종류·유량·pH, 패드 종류와 컨디셔닝. 높은 압력은 제거량을 키우고 낮은 압력은 다양한 패턴 밀도에서 균일한 표면을 만드는 데 유리하다고 정리됩니다.",
+       "lv": "실무",
+       "s": [
+        "d_cm4"
+       ]
+      },
+      {
+       "x": "Cu와 배리어의 선택비는 디싱과 배리어 손실을 모두 피하려고 1:1 근처로 맞추는 경우가 많다고 보고됩니다.",
+       "lv": "심화",
+       "s": [
+        "d_cm7"
+       ]
+      },
+      {
+       "x": "디싱·오버폴리싱은 선폭과 피치 같은 패턴 밀도에 의존하고 오버폴리싱 시간이 길수록 커집니다. 한 학위논문에서는 1분 오버폴리싱 조건에서 화학 슬러리를 쓰자 디싱이 0.65배로 줄었다고 보고합니다(원문 표현은 'reduced by a factor of 0.65', 2001년 실험, 해당 조건 한정).",
+       "lv": "심화",
+       "s": [
+        "d_cm3"
+       ]
+      },
+      {
+       "x": "하이브리드 본딩 리뷰는 디싱 목표 정확도를 0.5nm 이내, 선폭·간격에 따른 변동을 1nm 이내로 제어하는 방안을 보고합니다(보고된 목표값).",
+       "lv": "심화",
+       "s": [
+        "d_cm4"
+       ],
+       "c": "전망"
+      },
+      {
+       "x": "연마 시간이 길어지면 슬러리와 패드 컨디셔닝 소재 소비도 늘어, 공정 단계 수는 비용과도 연결됩니다.",
+       "lv": "실무",
+       "s": [
+        "d_cm4"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "defects",
+     "t": "품질·불량 메커니즘",
+     "items": [
+      {
+       "x": "디싱은 금속 라인 안쪽이 파이는 현상이고, 에로전은 패턴이 밀집한 영역에서 유전체(산화막)까지 함께 얇아지는 현상입니다. 하이브리드 본딩 문맥에서 Cu 디싱은 Cu 리세스, 에로전은 산화막 리세스와 같은 의미로 쓰입니다.",
+       "lv": "실무",
+       "s": [
+        "d_cm4"
+       ]
+      },
+      {
+       "x": "금속과 배리어 사이의 갈바닉 부식으로 한쪽이 먼저 녹아 디싱·에로전이 커질 수 있습니다. 슬러리 첨가제(예: PAA-PEG 복합체)로 선택비는 높이고 디싱은 낮추려는 연구가 있습니다.",
+       "lv": "심화",
+       "s": [
+        "d_cm1"
+       ]
+      },
+      {
+       "x": "스크래치는 입자와 패드 표면 돌기, 응집 입자가 웨이퍼와 소성 접촉할 때 생깁니다. 선진 로직에서 마이크로스크래치는 수율을 가장 크게 깎는 CMP 결함의 하나로 꼽히고, 패드 표면 자체와 후세정 브러시도 발생원으로 확인됐습니다.",
+       "lv": "심화",
+       "s": [
+        "d_cm6"
+       ]
+      },
+      {
+       "x": "텅스텐 접점 CMP에서는 마이크로스크래치가 벌크 텅스텐 제거 단계에서 생겼습니다. 입자와 잔류막이 후속 건식 식각을 막아 개방(open) 불량을, 금속 조각이 누설을 일으키는 사례가 정리돼 있습니다.",
+       "lv": "심화",
+       "s": [
+        "d_cm5"
+       ]
+      },
+      {
+       "x": "그 밖의 CMP 결함: 입자 부착, 슬러리 잔류물, 피팅(pitting), 부식, 막 박리.",
+       "lv": "실무",
+       "s": [
+        "d_cm2",
+        "d_cm1"
+       ]
+      },
+      {
+       "x": "스크래치를 줄이는 가장 효과적인 방법은 더 작은 연마 입자로 보고되지만, 이 경우 선택비와 평탄도 제어가 어려워지고 연마 기구는 완전히 이해되지 않았다고 합니다.",
+       "lv": "심화",
+       "s": [
+        "d_cm6"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "trend",
+     "t": "기술 발전 방향",
+     "items": [
+      {
+       "x": "하이브리드 본딩용 Cu CMP: 디싱 수 nm, 유전체 에로전 제어, 3단계 CMP 사용 시 슬러리·컨디셔닝 소재 소비 증가가 과제로 정리됩니다.",
+       "lv": "심화",
+       "s": [
+        "d_cm4"
+       ]
+      },
+      {
+       "x": "신규 금속(예: Mo) CMP: Mo와 Cu를 약알칼리 시트르산계 슬러리에서 연마하는 기구를 규명하는 연구가 보고됩니다.",
+       "lv": "심화",
+       "s": [
+        "d_cm7"
+       ]
+      },
+      {
+       "x": "미세 연마 입자 슬러리, 패드·컨디셔닝 최적화, 브러시 세정 개선이 스크래치 저감의 방향으로 제시됩니다.",
+       "lv": "심화",
+       "s": [
+        "d_cm6"
+       ]
+      },
+      {
+       "x": "HBM의 TSV 노출 CMP와 하이브리드 본딩용 CMP는 서재의 기존 해설이 다룬 방향이며, HBM 영역 설명과 연결됩니다.",
+       "lv": "산업"
+      }
+     ]
+    },
+    {
+     "id": "industry",
+     "t": "산업·기업 연계",
+     "items": [
+      {
+       "x": "CMP는 슬러리·패드·컨디셔너·후세정액 같은 소모품 비중이 큰 공정입니다. 소모품은 막 종류와 장비·공정 조건에 맞춰 승인되며, 한 번 승인되면 바꾸기 어렵다는 점은 일반론입니다.",
+       "lv": "산업"
+      },
+      {
+       "x": "서재에서 CMP 품목은 FNSTech(패드), 솔브레인(슬러리 제품 포함), Qnity, FFEM 등의 책이 다룹니다. 연결은 품목 단위이며 점유율이나 고객 관계를 뜻하지 않습니다.",
+       "lv": "산업"
+      },
+      {
+       "x": "CMP 시장 점유율은 기존 품목군 해설이 인용한 2019년 자료가 있으나 이번 PR에서 새로 확인한 수치가 아니므로 옮기지 않았습니다.",
+       "lv": "산업",
+       "c": "불확실"
+      }
+     ]
+    }
+   ],
+   "unc": [
+    {
+     "x": "CMP 시장 점유와 서재 기업의 슬러리·패드 사양은 확인하지 못했습니다.",
+     "lv": "산업",
+     "c": "불확실"
+    },
+    {
+     "x": "하이브리드 본딩 CMP 목표값(0.5nm 등)은 리뷰가 인용한 보고값이며 양산 규격이 아닙니다.",
+     "lv": "심화",
+     "c": "불확실"
+    },
+    {
+     "x": "패드 수명·컨디셔닝의 정량 관계는 이번에 1차 출처를 확보하지 못했습니다.",
+     "lv": "실무",
+     "c": "불확실"
+    }
+   ]
+  },
+  "hbm": {
+   "n": "HBM 및 첨단 패키징",
+   "procs": [
+    "hbm",
+    "pkg"
+   ],
+   "tx": [
+    "hbmfilm",
+    "substrate",
+    "pid",
+    "film",
+    "probe",
+    "cmp"
+   ],
+   "intro": "TSV·본딩·언더필·열 관리를 단수 증가에 따른 수율·검사 난이도와 연결합니다.",
+   "sections": [
+    {
+     "id": "concept",
+     "t": "기본 개념",
+     "items": [
+      {
+       "x": "HBM(고대역폭 메모리)은 DRAM 여러 장을 수직으로 쌓아 실리콘 관통 전극(TSV)으로 잇고, 넓은 인터페이스로 GPU 같은 호스트 칩 옆에 붙이는 메모리입니다.",
+       "lv": "입문"
+      },
+      {
+       "x": "JEDEC HBM 표준(HBM1·HBM2, JESD235D)은 HBM DRAM이 호스트 연산 다이에 밀접히 결합되고 인터페이스가 독립 채널로 나뉘며, 채널당 128비트 데이터 버스가 DDR로 동작하고 스택당 최대 8채널이 예상된다고 규정합니다. 스택 맨 아래에 신호 재분배용 인터페이스 다이를 둘 수 있습니다.",
+       "lv": "실무",
+       "s": [
+        "d_hb1"
+       ]
+      },
+      {
+       "x": "HBM4(JESD270-4, 2025-04 공표)는 2048비트 인터페이스, 핀당 최대 8Gb/s, 총 대역폭 최대 2TB/s, 채널 32개(채널당 의사 채널 2개), 4·8·12·16단, 24Gb/32Gb 다이, 최대 64GB 큐브(32Gb 16단)를 담았다고 JEDEC이 발표했습니다. 표준 본문이 아니라 보도자료 요약입니다.",
+       "lv": "실무",
+       "s": [
+        "d_hb2"
+       ]
+      },
+      {
+       "x": "일반 메모리 패키지가 솔더볼(300~400μm)로 4~32개 I/O를 쓰는 것과 달리, HBM은 훨씬 작고 많은 마이크로범프로 메모리 다이와 SoC 사이에 넓은 대역을 만듭니다(SK hynix 논문의 설명).",
+       "lv": "실무",
+       "s": [
+        "d_hb3"
+       ]
+      },
+      {
+       "x": "첨단 패키징 용어: 2.5D는 실리콘 인터포저 위에 GPU와 HBM을 나란히 올리는 방식, 3D는 칩을 수직으로 직접 쌓는 방식, 팬아웃은 칩 바깥으로 배선을 넓히는 방식입니다.",
+       "lv": "입문"
+      }
+     ]
+    },
+    {
+     "id": "mechanism",
+     "t": "동작 원리",
+     "items": [
+      {
+       "x": "TSV 공정 흐름: 깊은 구멍 식각 → 절연·배리어·시드 증착 → 구리 도금 → CMP → 뒷면 연삭으로 전극 노출. 증착·식각·CMP 영역 설명과 직접 연결됩니다.",
+       "lv": "실무"
+      },
+      {
+       "x": "종횡비 10 이상인 TSV에서는 PVD·CVD가 한계에 이르고 ALD로 배리어·시드를 올리는 연구가 보고됩니다.",
+       "lv": "심화",
+       "s": [
+        "d_ald8"
+       ]
+      },
+      {
+       "x": "2013년 연구의 HBM 패키징 흐름: 앞면 범핑 → 캐리어 글라스 접합 → 뒷면 범핑 → 캐리어 제거를 거치고, DRAM 코어 웨이퍼에는 비전도성 필름(NCF)을 라미네이션한다고 설명합니다(당시 구조, 현재 양산 흐름과 다를 수 있음).",
+       "lv": "실무",
+       "s": [
+        "d_hb9"
+       ]
+      },
+      {
+       "x": "적층 본딩은 두 갈래입니다. TC-NCF는 비전도성 필름을 끼운 열압착, MR-MUF는 일괄 리플로우 뒤 몰디드 언더필(MUF)로 채우는 방식이며 둘 다 플립칩과 마이크로범프를 씁니다.",
+       "lv": "실무",
+       "s": [
+        "d_hb4"
+       ]
+      },
+      {
+       "x": "SK hynix 논문은 MR-MUF가 적층 중 압력을 가하지 않아 TC-NCF보다 열 경로(thermal bump)를 더 만들 수 있고, MUF가 NCF보다 전도성 충진재를 넣기 쉬워 큐브의 열전도도를 높일 수 있다고 설명합니다(회사 방식에 대한 회사 발표).",
+       "lv": "심화",
+       "s": [
+        "d_hb3"
+       ],
+       "c": "전망"
+      },
+      {
+       "x": "하이브리드 본딩은 범프 없이 Cu-Cu 직접 접합으로 연속적인 열전도 경로를 만듭니다.",
+       "lv": "심화",
+       "s": [
+        "d_hb4"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "materials",
+     "t": "핵심 소재·부품·장비",
+     "items": [
+      {
+       "x": "소재: 도금액, NCF, 언더필·EMC(몰딩 컴파운드), 내열 이형 필름, 임시 접착제와 캐리어, 마이크로범프용 Cu 필러·솔더. 서재의 HBM용 내열 필름 해설은 열압착 본딩에서 넘친 접착제가 툴에 묻지 않게 하는 용도를 설명합니다.",
+       "lv": "실무"
+      },
+      {
+       "x": "적층 사이를 메우는 충진 소재의 열전도도는 높을수록 좋고, 전기적으로 절연되면서 열을 빼내는 경로를 만드는 설계가 필요하다고 보고됩니다. 이 특성은 충진 소재와 적층 방식에 좌우됩니다.",
+       "lv": "심화",
+       "s": [
+        "d_hb3"
+       ]
+      },
+      {
+       "x": "장비: 딥 실리콘 식각기, 도금기, TC 본더, 리플로우·몰딩 장비, 하이브리드 본더(차세대), 프로브카드(적층 전 개별 다이 검증).",
+       "lv": "실무"
+      },
+      {
+       "x": "패키지 기판, PID(감광성 절연재), 필름류는 서재의 기판·필름 품목군과 연결됩니다.",
+       "lv": "산업"
+      }
+     ]
+    },
+    {
+     "id": "params",
+     "t": "주요 공정 변수",
+     "items": [
+      {
+       "x": "TSV 개수는 HBM 세대마다 늘고, 피치와 범프 크기를 줄이면 적층 수율과 패키지 신뢰성에 큰 영향을 준다고 SK hynix 논문이 설명합니다.",
+       "lv": "심화",
+       "s": [
+        "d_hb3"
+       ]
+      },
+      {
+       "x": "수율은 곱셈으로 쌓입니다. 적층 칩 전체 수율은 TSV 하나의 수율을 TSV 개수만큼 거듭제곱한 값이며, 8단 HBM에서 TSV 연결 하나가 실패하면 9개 다이가 버려진다고 ISSCC 2018 논문은 설명합니다. 그래서 TSV 자가 수리 회로가 필수가 됩니다.",
+       "lv": "심화",
+       "s": [
+        "d_hb5"
+       ]
+      },
+      {
+       "x": "핵심 관리 변수: 본딩 온도·압력·정렬 정밀도, 범프 피치, TSV 수와 피치, 갭 충진 품질, 패키지 높이(z-height), 휨(warpage), 정션 온도.",
+       "lv": "실무"
+      },
+      {
+       "x": "적층 단수가 12단을 넘으면 내부에 열이 쌓이는 문제가 더 심해집니다.",
+       "lv": "심화",
+       "s": [
+        "d_hb4"
+       ]
+      },
+      {
+       "x": "열 해석 사례: 16단 HBM 구조에서 하이브리드 본딩이 마이크로범프보다 열저항을 약 47% 낮춘다는 시뮬레이션이 있고, ECTC 2023에서는 MR-MUF 대비 접합 열저항이 약 20% 줄었다고 보고됩니다(시뮬레이션과 개별 보고값이며 양산 결과가 아님).",
+       "lv": "심화",
+       "s": [
+        "d_hb4"
+       ]
+      },
+      {
+       "x": "전력 효율: SK hynix 논문은 HBM2E 약 4.3pJ/bit 대비 HBM3E는 20% 감소, HBM4는 60% 감소를 기대한다고 밝혔습니다(회사의 예상).",
+       "lv": "심화",
+       "s": [
+        "d_hb3"
+       ],
+       "c": "전망"
+      }
+     ]
+    },
+    {
+     "id": "defects",
+     "t": "품질·불량 메커니즘",
+     "items": [
+      {
+       "x": "TSV나 마이크로범프 하나의 개방·단락이 스택 전체의 불량이 되고, 적층 후에는 개별 다이를 교체할 수 없습니다.",
+       "lv": "심화",
+       "s": [
+        "d_hb5"
+       ]
+      },
+      {
+       "x": "3차원 스택은 열을 가두고 열-기계 응력을 증폭합니다. 열 때문에 휨, 접합부 피로, 보이드 위험이 커집니다.",
+       "lv": "심화",
+       "s": [
+        "d_hb4"
+       ]
+      },
+      {
+       "x": "고온·고압 본딩은 열응력으로 휨을 일으킬 수 있고, 압력 없는 방식은 열 경로 설계가 쉬워진다는 설명이 있습니다. 두 방식의 수율 우열은 제3자 검증이 필요한 사안입니다.",
+       "lv": "심화",
+       "s": [
+        "d_hb3"
+       ]
+      },
+      {
+       "x": "검사 난이도: 적층 후에는 내부 접합부에 직접 접근할 수 없어, 적층 전 개별 다이 검증(KGD)과 적층 후 KGSD 검증이 필요합니다. HBM의 KGSD와 개별 다이 테스트는 비용, 병렬성, 테스트 품질 면에서 큰 과제로 정리됩니다.",
+       "lv": "심화",
+       "s": [
+        "d_ts1"
+       ]
+      },
+      {
+       "x": "단수가 늘면 누적 수율 손실이 커지고, 검사해야 할 접합부 수가 많아져 검사 시간과 비용이 늘어납니다. 구체 수율 수치는 확인하지 못했습니다.",
+       "lv": "실무",
+       "c": "불확실"
+      }
+     ]
+    },
+    {
+     "id": "trend",
+     "t": "기술 발전 방향",
+     "items": [
+      {
+       "x": "HBM은 세대마다 대역폭과 용량을 2~3배 늘려 왔고, HBM4 이후는 전력 밀도가 높아져 열 관리가 중요해진다고 IEEE ECTC 2025 초록이 설명합니다.",
+       "lv": "심화",
+       "s": [
+        "d_hb6"
+       ]
+      },
+      {
+       "x": "16단 이상에서는 칩-투-웨이퍼 하이브리드 본딩이 갭 충진재를 없애 높이 제한 안에서 더 많은 다이를 쌓고 방열도 제어할 수 있다고 SK hynix 논문은 전망합니다(회사 전망).",
+       "lv": "심화",
+       "s": [
+        "d_hb3"
+       ],
+       "c": "전망"
+      },
+      {
+       "x": "하이브리드 본딩 공정 흐름 두 가지가 비교됩니다. 양면 패드 형성(DSF)과 칩 사이 갭 충진(IDGF)이며, IDGF는 몰딩이 필요 없고 더 얇은 칩을 써 같은 두께에 더 많은 칩을 쌓을 수 있다고 합니다.",
+       "lv": "심화",
+       "s": [
+        "d_hb6"
+       ]
+      },
+      {
+       "x": "하이브리드 본딩은 Cu CMP 요구(디싱 수 nm)를 함께 끌어올립니다. CMP 영역 설명과 연결됩니다.",
+       "lv": "심화",
+       "s": [
+        "d_cm4"
+       ]
+      },
+      {
+       "x": "회사별 방식 차이에 관한 보도(2024-03)에 따르면 삼성전자는 HBM에는 TC-NCF를 유지하고 MUF는 서버용 3DS RDIMM에 검토했다고 하지만, 익명 소식통 보도이며 회사 확인이 없고 이후 변경됐을 수 있습니다.",
+       "lv": "산업",
+       "s": [
+        "d_hb8"
+       ],
+       "c": "불확실"
+      }
+     ]
+    },
+    {
+     "id": "industry",
+     "t": "산업·기업 연계",
+     "items": [
+      {
+       "x": "HBM 공급망은 메모리 제조사, 패키징·본딩 장비, 소재(NCF·언더필·EMC·필름), 기판·인터포저, 프로브카드를 포함한 테스트로 이어집니다.",
+       "lv": "산업"
+      },
+      {
+       "x": "서재에서 HBM 영역과 연결된 품목은 내열 필름(AMMK), CMP(패드·슬러리), 프로브카드(TSE·피엠티), 기판(삼성전기·심텍), PID·필름(LG화학) 등입니다. 연결은 품목 단위이며 HBM 공급 여부나 점유율을 뜻하지 않습니다.",
+       "lv": "산업"
+      },
+      {
+       "x": "고객사 인증과 공급 관계는 확인된 자료가 없어 서술하지 않습니다.",
+       "lv": "산업",
+       "c": "불확실"
+      }
+     ]
+    }
+   ],
+   "unc": [
+    {
+     "x": "HBM3·HBM3E 표준 원문은 열람하지 못했고, HBM4는 보도자료 요약만 확인했습니다.",
+     "lv": "실무",
+     "c": "불확실"
+    },
+    {
+     "x": "MR-MUF와 TC-NCF의 수율·열 성능 우열은 회사 논문과 익명 보도 외 제3자 비교를 확인하지 못했습니다. 제3자 분석 매체(Nomad Semi)의 정량 주장(수율 차이, HBM4 패키지 높이 규격 조정 등)은 원 출처를 확인하지 못해 쓰지 않았습니다.",
+     "lv": "심화",
+     "s": [
+      "d_hb7"
+     ],
+     "c": "불확실"
+    },
+    {
+     "x": "하이브리드 본딩의 HBM 양산 적용 시점은 확인하지 못했습니다. 열저항 개선 수치는 시뮬레이션과 연구 보고값입니다.",
+     "lv": "심화",
+     "c": "불확실"
+    }
+   ]
+  },
+  "test": {
+   "n": "반도체 테스트",
+   "procs": [
+    "test"
+   ],
+   "tx": [
+    "probe",
+    "socket",
+    "wtester",
+    "ptester",
+    "handler"
+   ],
+   "intro": "프로브카드·ATE·KGD를 중심으로 웨이퍼·패키지 테스트의 원리와 한계를 설명합니다.",
+   "sections": [
+    {
+     "id": "concept",
+     "t": "기본 개념",
+     "items": [
+      {
+       "x": "테스트는 전기 신호로 칩의 양품·불량과 성능 등급을 가르는 공정입니다. 웨이퍼 단계(프로브), 패키지 단계(최종 테스트), 번인, 시스템 레벨 테스트로 이어집니다.",
+       "lv": "입문"
+      },
+      {
+       "x": "프로브카드는 시험 대상 칩(DUT)과 자동 테스트 장비(ATE)의 테스트 헤드 사이의 인터페이스입니다. 웨이퍼 한 번 테스트에 1,000개가 넘는 칩 접점을 ATE 회로와 연결해야 한다고 한 특허의 배경 설명은 적습니다.",
+       "lv": "실무",
+       "s": [
+        "d_ts3"
+       ]
+      },
+      {
+       "x": "KGD(Known Good Die)는 패키징 전에 양품으로 판정한 칩입니다. 불량 칩을 패키징 전에 가려 후공정 비용을 줄이는 목적입니다.",
+       "lv": "입문",
+       "s": [
+        "d_ts3",
+        "d_ts4"
+       ]
+      },
+      {
+       "x": "모듈 테스트는 다이·웨이퍼 테스트 뒤에, 최종 테스트 앞에 놓입니다.",
+       "lv": "실무",
+       "s": [
+        "d_ts1"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "mechanism",
+     "t": "동작 원리",
+     "items": [
+      {
+       "x": "프로브카드는 크게 캔틸레버/에폭시형, MEMS형, 수직형, 수직 MEMS형으로 분류됩니다.",
+       "lv": "실무",
+       "s": [
+        "d_ts4"
+       ]
+      },
+      {
+       "x": "캔틸레버형은 카드 표면과 평행하게 붙었다가 위로 휘어 올라오는 금속 스프링 핑거를, 수직형은 상단이 고정된 수직 금속 바늘을 씁니다.",
+       "lv": "실무",
+       "s": [
+        "d_ts3"
+       ]
+      },
+      {
+       "x": "효율을 위해 웨이퍼 전체를 한 번의 접촉(터치다운)으로 병렬 테스트하는 것이 이상적입니다. 접점이 한 번에 맞지 않으면 터치다운이 반복되어 시간과 비용이 늘어납니다.",
+       "lv": "실무",
+       "s": [
+        "d_ts3"
+       ]
+      },
+      {
+       "x": "웨이퍼 레벨 번인은 일정 시간 동안 칩에 전원을 인가해 초기 불량을 가려내는 방식이며, IDDq 시험 등이 포함될 수 있습니다.",
+       "lv": "실무",
+       "s": [
+        "d_ts5"
+       ]
+      },
+      {
+       "x": "HBM 같은 적층 메모리는 개별 다이의 마이크로범프 사이에 테스트 패드를 두면 기존 DRAM 프로브카드와 테스터로 고병렬 웨이퍼 테스트를 쓸 수 있습니다. 설계 시 테스트 용이성(DFT)과 수리·리던던시를 함께 쓰면 경제적이라고 IEEE 가이드가 설명합니다.",
+       "lv": "심화",
+       "s": [
+        "d_ts2"
+       ]
+      },
+      {
+       "x": "패키지 테스트에서는 핸들러가 칩을 소켓에 넣고 속도·온도 조건별로 측정하며, 번인 소터와 보드가 고온·고전압 선별을 담당합니다. 이 부분은 이번에 별도 출처를 확보하지 못해 기존 해설을 따릅니다.",
+       "lv": "실무"
+      }
+     ]
+    },
+    {
+     "id": "materials",
+     "t": "핵심 소재·부품·장비",
+     "items": [
+      {
+       "x": "프로브카드는 회로기판(PCB)과 탐침을 모은 프로브 헤드로 구성됩니다.",
+       "lv": "실무",
+       "s": [
+        "d_ts3"
+       ]
+      },
+      {
+       "x": "소모성 부품: 테스트 소켓, 인터페이스(로드) 보드, 번인 보드. 테스트 장비: 메모리·SoC 테스터, 프로버, 핸들러, 번인 장비, SLT 장비.",
+       "lv": "실무"
+      },
+      {
+       "x": "테스트는 재료보다 소모성 부품과 장비 중심의 공정입니다. 소모품은 교체 주기가 있어 반복 수요가 생깁니다.",
+       "lv": "산업"
+      }
+     ]
+    },
+    {
+     "id": "params",
+     "t": "주요 공정 변수",
+     "items": [
+      {
+       "x": "프로브 피치: 특허 실시예에서 탐침 피치는 약 40μm 수준으로 제시됩니다(특정 설계의 예이며 업계 표준값이 아님).",
+       "lv": "심화",
+       "s": [
+        "d_ts5"
+       ]
+      },
+      {
+       "x": "미세 피치 접촉에서는 스프링인 탐침이 전기적 요구뿐 아니라 오버트래블(과구동) 순응성까지 만족해야 한다고 정리됩니다.",
+       "lv": "심화",
+       "s": [
+        "d_ts2"
+       ]
+      },
+      {
+       "x": "병렬도(동시에 측정하는 DUT 수)는 비용을 좌우합니다. 광대역 갭 전력반도체 문맥에서는 4~16개 사이트를 중간 병렬 수준으로 분류합니다(메모리 기준 값이 아님).",
+       "lv": "심화",
+       "s": [
+        "d_ts4"
+       ]
+      },
+      {
+       "x": "메모리 테스트는 높은 인터페이스 속도, 전력, 열 관리 요구에 대응해야 합니다.",
+       "lv": "심화",
+       "s": [
+        "d_ts1"
+       ]
+      },
+      {
+       "x": "그 밖의 변수: 접촉 저항, 테스트 온도 범위, 신호 무결성, 테스트 시간·원가. 서재 프로브카드 해설의 '-40~150℃' 같은 수치는 기존 내용으로 이번 PR에서 출처를 확보하지 못했습니다.",
+       "lv": "실무",
+       "c": "불확실"
+      }
+     ]
+    },
+    {
+     "id": "defects",
+     "t": "품질·불량 메커니즘",
+     "items": [
+      {
+       "x": "접촉 문제: 비평탄한 프로브 핑거는 한 번에 테스트할 수 있는 웨이퍼 크기를 제한하고 터치다운 횟수를 늘립니다.",
+       "lv": "심화",
+       "s": [
+        "d_ts3"
+       ]
+      },
+      {
+       "x": "미세 피치 범프를 직접 프로빙하면 경제적으로 어렵고 후속 범프 접합에 위험을 줄 수 있어, 프로브 피치와 패키징 피치를 분리하는 접근이 권장됩니다.",
+       "lv": "심화",
+       "s": [
+        "d_ts2"
+       ]
+      },
+      {
+       "x": "칩렛 구조에서 패시브 인터포저는 KGD가 아닐 수 있고 제조 결함을 완전히 선별하기 어렵거나 불가능한 경우가 있습니다.",
+       "lv": "심화",
+       "s": [
+        "d_ts2"
+       ]
+      },
+      {
+       "x": "적층 메모리(HBM)에서는 KGSD와 개별 다이 테스트가 비용, 병렬성, 테스트 품질에서 큰 과제입니다. 적층 후 불량이면 다이 전체를 버리므로(HBM 영역 설명) 적층 전 검증 품질이 곧 수율입니다.",
+       "lv": "심화",
+       "s": [
+        "d_ts1",
+        "d_hb5"
+       ]
+      },
+      {
+       "x": "광대역 갭 전력반도체에서는 웨이퍼 레벨 테스트가 가혹한 고전압·고전류 조건을 다 재현하지 못해 개별화된 다이의 KGD 테스트가 필요하다고 설명합니다(전력반도체 문맥).",
+       "lv": "심화",
+       "s": [
+        "d_ts4"
+       ]
+      },
+      {
+       "x": "테스트 이스케이프(불량 유출)와 과검(양품 폐기)은 커버리지와 규격의 교환 관계입니다. 이 일반 원리는 별도 출처를 붙이지 않았습니다.",
+       "lv": "실무"
+      }
+     ]
+    },
+    {
+     "id": "trend",
+     "t": "기술 발전 방향",
+     "items": [
+      {
+       "x": "칩렛 상호연결의 미세 피치 때문에 웨이퍼 소트에서 전통적 프로빙이 곤란하거나 불가능해지고, 패키지 안에서는 베이스 다이의 패키지 핀으로만 접근해야 하는 경우가 생깁니다.",
+       "lv": "심화",
+       "s": [
+        "d_ts1"
+       ]
+      },
+      {
+       "x": "2.5D/3D에서는 웨이퍼 프로브 품질을 높여 최종 테스트 불량을 줄이는 KGD용 DFT 방법이 필요하다고 로드맵이 지적합니다.",
+       "lv": "심화",
+       "s": [
+        "d_ts1"
+       ]
+      },
+      {
+       "x": "최신 MEMS 수직 프로브 어레이는 미세 피치 마이크로범프에도 접촉할 수 있으나, 프로브 피치가 패키징 피치를 따라가지 않도록 설계하는 것이 중요하다고 정리됩니다. 가장 촘촘한 피치를 안정적으로 접촉하는 프로브카드 업체는 소수라고 IEEE 가이드가 기술합니다(해당 문서의 서술).",
+       "lv": "산업",
+       "s": [
+        "d_ts2"
+       ],
+       "c": "전망"
+      },
+      {
+       "x": "SLT 확대, AI 기반 테스트 최적화는 기존 해설이 다룬 방향이며 이번에 출처를 확보하지 못했습니다.",
+       "lv": "심화",
+       "c": "불확실"
+      }
+     ]
+    },
+    {
+     "id": "industry",
+     "t": "산업·기업 연계",
+     "items": [
+      {
+       "x": "테스트 공급망: ATE(테스터) 업체, 프로버, 프로브카드, 소켓·보드, 핸들러·번인 장비로 나뉩니다.",
+       "lv": "산업"
+      },
+      {
+       "x": "서재에서 테스트 영역과 연결된 책은 프로브카드(TSE·피엠티), 소켓·보드(TSE), 웨이퍼 테스터(와이씨), 패키지 테스터(엑시콘), 번인 소터·핸들러(제이티)입니다. 연결은 품목 단위이며 공급 관계나 점유율을 뜻하지 않습니다.",
+       "lv": "산업"
+      },
+      {
+       "x": "미세 피치 프로브카드를 안정적으로 공급하는 업체가 소수라는 서술이 있으나, 서재 속 어느 기업이 여기에 해당하는지는 확인된 자료가 없어 판단하지 않습니다.",
+       "lv": "산업",
+       "c": "불확실"
+      }
+     ]
+    }
+   ],
+   "unc": [
+    {
+     "x": "핸들러·소켓·번인 장비의 기술 설명은 1차 출처를 확보하지 못해 기존 해설에 의존합니다.",
+     "lv": "실무",
+     "c": "불확실"
+    },
+    {
+     "x": "프로브카드 피치·수명·온도 수치는 특허 실시예 수준이며 업계 표준값이 아닙니다.",
+     "lv": "심화",
+     "c": "불확실"
+    },
+    {
+     "x": "HBM 적층 후 테스트 구조의 세부는 로드맵 수준의 서술만 확인했습니다.",
+     "lv": "심화",
+     "c": "불확실"
+    }
+   ]
+  }
+ }
+}

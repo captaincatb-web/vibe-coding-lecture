@@ -16,6 +16,12 @@ const cases = [
   ['인프라 장비를 근거 없이 직접으로 분류', (s) => s.replace(/(row: "EDWARDS", cat: "장비", sub: \[\], )chain: "검증 필요", chainBasis: "근거 부족"/, '$1chain: "직접", chainBasis: "공정 지도 연결"'), 'ENT_CHAIN_INFRA'],
   ['법인이 여럿인데 unit 없는 법인 단위 사실', (s) => s.replace('scope: "법인", unit: "linde-korea", ', 'scope: "법인", '), 'FACT_SCOPE'],
   ['레코드 수 설명 삭제', (s) => s.replace('법인 수가 아닙니다', '법인 수입니다'), 'ENT_NOTE'],
+  ['심화: 수치가 있는 문장의 출처 제거', (s) => s.replace('"lv":"실무","s":["d_ald7","d_ald3"]', '"lv":"실무"'), 'DEEP_NUM'],
+  ['심화: 존재하지 않는 출처 ID', (s) => s.replace('"s":["d_ald3"]', '"s":["d_zzz"]'), 'DEEP_SRC_ID'],
+  ['심화: 전망 문장에 출처 없음', (s) => s.replace('"lv":"산업","c":"불확실"', '"lv":"산업","c":"전망"'), 'DEEP_NOSRC'],
+  ['심화: 미열람 출처만으로 근거 표시', (s) => s.replace(/("d_cm7":\{[^}]*?"read":")검색 발췌 열람/, '$1미열람'), 'DEEP_UNREAD'],
+  ['심화: 7개 관점 중 하나 누락', (s) => s.replace('"id":"defects"', '"id":"defectz"'), 'DEEP_SECT'],
+  ['심화: 주입 블록이 JSON 원본과 다름', (s) => s.replace('ALD 한 사이클은', 'ALD 두 사이클은'), 'DEEP_SYNC'],
   ['ref 행 별칭 누락', (s) => s.replace('alias: ["에이텍솔루션 (세정)"], ', ''), 'ENT_ALIAS'],
 ];
 let fail = 0;

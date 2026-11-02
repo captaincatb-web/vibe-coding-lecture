@@ -96,6 +96,50 @@ const ok = (name, cond, extra) => { results.push([name, !!cond, extra || '']); c
   await page.goto(URL + '#b0'); t = await text();
   ok('대조하지 않은 기업은 "대조한 사실 없음" 표시', /대조한 사실 없음/.test(t));
 
+  /* PR2: 공정 심화 해설 */
+  const SEC7 = ['기본 개념', '동작 원리', '핵심 소재·부품·장비', '주요 공정 변수', '품질·불량 메커니즘', '기술 발전 방향', '산업·기업 연계'];
+  const AREAS = { dep: '증착', etch: '식각 및 세정', cmp: 'CMP', hbm: 'HBM 및 첨단 패키징', test: '반도체 테스트' };
+  for (const [pid, nm] of Object.entries(AREAS)) {
+    await page.goto(URL + '#t-' + pid); t = await text();
+    const hs = await page.$$eval('.deepbox section.tsec > h3', (l) => l.map((x) => x.innerText));
+    ok('심화 해설(' + nm + '): 7개 관점이 순서대로 표시', JSON.stringify(hs.slice(0, 7)) === JSON.stringify(SEC7), hs.join('|'));
+    ok('심화 해설(' + nm + '): 출처 목록과 열람 상태 표시', /출처 \d+건/.test(t) && /검색 발췌 열람/.test(t) && /해결되지 않은 불확실성/.test(t));
+    ok('심화 해설(' + nm + '): 기업 신뢰도와 별개라는 안내', /기업 신뢰도 A\/B\/C와 별개/.test(t));
+    ok('심화 해설(' + nm + '): 서재 속 책 연결 표', (await page.locator('.deepbox table.rt .mchip').count()) > 0);
+  }
+  await page.goto(URL + '#t-dep'); t = await text();
+  ok('증착: ALD 단순화 정정 문장', /과도한 단순화/.test(t) && /nm²당 7~9개/.test(t));
+  ok('증착: 기존 해설 보존(CVD·ALD·PVD 흐름 단계)', /ALD: 전구체와 반응가스를 번갈아 넣어/.test(t));
+  await page.goto(URL + '#t-cmp'); t = await text();
+  ok('CMP: 디싱·에로전·선택비·Preston 설명', /Preston/.test(t) && /디싱/.test(t) && /에로전/.test(t) && /선택비/.test(t));
+  await page.goto(URL + '#t-hbm'); t = await text();
+  ok('HBM: TSV·본딩·언더필·열·수율·검사 연결', /TSV/.test(t) && /MR-MUF/.test(t) && /열저항/.test(t) && /거듭제곱/.test(t) && /KGSD/.test(t));
+  ok('HBM: 제3자 매체 정량 주장은 쓰지 않았다는 불확실성 표시', /Nomad Semi/.test(t) && /쓰지 않았습니다/.test(t));
+  await page.goto(URL + '#t-clean'); t = await text();
+  ok('세정 공정에서 식각·세정 심화 해설로 연결', /식각 및 세정 심화 해설/.test(t) && (await page.locator('.deepbox').count()) === 0);
+  await page.goto(URL + '#t-pkg'); t = await text();
+  ok('패키징 공정에서 HBM 심화 해설로 연결', /HBM 및 첨단 패키징 심화 해설/.test(t));
+  await page.goto(URL + '#t-photo'); t = await text();
+  ok('심화 해설이 없는 공정(노광)은 기존 그대로 표시', (await page.locator('.deepbox').count()) === 0 && /포토/.test(t));
+  await page.goto(URL + '#t-dep');
+  await page.locator('.deepbox table.rt .mchip').first().click();
+  ok('심화 해설의 연결 표에서 회사 책으로 이동', /^#b\d+$/.test(await page.evaluate(() => location.hash)));
+  await page.goto(URL + '#tech'); t = await text();
+  ok('기술 백과에 심화 해설 5개 영역 목록', /심화 해설/.test(t) && Object.values(AREAS).every((a) => t.indexOf(a) >= 0));
+  await page.goto(URL + '#x-cmp'); t = await text();
+  ok('제품 기술 페이지에서 심화 해설로 연결', (await page.locator('a.kchip.p[href="#t-cmp"]').count()) > 0);
+  await page.goto(URL); await page.fill('#q', 'Preston');
+  ok('통합 검색이 심화 해설 본문까지 찾음', (await page.locator('#hits .kchip.p').count()) > 0 && /CMP/.test(await page.locator('#hits').innerText()));
+  await page.fill('#q', '');
+  for (const w of [400, 1280]) {
+    const p3 = await ctx.newPage(); await p3.setViewportSize({ width: w, height: 800 }); const e3 = []; p3.on('pageerror', (e) => e3.push(String(e)));
+    let bad3 = 0;
+    for (const pid of Object.keys(AREAS)) { await p3.goto(URL + '#t-' + pid); await p3.waitForTimeout(150); if (await p3.evaluate(() => document.documentElement.scrollWidth > window.innerWidth + 1)) bad3++; }
+    ok('심화 해설 5개 가로 넘침 없음 (' + w + 'px)', bad3 === 0 && e3.length === 0, bad3 + ' ' + e3.join('|')); await p3.close();
+  }
+  { const dctx = await browser.newContext({ colorScheme: 'dark', viewport: { width: 400, height: 800 } }); const dd = await dctx.newPage(); const de2 = []; dd.on('pageerror', (e) => de2.push(String(e))); await dd.goto(URL + '#t-test');
+    ok('다크 모드 심화 해설 오류 없음', de2.length === 0 && (await dd.locator('.deepbox').count()) === 1, de2.join('|')); await dctx.close(); }
+
   /* 즐겨찾기 */
   await page.goto(URL);
   await page.evaluate(() => localStorage.setItem('semiPartners:fav:v1', JSON.stringify(['삼화전기', '린데', '에이텍솔루션 (세정)', '덕산테코피아'])));

@@ -247,6 +247,66 @@ if (!ENT) {
   I('FACT_COUNT', `사실 ${F.length}건 (검증 ${nVer} / 부분 검증 ${F.filter((f) => f.vs === '부분 검증').length} / 미검증 ${F.filter((f) => f.vs === '미검증').length})`);
 }
 
+/* ---------- 9. PR2: 공정 심화 해설(DEEP) ---------- */
+if (D.DEEP && D.DEEP.areas) {
+  const fs2 = require('fs'), path2 = require('path');
+  const DS = D.DEEP.sources || {};
+  const SECS = ['concept', 'mechanism', 'materials', 'params', 'defects', 'trend', 'industry'];
+  const LVS = ['입문', '실무', '심화', '산업'];
+  const CS = ['원리', '근거', '전망', '불확실'];
+  const READS = ['원문 열람', '검색 발췌 열람', '미열람'];
+  const numUnit = /(\d[\d,.]*\s*(%|nm|μm|um|℃|°C|배|단|층|GB|Gb|TB|mm|Å|pJ|비트|채널|번|사이트|atoms))|(\d+\s*:\s*\d+)/;
+  const used = new Set(); let nItem = 0, nSrcItem = 0, nPrinciple = 0, nUnc = 0;
+  /* 열람 상태 */
+  Object.keys(DS).forEach((id) => {
+    const s = DS[id];
+    ['t', 'u', 'pub', 'type', 'read', 'readAt'].forEach((k) => { if (!s[k]) E('DEEP_SRC', `출처 ${id}: ${k} 누락`); });
+    if (s.u && !/^https?:\/\//.test(s.u)) E('DEEP_SRC', `출처 ${id}: URL 형식 오류`);
+    if (s.read && !READS.includes(s.read)) E('DEEP_SRC', `출처 ${id}: 열람 상태 값 오류 ${s.read}`);
+    if (s.pub && !ISO.test(s.pub)) E('DEEP_SRC', `출처 ${id}: 발행일 형식 오류 ${s.pub}`);
+    if (s.readAt && s.pub && s.pub > s.readAt) E('DEEP_SRC', `출처 ${id}: 발행일이 열람일보다 늦음`);
+  });
+  const areas = D.DEEP.areas, prim = {};
+  Object.keys(areas).forEach((k) => {
+    const a = areas[k];
+    if (!(a.procs || []).length) E('DEEP_AREA', `${k}: procs 없음`);
+    (a.procs || []).forEach((p) => { if (!procIds.includes(p)) E('DEEP_AREA', `${k}: 존재하지 않는 공정 ${p}`); });
+    if (prim[a.procs[0]]) E('DEEP_AREA', `공정 ${a.procs[0]}가 두 영역의 대표 공정임`); prim[a.procs[0]] = k;
+    (a.tx || []).forEach((x) => { if (!TX[x]) E('DEEP_AREA', `${k}: 존재하지 않는 제품 ${x}`); });
+    const ids = (a.sections || []).map((s) => s.id);
+    if (JSON.stringify(ids) !== JSON.stringify(SECS)) E('DEEP_SECT', `${k}: 7개 관점이 순서대로 없음(${ids.join(',')})`);
+    (a.sections || []).forEach((sc) => {
+      if (!(sc.items || []).length) E('DEEP_SECT', `${k}/${sc.id}: 항목 없음`);
+      sc.items.forEach((it, n) => {
+        const tag = `${k}/${sc.id}#${n + 1}`;
+        nItem++;
+        if (!it.x) E('DEEP_ITEM', `${tag}: 본문 없음`);
+        if (!LVS.includes(it.lv)) E('DEEP_ITEM', `${tag}: 수준 값 오류 ${it.lv}`);
+        const c = it.c || ((it.s || []).length ? '근거' : '원리');
+        if (!CS.includes(c)) E('DEEP_ITEM', `${tag}: 유형 값 오류 ${c}`);
+        (it.s || []).forEach((id) => { used.add(id); if (!DS[id] && !S[id]) E('DEEP_SRC_ID', `${tag}: 존재하지 않는 출처 ${id}`); });
+        if ((c === '근거' || c === '전망') && !(it.s || []).length) E('DEEP_NOSRC', `${tag}: ${c} 문장인데 출처 없음`);
+        if (c === '원리' && (it.s || []).length) E('DEEP_ITEM', `${tag}: 출처가 있는데 원리로 표시됨`);
+        if (c === '원리' && numUnit.test(it.x)) E('DEEP_NUM', `${tag}: 수치가 있는데 출처 없는 일반 원리 문장 → ${(it.x.match(numUnit) || [''])[0]}`);
+        if (c === '근거' && (it.s || []).length && (it.s || []).every((id) => DS[id] && DS[id].read === '미열람')) E('DEEP_UNREAD', `${tag}: 미열람 출처만으로 근거 표시`);
+        if (c === '근거' || c === '전망') nSrcItem++; else if (c === '불확실') nUnc++; else nPrinciple++;
+        if (/확인됐|검증됐|입증/.test(it.x) && c === '원리') W('DEEP_CLAIM', `${tag}: 출처 없는 문장에 확정 표현`);
+      });
+    });
+    (a.unc || []).forEach((it, n) => { if (it.c !== '불확실') E('DEEP_UNC', `${k}/unc#${n + 1}: 불확실성 항목은 c=불확실이어야 함`); (it.s || []).forEach((id) => { used.add(id); if (!DS[id] && !S[id]) E('DEEP_SRC_ID', `${k}/unc#${n + 1}: 존재하지 않는 출처 ${id}`); }); });
+  });
+  Object.keys(DS).forEach((id) => { if (!used.has(id)) W('DEEP_SRC_UNUSED', `출처 ${id}를 어떤 문장도 인용하지 않음`); });
+  /* 주입된 DEEP 블록과 JSON 원본 일치 */
+  const js = JSON.parse(fs2.readFileSync(path2.join(__dirname, '..', 'silicon-library', 'data', 'deep-content.json'), 'utf8'));
+  if (JSON.stringify(js) !== JSON.stringify(D.DEEP)) E('DEEP_SYNC', 'index.html 의 DEEP 블록이 data/deep-content.json 과 다름 → node scripts/build-deep.js');
+  /* 기존 공정·제품 연결 보존: 심화 영역의 제품은 대표 공정에 이미 연결돼 있거나 의도된 교차 연결이어야 함 */
+  Object.keys(areas).forEach((k) => {
+    const a = areas[k];
+    (a.tx || []).forEach((x) => { if (!(procOf[x] || []).some((p) => a.procs.includes(p)) && !a.crossOk) W('DEEP_LINK', `${k}: 제품 ${x}가 이 영역의 공정(${a.procs.join(',')})에 연결돼 있지 않음 (연결 공정: ${(procOf[x] || []).join(',') || '없음'})`); });
+  });
+  I('DEEP', `심화 영역 ${Object.keys(areas).length}개, 문장 ${nItem}개(출처 연결 ${nSrcItem} / 일반 원리 ${nPrinciple} / 불확실 ${nUnc}), 출처 ${Object.keys(DS).length}건(모두 '검색 발췌 열람' 상태인지: ${Object.values(DS).every((s) => s.read === '검색 발췌 열람')})`);
+} else { E('DEEP_MISSING', 'DEEP(공정 심화 해설) 데이터가 없습니다'); }
+
 /* ---------- 출력 ---------- */
 const order = { ERROR: 0, WARN: 1, REVIEW: 2, INFO: 3 };
 out.sort((a, b) => order[a.lv] - order[b.lv]);
