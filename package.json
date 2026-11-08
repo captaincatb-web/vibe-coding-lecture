@@ -1,0 +1,13 @@
+{
+  "name": "silicon-library-tools",
+  "private": true,
+  "version": "2.0.0",
+  "engines": {"node": ">=20"},
+  "scripts": {
+    "check": "node scripts/validate-silicon-library.js && node tests/validator-negative.js && node tests/silicon-library-audit.js && npm test && npm run build:data -- --check",
+    "test": "node --test tests/normalized-library.test.js",
+    "build:data": "node scripts/build-normalized-library.js",
+    "test:ui": "node tests/silicon-library-ui.js"
+  },
+  "devDependencies": {"ajv": "8.17.1", "playwright": "1.63.0"}
+}
