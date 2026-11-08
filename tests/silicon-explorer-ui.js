@@ -93,7 +93,7 @@ function ok(name, condition) {
         .locator("#explorer-bookmark")
         .getAttribute("aria-pressed")) === "true",
     );
-    await page.locator(".explorer-saved summary").click();
+    await page.getByText("탐색 책갈피와 최근 본 항목", { exact: true }).click();
     ok(
       "recent records are available",
       (await page

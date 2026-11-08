@@ -1,0 +1,19 @@
+# Silicon Library 배포와 복구
+
+배포 대상은 https://captaincatb-web.github.io/vibe-coding-lecture/silicon-library/ 이며, 기존 Pages 성공 실행 #41537156736은 `claude/sharp-cannon-dyi1jj`의 1424ab9a5613aba5f21349fdd7aea02c23a63663를 사용했다.
+
+2026-11-08 배포 준비는 최신 앱 1152432(책갈피 백업 포함)를 기준으로 한다. 해당 커밋의 CI 실패는 새 펼침 메뉴가 추가되면서 `.explorer-saved summary`가 2개와 일치한 회귀 테스트의 모호한 선택자 때문이었다. 의도한 '탐색 책갈피와 최근 본 항목'을 정확히 선택하도록 수정했으며 검사를 생략하지 않았다.
+
+## 절차
+
+1. release 브랜치에서 `npm run check`, 브라우저 회귀·백업·접근성 검사와 원격 CI 성공을 확인한다.
+2. 배포 브랜치의 최신 SHA를 다시 조회하고, release HEAD가 그 SHA를 포함하는지 확인한다.
+3. force 없이 release HEAD를 기존 Pages 브랜치에 fast-forward로 푸시한다. 다른 변경이 있으면 보존·통합 후 재검증한다.
+4. GitHub Actions의 `pages build and deployment`가 정확한 release SHA에서 성공했는지 확인한다.
+5. 네트워크가 허용되면 운영 HTML, 정적 JS/JSON, `release.json`, 주요 탐색·학습 경로를 직접 검사한다. 접근 차단은 배포 작업 성공과 별도로 보고한다.
+
+루트 `.nojekyll`로 빌드된 HTML/JS/JSON을 정적으로 제공한다. `silicon-library/release.json`은 배포 버전과 앱 기준 커밋을 표시한다. 기본 브랜치나 Pages 설정을 임의로 바꾸지 않는다.
+
+## 복구
+
+배포 전 운영 기준은 위의 1424ab9 SHA다. 롤백이 필요하면 해당 트리를 되살리는 새 커밋을 현재 운영 브랜치 위에 만들고 검증·푸시한다. 과거 SHA로 force reset하거나 다른 사용자의 변경을 덮어쓰지 않는다. 브라우저 개인화 저장 키와 기존 책 URL은 배포·복구 과정에서도 유지한다.
