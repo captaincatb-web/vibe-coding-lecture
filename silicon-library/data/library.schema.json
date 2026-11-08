@@ -1,0 +1,1178 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://captaincatb-web.github.io/vibe-coding-lecture/silicon-library/data/library.schema.json",
+  "title": "Silicon Library v2 lossless read model",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "metadata",
+    "books",
+    "companies",
+    "business_units",
+    "facilities",
+    "processes",
+    "products",
+    "company_products",
+    "claims",
+    "sources",
+    "financials",
+    "relationship_edges",
+    "knowledge",
+    "legacy_snapshot"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 2
+    },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "legacy_digest",
+        "counting_basis",
+        "deep_content_present"
+      ],
+      "properties": {
+        "legacy_digest": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "counting_basis": {
+          "type": "string",
+          "minLength": 1
+        },
+        "deep_content_present": {
+          "type": "boolean"
+        }
+      }
+    },
+    "books": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/book"
+      }
+    },
+    "companies": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/company"
+      }
+    },
+    "business_units": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/business_unit"
+      }
+    },
+    "facilities": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/facility"
+      }
+    },
+    "processes": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/process"
+      }
+    },
+    "products": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/product"
+      }
+    },
+    "company_products": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/company_product"
+      }
+    },
+    "claims": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/claim"
+      }
+    },
+    "sources": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/source"
+      }
+    },
+    "financials": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/financial"
+      }
+    },
+    "relationship_edges": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/edge"
+      }
+    },
+    "knowledge": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/knowledge"
+      }
+    },
+    "legacy_snapshot": {
+      "type": "object",
+      "required": [
+        "B",
+        "ENT",
+        "PROC",
+        "TX",
+        "S"
+      ],
+      "properties": {
+        "B": {
+          "type": "array"
+        },
+        "ENT": {
+          "type": "object",
+          "required": [
+            "list",
+            "facts"
+          ],
+          "properties": {
+            "list": {
+              "type": "array"
+            },
+            "facts": {
+              "type": "array"
+            }
+          }
+        },
+        "PROC": {
+          "type": "array"
+        },
+        "TX": {
+          "type": "object"
+        },
+        "S": {
+          "type": "object"
+        }
+      }
+    }
+  },
+  "$defs": {
+    "company": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "company_id",
+        "display_name",
+        "canonical_name_ko",
+        "canonical_name_en",
+        "aliases",
+        "entity_kind",
+        "country",
+        "parent_company_id",
+        "dart_corp_code",
+        "stock_code",
+        "cik",
+        "website",
+        "listing_status",
+        "source_ids",
+        "last_verified_at",
+        "visibility",
+        "material_grade",
+        "classification_view",
+        "secondary_classifications",
+        "supply_chain_class",
+        "supply_chain_basis",
+        "legacy_verification_status",
+        "product_ids",
+        "process_ids",
+        "areas",
+        "legacy_row_index"
+      ],
+      "properties": {
+        "company_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_:-]+$"
+        },
+        "display_name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "canonical_name_ko": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        },
+        "canonical_name_en": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        },
+        "aliases": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "entity_kind": {
+          "enum": [
+            "unresolved_record",
+            "legal_entity",
+            "group",
+            "brand",
+            "facility"
+          ]
+        },
+        "country": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        },
+        "parent_company_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        },
+        "dart_corp_code": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        },
+        "stock_code": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        },
+        "cik": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        },
+        "website": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^https?://"
+        },
+        "listing_status": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        },
+        "source_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "last_verified_at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "partial-date"
+        },
+        "visibility": {
+          "enum": [
+            "public",
+            "candidate",
+            "hidden"
+          ]
+        },
+        "material_grade": {
+          "enum": [
+            "A",
+            "B",
+            "C"
+          ]
+        },
+        "classification_view": {
+          "type": "string",
+          "minLength": 1
+        },
+        "secondary_classifications": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "supply_chain_class": {
+          "enum": [
+            "직접",
+            "간접",
+            "관련 산업",
+            "검증 필요"
+          ]
+        },
+        "supply_chain_basis": {
+          "type": "string",
+          "minLength": 1
+        },
+        "legacy_verification_status": {
+          "enum": [
+            "검증",
+            "부분 검증",
+            "미검증"
+          ]
+        },
+        "product_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "process_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "areas": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "legacy_row_index": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "business_unit": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "unit_id",
+        "company_id",
+        "display_name",
+        "legal_name",
+        "legal_verified",
+        "product_ids",
+        "location_labels",
+        "source_ids",
+        "legacy"
+      ],
+      "properties": {
+        "unit_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_:-]+$"
+        },
+        "company_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_:-]+$"
+        },
+        "display_name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "legal_name": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        },
+        "legal_verified": {
+          "type": "boolean"
+        },
+        "product_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "location_labels": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "source_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "legacy": {
+          "type": "object"
+        }
+      }
+    },
+    "book": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "route",
+        "company_id",
+        "favorite_key",
+        "canonical_route",
+        "is_alias"
+      ],
+      "properties": {
+        "route": {
+          "type": "string",
+          "pattern": "^#b[0-9]+$"
+        },
+        "company_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_:-]+$"
+        },
+        "favorite_key": {
+          "type": "string",
+          "minLength": 1
+        },
+        "canonical_route": {
+          "type": "string",
+          "pattern": "^#b[0-9]+$"
+        },
+        "is_alias": {
+          "type": "boolean"
+        }
+      }
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_id",
+        "title",
+        "url",
+        "publisher",
+        "published_at",
+        "accessed_at",
+        "source_locator",
+        "license_reuse_status",
+        "source_type",
+        "retrieval_status",
+        "read_status",
+        "legacy_read_status"
+      ],
+      "properties": {
+        "source_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_:-]+$"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "url": {
+          "type": "string",
+          "pattern": "^https?://[^\\s]+$"
+        },
+        "publisher": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        },
+        "published_at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "partial-date"
+        },
+        "accessed_at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "partial-date"
+        },
+        "source_locator": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        },
+        "license_reuse_status": {
+          "enum": [
+            "unknown",
+            "link_only",
+            "permitted",
+            "restricted"
+          ]
+        },
+        "source_type": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        },
+        "retrieval_status": {
+          "enum": [
+            "not_rechecked",
+            "accessible",
+            "blocked",
+            "missing"
+          ]
+        },
+        "read_status": {
+          "enum": ["not_rechecked", "full_text", "partial_text", "snippet", "unavailable"]
+        },
+        "legacy_read_status": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        }
+      }
+    },
+    "process": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "process_id",
+        "name_ko",
+        "name_en",
+        "stage",
+        "parent_process_id",
+        "purpose",
+        "mechanism",
+        "product_ids",
+        "source_ids",
+        "legacy_reading_ids",
+        "legacy"
+      ],
+      "properties": {
+        "process_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_:-]+$"
+        },
+        "name_ko": {
+          "type": "string",
+          "minLength": 1
+        },
+        "name_en": {
+          "type": "string",
+          "minLength": 1
+        },
+        "stage": {
+          "enum": [
+            "FAB",
+            "P&T",
+            "인프라"
+          ]
+        },
+        "parent_process_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        },
+        "purpose": {
+          "type": "string",
+          "minLength": 1
+        },
+        "mechanism": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "product_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "source_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "legacy_reading_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "legacy": {
+          "type": "object"
+        }
+      }
+    },
+    "product": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "product_id",
+        "name",
+        "classification_original",
+        "classification_view",
+        "mapping_status",
+        "process_ids",
+        "source_ids",
+        "intentional_no_process",
+        "legacy"
+      ],
+      "properties": {
+        "product_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_:-]+$"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "classification_original": {
+          "type": [
+            "object",
+            "null"
+          ]
+        },
+        "classification_view": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        },
+        "mapping_status": {
+          "enum": [
+            "review_required",
+            "mapped"
+          ]
+        },
+        "process_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "source_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "intentional_no_process": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        },
+        "legacy": {
+          "type": "object"
+        }
+      }
+    },
+    "claim": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "claim_id",
+        "company_id",
+        "subject_id",
+        "statement",
+        "predicate",
+        "object_id",
+        "value",
+        "unit",
+        "scope",
+        "claim_type",
+        "effective_date",
+        "published_at",
+        "source_ids",
+        "source_locator",
+        "checked_at",
+        "verification_status",
+        "provenance",
+        "limitations",
+        "legacy",
+        "subject_type",
+        "object_type"
+      ],
+      "properties": {
+        "claim_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_:-]+$"
+        },
+        "company_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        },
+        "subject_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_:-]+$"
+        },
+        "statement": {
+          "type": "string",
+          "minLength": 1
+        },
+        "predicate": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        },
+        "object_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        },
+        "value": {
+          "type": [
+            "number",
+            "string",
+            "null"
+          ]
+        },
+        "unit": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        },
+        "scope": {
+          "enum": [
+            "법인",
+            "사업장",
+            "그룹",
+            "제품",
+            "기간"
+          ]
+        },
+        "claim_type": {
+          "type": "string",
+          "minLength": 1
+        },
+        "effective_date": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "partial-date"
+        },
+        "published_at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "partial-date"
+        },
+        "source_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "source_locator": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        },
+        "checked_at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "partial-date"
+        },
+        "verification_status": {
+          "enum": [
+            "verified",
+            "partial",
+            "unverified"
+          ]
+        },
+        "provenance": {
+          "enum": [
+            "legacy_fact",
+            "new"
+          ]
+        },
+        "limitations": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "legacy": {
+          "type": [
+            "object",
+            "null"
+          ]
+        },
+        "subject_type": {
+          "enum": [
+            "company",
+            "business_unit",
+            "product",
+            "process"
+          ]
+        },
+        "object_type": {
+          "enum": [
+            "company",
+            "business_unit",
+            "product",
+            "process",
+            null
+          ]
+        }
+      }
+    },
+    "company_product": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "company_id",
+        "product_id",
+        "relationship_type",
+        "evidence_ids",
+        "verification_status"
+      ],
+      "properties": {
+        "company_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_:-]+$"
+        },
+        "product_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_:-]+$"
+        },
+        "relationship_type": {
+          "enum": [
+            "legacy_catalog_link",
+            "develops",
+            "manufactures",
+            "sells",
+            "distributes"
+          ]
+        },
+        "evidence_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "verification_status": {
+          "enum": [
+            "verified",
+            "partial",
+            "unverified"
+          ]
+        }
+      }
+    },
+    "edge": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "edge_id",
+        "from_id",
+        "to_id",
+        "from_type",
+        "to_type",
+        "relation_type",
+        "evidence_ids",
+        "verified_at",
+        "confidence_status"
+      ],
+      "properties": {
+        "edge_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_:-]+$"
+        },
+        "from_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_:-]+$"
+        },
+        "to_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_:-]+$"
+        },
+        "from_type": {
+          "enum": [
+            "product"
+          ]
+        },
+        "to_type": {
+          "enum": [
+            "process"
+          ]
+        },
+        "relation_type": {
+          "enum": [
+            "used_in_process"
+          ]
+        },
+        "evidence_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "verified_at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "partial-date"
+        },
+        "confidence_status": {
+          "enum": [
+            "verified",
+            "partial",
+            "unverified"
+          ]
+        }
+      }
+    },
+    "knowledge": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "knowledge_id",
+        "title",
+        "process_ids",
+        "product_ids",
+        "source_ids",
+        "verification_status",
+        "legacy"
+      ],
+      "properties": {
+        "knowledge_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_:-]+$"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "process_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "product_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "source_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "verification_status": {
+          "enum": [
+            "verified",
+            "partial",
+            "unverified"
+          ]
+        },
+        "legacy": {
+          "type": "object"
+        }
+      }
+    },
+    "facility": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "facility_id",
+        "company_id",
+        "location",
+        "facility_type",
+        "source_ids"
+      ],
+      "properties": {
+        "facility_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_:-]+$"
+        },
+        "company_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_:-]+$"
+        },
+        "location": {
+          "type": "string",
+          "minLength": 1
+        },
+        "facility_type": {
+          "enum": [
+            "headquarters",
+            "factory",
+            "research",
+            "unknown"
+          ]
+        },
+        "source_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "financial": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "financial_id",
+        "company_id",
+        "period_start",
+        "period_end",
+        "currency",
+        "unit",
+        "consolidation",
+        "revenue",
+        "operating_income",
+        "source_id",
+        "original_report_locator",
+        "checked_at"
+      ],
+      "properties": {
+        "financial_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_:-]+$"
+        },
+        "company_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_:-]+$"
+        },
+        "period_start": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "partial-date"
+        },
+        "period_end": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "partial-date"
+        },
+        "currency": {
+          "type": "string",
+          "minLength": 1
+        },
+        "unit": {
+          "type": "string",
+          "minLength": 1
+        },
+        "consolidation": {
+          "enum": [
+            "consolidated",
+            "separate"
+          ]
+        },
+        "revenue": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "operating_income": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "source_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_:-]+$"
+        },
+        "original_report_locator": {
+          "type": "string",
+          "minLength": 1
+        },
+        "checked_at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "partial-date"
+        }
+      }
+    }
+  }
+}

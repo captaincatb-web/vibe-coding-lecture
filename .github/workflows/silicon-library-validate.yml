@@ -1,9 +1,9 @@
 name: silicon-library-validate
 on:
   pull_request:
-    paths: ["silicon-library/**", "scripts/**", "tests/**", ".github/workflows/silicon-library-validate.yml"]
+    paths: ["silicon-library/**", "scripts/**", "tests/**", "package.json", "package-lock.json", ".github/workflows/silicon-library-validate.yml"]
   push:
-    paths: ["silicon-library/**", "scripts/**", "tests/**", ".github/workflows/silicon-library-validate.yml"]
+    paths: ["silicon-library/**", "scripts/**", "tests/**", "package.json", "package-lock.json", ".github/workflows/silicon-library-validate.yml"]
 permissions:
   contents: read
 jobs:
@@ -14,15 +14,21 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: npm
+      - name: 고정 개발 의존성 설치
+        run: npm ci
       - name: 데이터 정합성 검사 (오류가 있으면 실패)
         run: node scripts/validate-silicon-library.js
       - name: 검사 스크립트 자체 검증 (일부러 망가뜨린 데이터를 잡는지)
         run: node tests/validator-negative.js
       - name: V2 진단기 관계·중복 감지 검증
         run: node tests/silicon-library-audit.js
-      - name: Playwright 설치 (저장소에 package.json이 없어 저장 없이 설치)
+      - name: 정규화 스키마·관계·실패 보존 및 생성본 검사
         run: |
-          npm install --no-save playwright@1.63.0
+          npm test
+          npm run build:data -- --check
+      - name: Playwright 브라우저 설치
+        run: |
           npx playwright install --with-deps chromium
       - name: 화면 회귀 테스트
         run: node tests/silicon-library-ui.js
