@@ -24,12 +24,12 @@ jobs:
       TARGET_BRANCH: claude/sharp-cannon-dyi1jj
       GH_TOKEN: ${{ github.token }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           ref: claude/sharp-cannon-dyi1jj
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
-          node-version: 20
+          node-version: 24
           cache: npm
       - run: npm ci
       - name: 공식 피드와 릴리스의 새 자료 확인
@@ -61,7 +61,7 @@ jobs:
         run: node scripts/rebuild-pages.js
       - name: 배포 확인 기록 보관
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: silicon-weekly-deployment
           path: ${{ runner.temp }}/silicon-weekly-deployment.json

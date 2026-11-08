@@ -30,7 +30,7 @@ HTTPS 출처 허용 목록, GitHub 저장소별 링크 경로, XML 크기·시�
 
 ## 로컬 확인
 
-Node.js 20 이상, Python 3이 필요하다.
+Node.js 24 LTS와 Python 3을 권장한다. 검사·예약 실행은 Node.js 24와 Node 24 작업 런타임을 사용하는 Actions v5로 구성한다.
 
 ```bash
 npm ci
