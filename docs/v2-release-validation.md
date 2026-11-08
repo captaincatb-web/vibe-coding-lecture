@@ -21,7 +21,7 @@ npm run check
 python3 -m http.server 8767 --bind 127.0.0.1
 ```
 
-다른 터미널에서 아래 세 가지를 각각 실행한다.
+다른 터미널에서 아래 네 가지를 각각 실행한다.
 
 ```bash
 SL_BROWSER_EXECUTABLE=/usr/bin/chromium SL_TEST_URL=http://127.0.0.1:8767/silicon-library/ SL_OFFLINE_FIXTURES=1 npm run test:ui
