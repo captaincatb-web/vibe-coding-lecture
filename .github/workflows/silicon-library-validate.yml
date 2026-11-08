@@ -45,4 +45,5 @@ jobs:
           SL_TEST_URL=http://127.0.0.1:8767/silicon-library/ npm run test:labs
           SL_TEST_URL=http://127.0.0.1:8767/silicon-library/ npm run test:study
           SL_TEST_URL=http://127.0.0.1:8767/silicon-library/ npm run test:reading
+          SL_TEST_URL=http://127.0.0.1:8767/silicon-library/ npm run test:shelf
           SL_TEST_URL=http://127.0.0.1:8767/silicon-library/ npm run test:a11y

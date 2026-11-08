@@ -13,6 +13,7 @@
     "test:labs": "node tests/silicon-labs-ui.js",
     "test:study": "node tests/silicon-study-ui.js",
     "test:reading": "node tests/silicon-reading-ui.js",
+    "test:shelf": "node tests/silicon-shelf-ui.js",
     "test:a11y": "node tests/silicon-accessibility.js",
     "test:comparison": "node tests/silicon-comparison-ui.js"
   },

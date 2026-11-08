@@ -42,6 +42,7 @@ const url = process.env.SL_TEST_URL || "http://127.0.0.1:8767/silicon-library/";
         );
       const page = await ctx.newPage();
       for (const hash of [
+        "",
         "#explore?item=product%3Apre",
         "#explore?compare=company:c05,company:c22,company:c27",
         "#labs?lab=lithography",
@@ -54,15 +55,17 @@ const url = process.env.SL_TEST_URL || "http://127.0.0.1:8767/silicon-library/";
         await page.goto(url + hash);
         await page
           .locator(
-            hash.startsWith("#b")
-              ? "#pg"
-              : hash.includes("compare=")
-                ? ".comparison-table"
-                : hash.includes("explore")
-                  ? ".explorer-detail h2"
-                  : hash.includes("learn")
-                    ? "#glossary-query"
-                    : "#lab-result",
+            hash === ""
+              ? ".library-hero"
+              : hash.startsWith("#b")
+                ? "#pg"
+                : hash.includes("compare=")
+                  ? ".comparison-table"
+                  : hash.includes("explore")
+                    ? ".explorer-detail h2"
+                    : hash.includes("learn")
+                      ? "#glossary-query"
+                      : "#lab-result",
           )
           .waitFor();
         await inspect(page, hash, width);
@@ -71,6 +74,9 @@ const url = process.env.SL_TEST_URL || "http://127.0.0.1:8767/silicon-library/";
           await inspect(page, hash + " · 핵심 기술", width);
         }
       }
+      await page.goto(url);
+      await page.getByRole("button", { name: "색상 모드 전환" }).click();
+      await inspect(page, "책장 · 어두운 모드", width);
       await ctx.close();
     }
     if (failures.length) {

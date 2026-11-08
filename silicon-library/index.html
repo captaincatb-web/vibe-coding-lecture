@@ -7,6 +7,7 @@
 <meta name="description" content="반도체 공정·소재·부품·장비와 기업을 연결하는 실리콘 서재. 통합 탐색, 출처 확인, 인터랙티브 학습 랩과 단계별 학습 경로를 제공합니다.">
 <link rel="stylesheet" href="src/explorer.css">
 <link rel="stylesheet" href="src/lab.css">
+<link rel="stylesheet" href="src/shelf.css">
 <link rel="icon" href="data:,">
 <style>[hidden]{display:none!important}body{margin:0}img{max-width:100%}</style>
 </head>
@@ -1169,15 +1170,25 @@ dl.facts dd { margin: 0; }
   function list(a) { return a && a.length ? "<ul>" + a.map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + "</ul>" : ""; }
 
   /* 책장 */
+  function volumeStyle(b) {
+    var colors = [["#20566a", "#f4d9a1"], ["#743b53", "#f6c8b6"], ["#2e4c78", "#d4dcf2"], ["#8a482f", "#ffe0a6"], ["#37594a", "#e7e3b1"], ["#5d467c", "#efceee"], ["#813d43", "#ffdbaf"], ["#3c596c", "#cbe8ed"], ["#69502e", "#f9dfaa"], ["#354b65", "#e2d8c5"]];
+    var color = colors[seedOf(b.code + b.n) % colors.length];
+    return "--volume-color:" + color[0] + ";--volume-foil:" + color[1];
+  }
+  function shelfHero() {
+    var featured = ["덕산테코피아", "TSE", "와이씨"];
+    return '<section class="library-hero" aria-labelledby="library-invitation"><div class="library-hero-copy"><p class="library-eyebrow">A LIBRARY OF SILICON</p><h2 id="library-invitation">작은 칩 속의<br><em>커다란 세계를 읽다.</em></h2><p class="library-hero-lede">소재에서 장비까지, 한 권의 기업에서 하나의 공정으로.<br>궁금한 표지를 골라 반도체의 연결을 발견하세요.</p><div class="library-hero-actions"><button type="button" class="library-primary" data-shelf-jump="catalog">책장 둘러보기 <span aria-hidden="true">↘</span></button><a href="#learn">처음이라면, 학습 경로 <span aria-hidden="true">→</span></a></div><p class="library-hero-count">46권의 책 <span>·</span> 31개 품목 <span>·</span> 13개 공정</p></div><div class="library-featured" aria-label="먼저 펼쳐볼 책">' + featured.map(function (name, index) {
+      var i = idxOf(name), b = B[i];
+      return '<a class="featured-volume featured-volume-' + index + '" href="#b' + i + '" style="' + volumeStyle(b) + '" aria-label="' + esc(b.n) + ' 책 열기"><span class="featured-series">SILICON LIBRARY</span><span class="featured-name">' + esc(b.n) + '</span><span class="featured-subject">' + esc(GX[b.g].head) + '</span>' + coverArt(b) + '<span class="featured-footer">' + esc(b.code) + '<span>' + esc(shelfOf[b.g].name) + '</span></span></a>';
+    }).join("") + '<span class="featured-pedestal" aria-hidden="true"></span></div></section>';
+  }
   function renderShelf() {
     var cnt = { A: 0, B: 0, C: 0 };
     B.forEach(function (b) { if (!b.ref) cnt[b.conf]++; });
-    var h = head("") +
-      '<p class="lede">협력사 46행(같은 기업의 두 번째 사업 1행 제외, 고유 기업 레코드 45건)을 품목별 책장에 꽂았습니다. 책등을 누르면 회사 한 권이 열립니다.</p><p class="ent-n">' + esc(ENT.recordNote) + '</p>' +
-      '<div class="legend"><span><span class="chip A">자료 확인</span> ' + cnt.A + '개 사</span><span><span class="chip B">부분 확인</span> ' + cnt.B + '개 사</span><span><span class="chip C">미검증</span> ' + cnt.C + '개 사</span><span style="color:var(--muted)">신뢰도는 자료를 확보한 정도이며, 문장별 원문 대조는 ' + ENT.facts.length + '건(' + Object.keys(ENT.facts.reduce(function (o, f) { o[f.ent] = 1; return o; }, {})).length + '개 기업)뿐입니다.</span><span style="color:var(--muted)">책등의 점: 꽉 참 = 확인, 반 = 부분, 빈 원 = 미검증</span></div>' +
-      viewTabs("shelf") + '<section class="journey"><h2>개념에서 기업까지, 한 번에 이어 읽기</h2><p>설명을 읽고 직접 조작한 뒤, 관련 품목과 기업의 근거 자료를 확인하세요.</p><div class="kchips"><a class="kchip" href="#learn">처음이라면 · 4단계 학습 경로</a><a class="kchip" href="#explore?q=ALD&amp;type=product">ALD · 전구체에서 기업까지</a><a class="kchip" href="#explore?q=HBM&amp;type=process">HBM · 적층과 검사 따라가기</a><a class="kchip" href="#labs">직접 조작하는 학습 랩</a></div></section>' +
+    var h = '<div class="library-home"><header class="library-masthead"><div>' + head("") + '</div>' + viewTabs("shelf") + '</header>' + shelfHero() +
+      '<section class="library-catalog-heading" id="library-catalog" aria-labelledby="library-catalog-title"><div><p class="library-eyebrow">THE COLLECTION</p><h2 id="library-catalog-title" tabindex="-1">지식이 꽂힌 책장</h2><p>표지를 누르면 기업의 이야기와 기술이 펼쳐집니다.</p></div><div class="library-shelf-links" aria-label="서가 바로가기"><button type="button" data-shelf-jump="mat">소재 <span>29</span></button><button type="button" data-shelf-jump="part">부품 <span>11</span></button><button type="button" data-shelf-jump="eq">장비 <span>6</span></button></div></section>' +
       '<div class="tools"><input id="q" type="search" placeholder="회사·품목·기술·공정 찾기 (예: ALD, FFKM, HBM)" aria-label="책 찾기"><select id="fc" aria-label="신뢰도"><option value="">신뢰도 전체</option><option value="A">자료 확인</option><option value="B">부분 확인</option><option value="C">미검증</option><option value="F">★ 즐겨찾기만</option></select></div>' +
-      '<div id="hits" class="hits" hidden></div><div class="case">';
+      '<div id="hits" class="hits" role="status" hidden></div><div class="case">';
     var shelfStat = {};
     shelves.forEach(function (s) {
       var rows = 0, ents = {};
@@ -1189,22 +1200,25 @@ dl.facts dd { margin: 0; }
       var st = shelfStat[s.id], extra = " 책 " + st.rows + "권, 고유 기업 " + st.uniq + "곳.";
       if (st.rows !== st.uniq) extra += " 같은 기업의 두 번째 사업이 " + (st.rows - st.uniq) + "권 있어 기업은 한 번만 셉니다.";
       if (st.other.length) extra += " 주 분류가 이 칸과 다른 기업: " + st.other.join(", ") + ".";
-      h += '<section class="shelf"><h2>' + esc(s.name) + '</h2><p class="cap">' + esc(s.cap) + esc(extra) + '</p><div class="row">';
+      h += '<section class="shelf" id="library-shelf-' + s.id + '"><div class="library-section-title"><h2 tabindex="-1">' + esc(s.name) + '</h2><span>' + st.rows + ' VOLUMES</span></div><p class="cap">' + esc(s.cap) + esc(extra) + '</p><div class="row">';
       s.groups.forEach(function (g) {
         h += '<div class="grp"><span class="grp-l">' + esc(g.name) + '</span>';
         B.forEach(function (b, i) {
           if (b.g !== g.id) return;
-          var pages = (b.tech.length + b.mkt.length + b.facts.length + b.watch.length);
-          var ht = 150 + Math.min(pages, 14) * 7;
-          h += '<button class="spine" type="button" data-i="' + i + '" data-q="' + esc((b.n + " " + (entOf(b) ? entOf(b).cat + " " + entOf(b).sub.join(" ") + " " + entOf(b).chain + " " + (entOf(b).units || []).map(function (u) { return u.name + " " + u.legal + " " + u.biz; }).join(" ") + " " : "") + b.reg + " " + b.item + " " + b.tech.join(" ") + " " + (TXN[b.n] || []).map(function (k) { return TX[k].t + " " + TX[k].k.join(" "); }).join(" ") + " " + (X[b.n] ? JSON.stringify([X[b.n].tr, X[b.n].opp, X[b.n].news]) : "")).toLowerCase()) + '" data-c="' + b.conf + '" style="height:' + ht + 'px;background:var(' + g.c + ')" aria-label="' + esc(b.n + ", " + b.item + ", " + chips[b.conf]) + '">' +
-            '<span class="band" style="top:6px"></span>' + (fav[b.n] ? '<span class="star" aria-label="즐겨찾기">★</span>' : '') + '<span class="code">' + esc(b.code) + '</span><span class="t">' + esc(b.n.replace(/\s*\(.*\)$/, "")) + '</span><span class="i">' + esc(b.item) + '</span><span class="d ' + b.conf + '"></span><span class="band" style="bottom:22px"></span></button>';
+          h += '<button class="spine" type="button" data-i="' + i + '" data-q="' + esc((b.n + " " + (entOf(b) ? entOf(b).cat + " " + entOf(b).sub.join(" ") + " " + entOf(b).chain + " " + (entOf(b).units || []).map(function (u) { return u.name + " " + u.legal + " " + u.biz; }).join(" ") + " " : "") + b.reg + " " + b.item + " " + b.tech.join(" ") + " " + (TXN[b.n] || []).map(function (k) { return TX[k].t + " " + TX[k].k.join(" "); }).join(" ") + " " + (X[b.n] ? JSON.stringify([X[b.n].tr, X[b.n].opp, X[b.n].news]) : "")).toLowerCase()) + '" data-c="' + b.conf + '" style="' + volumeStyle(b) + '" aria-label="' + esc(b.n + ", " + b.item + ", " + chips[b.conf]) + '">' +
+            '<span class="volume-top"><span class="code">' + esc(b.code) + '</span>' + (fav[b.n] ? '<span class="star" aria-label="즐겨찾기">★</span>' : '<span aria-hidden="true">✦</span>') + '</span><span class="t">' + esc(b.n.replace(/\s*\(.*\)$/, "")) + '</span>' + coverArt(b) + '<span class="i">' + esc(b.item) + '</span><span class="volume-bottom"><span class="d ' + b.conf + '"></span><span>' + esc(chips[b.conf]) + '</span><span class="volume-open" aria-hidden="true">↗</span></span></button>';
         });
         h += '</div>';
       });
       h += '</div></section>';
     });
-    h += '</div>';
+    h += '</div><section class="library-evidence" aria-label="수록 범위와 자료 확인 상태"><h2>책장을 읽기 전에</h2><p class="ent-n">협력사 46행(같은 기업의 두 번째 사업 1행 제외, 고유 기업 레코드 45건)을 수록했습니다. ' + esc(ENT.recordNote) + '</p><div class="legend"><span><span class="chip A">자료 확인</span> ' + cnt.A + '개 사</span><span><span class="chip B">부분 확인</span> ' + cnt.B + '개 사</span><span><span class="chip C">미검증</span> ' + cnt.C + '개 사</span><span>신뢰도는 자료를 확보한 정도이며, 문장별 원문 대조는 ' + ENT.facts.length + '건(' + Object.keys(ENT.facts.reduce(function (o, f) { o[f.ent] = 1; return o; }, {})).length + '개 기업)뿐입니다.</span><span>표지의 점: 꽉 참 = 확인, 반 = 부분, 빈 원 = 미검증</span></div></section><section class="journey"><h2>개념에서 기업까지, 한 번에 이어 읽기</h2><p>설명을 읽고 직접 조작한 뒤, 관련 품목과 기업의 근거 자료를 확인하세요.</p><div class="kchips"><a class="kchip" href="#learn">처음이라면 · 4단계 학습 경로</a><a class="kchip" href="#explore?q=ALD&amp;type=product">ALD · 전구체에서 기업까지</a><a class="kchip" href="#explore?q=HBM&amp;type=process">HBM · 적층과 검사 따라가기</a><a class="kchip" href="#labs">직접 조작하는 학습 랩</a></div></section></div>';
     app.innerHTML = h;
+    app.querySelectorAll("[data-shelf-jump]").forEach(function (button) { button.onclick = function () {
+      var id = button.dataset.shelfJump, target = document.getElementById(id === "catalog" ? "library-catalog" : "library-shelf-" + id), heading = target.querySelector("h2");
+      heading.focus({ preventScroll: true });
+      target.scrollIntoView({ behavior: reduced() ? "auto" : "smooth", block: "start" });
+    }; });
     app.querySelectorAll(".spine").forEach(function (el) { el.addEventListener("click", function () {
       if (busy) return;
       if (reduced()) { location.hash = "b" + el.dataset.i; return; }
@@ -1221,12 +1235,14 @@ dl.facts dd { margin: 0; }
     function filt() {
       var v = q.value.trim().toLowerCase(), c = fc.value;
       app.querySelectorAll(".spine").forEach(function (el) { var n = B[+el.dataset.i].n; el.hidden = !!((v && el.dataset.q.indexOf(v) < 0) || (c === "F" ? !fav[n] : (c && el.dataset.c !== c))); });
+      app.querySelectorAll(".grp, .shelf").forEach(function (section) { section.hidden = !section.querySelector(".spine:not([hidden])"); });
+      app.querySelectorAll(".library-shelf-links button").forEach(function (button) { button.disabled = document.getElementById("library-shelf-" + button.dataset.shelfJump).hidden; });
     }
     var hits = document.getElementById("hits"), f0 = filt;
     filt = function () { f0(); var v = q.value.trim().toLowerCase(), r = v.length > 1 ? searchKnow(v) : [];
       var nbs = {}; app.querySelectorAll(".spine:not([hidden])").forEach(function (el) { var bb = B[+el.dataset.i]; nbs[bb.ref || bb.n] = 1; });
       var nb = Object.keys(nbs).length;
-      hits.hidden = !v; hits.innerHTML = v ? '<b>회사 ' + nb + '권</b>' + (r.length ? ' · <b>기술 백과 ' + r.length + '건</b><div class="kchips">' + r.join("") + "</div>" : ' · 기술 백과 결과 없음') : ""; };
+      hits.hidden = !v && !fc.value; hits.innerHTML = !hits.hidden ? '<b>회사 ' + nb + '권</b>' + (v ? (r.length ? ' · <b>기술 백과 ' + r.length + '건</b><div class="kchips">' + r.join("") + "</div>" : ' · 기술 백과 결과 없음') : '') + (!nb && !r.length ? '<p>' + (fc.value === "F" && !v ? '아직 즐겨찾은 책이 없습니다. 책을 열고 ☆ 즐겨찾기를 눌러 나만의 서가를 만들어 보세요.' : '찾는 책이 없습니다. 검색어나 신뢰도 필터를 바꿔 보세요.') + '</p>' : '') : ""; };
     q.addEventListener("input", filt); fc.addEventListener("change", filt);
     try { var st = sessionStorage.getItem("shelfY"); if (st) window.scrollTo(0, +st); } catch (e) {}
   }
