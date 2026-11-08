@@ -421,6 +421,14 @@
   }
 }
 @media print {
+  #textbook-root {
+    --paper: #ffffff;
+    --fg: #111111;
+    --muted: #444444;
+    --line: #bbbbbb;
+    --accent: #0b5d72;
+    --accent-soft: #eef5f6;
+  }
   .textbook-toc,
   .textbook-pagination,
   .textbook-back,
@@ -437,6 +445,7 @@
     break-before: auto;
   }
   .textbook-banner {
+    display: block;
     border: 0;
     padding: 0 0 20px;
   }

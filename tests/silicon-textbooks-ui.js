@@ -208,6 +208,21 @@ function ok(name, condition) {
           () => document.documentElement.scrollWidth <= innerWidth + 1,
         )),
     );
+    await page.emulateMedia({ media: "screen" });
+    await page.getByRole("button", { name: "색상 모드 전환" }).click();
+    await page.emulateMedia({ media: "print" });
+    ok(
+      "dark-mode printing keeps readable paper and a full-width introduction",
+      await page.evaluate(() => {
+        const banner = document.querySelector(".textbook-banner"),
+          article = document.querySelector(".textbook-chapter");
+        return (
+          banner.lastElementChild.getBoundingClientRect().width >
+            banner.getBoundingClientRect().width * 0.8 &&
+          getComputedStyle(article).backgroundColor === "rgb(255, 255, 255)"
+        );
+      }),
+    );
     ok(
       "textbooks leave favorites and manual learning progress intact",
       JSON.stringify(
