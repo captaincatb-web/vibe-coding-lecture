@@ -77,6 +77,7 @@
     core.books.forEach(function (book, index) {
       var card = link("", core.route(book.id), "textbook-card");
       card.dataset.book = book.id;
+      card.title = book.subtitle;
       card.setAttribute("aria-label", book.title + " 교과서 읽기");
       card.style.setProperty("--textbook-color", book.color);
       card.style.setProperty("--textbook-foil", book.foil);
@@ -86,7 +87,7 @@
       cover.append(
         el(
           "span",
-          "SILICON LIBRARY · TEXTBOOK " + String(index + 1).padStart(2, "0"),
+          String(index + 1).padStart(2, "0") + " · 교과서",
           "textbook-edition",
         ),
         el("h3", book.title),

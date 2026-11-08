@@ -1,6 +1,6 @@
 {
-  "release": "silicon-library-2.4-local-textbooks-20261108",
-  "application_base_commit": "3e0cb47ecd615749c883ab6d7cdfda19da2a9234",
+  "release": "silicon-library-2.5-spine-shelves-20261108",
+  "application_base_commit": "425f2ca2f940eb5fd04d89776beae245d6fcce1a",
   "entrypoints": ["#explore", "#labs", "#learn", "#textbooks"],
   "hosting": "GitHub Pages static files"
 }

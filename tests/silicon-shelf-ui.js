@@ -103,6 +103,8 @@ function ok(name, condition) {
     ok(
       "search retains canonical company counting and hides empty groups",
       /회사 1권/.test(await page.locator("#hits").innerText()) &&
+        (await page.locator(".spine-slot:not([hidden])").count()) ===
+          (await page.locator(".spine:not([hidden])").count()) &&
         (await page
           .locator(".grp:not([hidden]), .shelf:not([hidden])")
           .evaluateAll((nodes) =>
@@ -186,6 +188,25 @@ function ok(name, condition) {
       ok(
         "cover status stays inside each book at " + width,
         clipped.length === 0,
+      );
+      ok(
+        "upright book spines keep complete names above their shelf ornaments at " +
+          width,
+        await page.locator(".spine").evaluateAll((nodes) =>
+          nodes.every((node) => {
+            const title = node.querySelector(".t"),
+              range = document.createRange();
+            range.selectNodeContents(title);
+            return (
+              getComputedStyle(title).writingMode === "vertical-rl" &&
+              node.offsetHeight > node.offsetWidth * 3 &&
+              range.getBoundingClientRect().bottom <=
+                node.querySelector(".spine-labels").getBoundingClientRect()
+                  .bottom +
+                  1
+            );
+          }),
+        ),
       );
     }
     ok("no homepage runtime errors", errors.length === 0);

@@ -193,6 +193,23 @@ function ok(name, condition) {
           () => document.documentElement.scrollWidth <= innerWidth + 1,
         ),
       );
+      ok(
+        "textbooks stand upright on their shelf at " + width,
+        await page.locator(".textbook-cover").evaluateAll((nodes) =>
+          nodes.every((node) => {
+            const title = node.querySelector("h3"),
+              range = document.createRange();
+            range.selectNodeContents(title);
+            return (
+              getComputedStyle(title).writingMode === "vertical-rl" &&
+              node.offsetHeight > node.offsetWidth * 3 &&
+              range.getBoundingClientRect().bottom <=
+                node.querySelector(".textbook-symbol").getBoundingClientRect()
+                  .top
+            );
+          }),
+        ),
+      );
       for (const id of ["FIL", "PKG", "MEM", "FAB"]) {
         await page.goto(url + core.route(id, "all"));
         await page.locator(".textbook-chapter").first().waitFor();

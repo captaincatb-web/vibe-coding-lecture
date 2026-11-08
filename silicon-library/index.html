@@ -11,6 +11,7 @@
 <link rel="stylesheet" href="src/reading.css">
 <script src="src/reading-core.js"></script>
 <link rel="stylesheet" href="src/textbook.css">
+<link rel="stylesheet" href="src/bookcase.css">
 <script src="src/textbook-core.js"></script>
 <link rel="icon" href="data:,">
 <style>[hidden]{display:none!important}body{margin:0}img{max-width:100%}</style>
@@ -1177,7 +1178,8 @@ dl.facts dd { margin: 0; }
   function volumeStyle(b) {
     var colors = [["#20566a", "#f4d9a1"], ["#743b53", "#f6c8b6"], ["#2e4c78", "#d4dcf2"], ["#8a482f", "#ffe0a6"], ["#37594a", "#e7e3b1"], ["#5d467c", "#efceee"], ["#813d43", "#ffdbaf"], ["#3c596c", "#cbe8ed"], ["#69502e", "#f9dfaa"], ["#354b65", "#e2d8c5"]];
     var color = colors[seedOf(b.code + b.n) % colors.length];
-    return "--volume-color:" + color[0] + ";--volume-foil:" + color[1];
+    var shape = seedOf(b.code) % 3;
+    return "--volume-color:" + color[0] + ";--volume-foil:" + color[1] + ";--spine-height:" + (236 + shape * 14) + "px;--spine-width:" + (46 + shape * 3) + "px";
   }
   function shelfHero() {
     var featured = ["덕산테코피아", "TSE", "와이씨"];
@@ -1190,7 +1192,7 @@ dl.facts dd { margin: 0; }
     var cnt = { A: 0, B: 0, C: 0 };
     B.forEach(function (b) { if (!b.ref) cnt[b.conf]++; });
     var h = '<div class="library-home"><header class="library-masthead"><div>' + head("") + '</div>' + viewTabs("shelf") + '</header>' + shelfHero() +
-      '<section class="library-catalog-heading" id="library-catalog" aria-labelledby="library-catalog-title"><div><p class="library-eyebrow">THE COLLECTION</p><h2 id="library-catalog-title" tabindex="-1">지식이 꽂힌 책장</h2><p>표지를 누르면 기업의 이야기와 기술이 펼쳐집니다.</p></div><div class="library-shelf-links" aria-label="서가 바로가기"><button type="button" data-shelf-jump="mat">소재 <span>29</span></button><button type="button" data-shelf-jump="part">부품 <span>11</span></button><button type="button" data-shelf-jump="eq">장비 <span>6</span></button></div></section>' +
+      '<section class="library-catalog-heading" id="library-catalog" aria-labelledby="library-catalog-title"><div><p class="library-eyebrow">THE COLLECTION</p><h2 id="library-catalog-title" tabindex="-1">지식이 꽂힌 책장</h2><p>책등을 누르면 기업의 이야기와 기술이 펼쳐집니다.</p></div><div class="library-shelf-links" aria-label="서가 바로가기"><button type="button" data-shelf-jump="mat">소재 <span>29</span></button><button type="button" data-shelf-jump="part">부품 <span>11</span></button><button type="button" data-shelf-jump="eq">장비 <span>6</span></button></div></section>' +
       '<div class="tools"><input id="q" type="search" placeholder="회사·품목·기술·공정 찾기 (예: ALD, FFKM, HBM)" aria-label="책 찾기"><select id="fc" aria-label="신뢰도"><option value="">신뢰도 전체</option><option value="A">자료 확인</option><option value="B">부분 확인</option><option value="C">미검증</option><option value="F">★ 즐겨찾기만</option></select></div>' +
       '<div id="hits" class="hits" role="status" hidden></div><div class="case">';
     var shelfStat = {};
@@ -1206,13 +1208,15 @@ dl.facts dd { margin: 0; }
       if (st.other.length) extra += " 주 분류가 이 칸과 다른 기업: " + st.other.join(", ") + ".";
       h += '<section class="shelf" id="library-shelf-' + s.id + '"><div class="library-section-title"><h2 tabindex="-1">' + esc(s.name) + '</h2><span>' + st.rows + ' VOLUMES</span></div><p class="cap">' + esc(s.cap) + esc(extra) + '</p><div class="row">';
       s.groups.forEach(function (g) {
-        h += '<div class="grp"><span class="grp-l">' + esc(g.name) + '</span>';
+        h += '<div class="grp"><span class="grp-l">' + esc(g.name) + '</span><div class="spine-rack">';
         B.forEach(function (b, i) {
           if (b.g !== g.id) return;
+          var shortName = b.n.replace(/\s*\(.*\)$/, "");
+          h += '<div class="spine-slot">';
           h += '<button class="spine" type="button" data-i="' + i + '" data-q="' + esc((b.n + " " + (entOf(b) ? entOf(b).cat + " " + entOf(b).sub.join(" ") + " " + entOf(b).chain + " " + (entOf(b).units || []).map(function (u) { return u.name + " " + u.legal + " " + u.biz; }).join(" ") + " " : "") + b.reg + " " + b.item + " " + b.tech.join(" ") + " " + (TXN[b.n] || []).map(function (k) { return TX[k].t + " " + TX[k].k.join(" "); }).join(" ") + " " + (X[b.n] ? JSON.stringify([X[b.n].tr, X[b.n].opp, X[b.n].news]) : "")).toLowerCase()) + '" data-c="' + b.conf + '" style="' + volumeStyle(b) + '" aria-label="' + esc(b.n + ", " + b.item + ", " + chips[b.conf]) + '">' +
-            '<span class="volume-top"><span class="code">' + esc(b.code) + '</span>' + (fav[b.n] ? '<span class="star" aria-label="즐겨찾기">★</span>' : '<span aria-hidden="true">✦</span>') + '</span><span class="t">' + esc(b.n.replace(/\s*\(.*\)$/, "")) + '</span>' + coverArt(b) + '<span class="i">' + esc(b.item) + '</span><span class="volume-bottom"><span class="d ' + b.conf + '"></span><span>' + esc(chips[b.conf]) + '</span><span class="volume-open" aria-hidden="true">↗</span></span></button>';
+            '<span class="volume-top"><span class="code">' + esc(b.code) + '</span>' + (fav[b.n] ? '<span class="star" aria-label="즐겨찾기">★</span>' : '<span aria-hidden="true">✦</span>') + '</span><span class="spine-labels"><span class="t' + (shortName.length > 14 ? ' spine-title-long' : '') + '">' + esc(shortName) + '</span><span class="i">' + esc(b.item) + '</span></span>' + coverArt(b) + '<span class="volume-bottom"><span class="d ' + b.conf + '"></span><span class="visually-hidden">' + esc(chips[b.conf]) + '</span></span></button></div>';
         });
-        h += '</div>';
+        h += '</div></div>';
       });
       h += '</div></section>';
     });
@@ -1238,7 +1242,7 @@ dl.facts dd { margin: 0; }
     var q = document.getElementById("q"), fc = document.getElementById("fc");
     function filt() {
       var v = q.value.trim().toLowerCase(), c = fc.value;
-      app.querySelectorAll(".spine").forEach(function (el) { var n = B[+el.dataset.i].n; el.hidden = !!((v && el.dataset.q.indexOf(v) < 0) || (c === "F" ? !fav[n] : (c && el.dataset.c !== c))); });
+      app.querySelectorAll(".spine").forEach(function (el) { var n = B[+el.dataset.i].n; el.hidden = !!((v && el.dataset.q.indexOf(v) < 0) || (c === "F" ? !fav[n] : (c && el.dataset.c !== c))); el.parentElement.hidden = el.hidden; });
       app.querySelectorAll(".grp, .shelf").forEach(function (section) { section.hidden = !section.querySelector(".spine:not([hidden])"); });
       app.querySelectorAll(".library-shelf-links button").forEach(function (button) { button.disabled = document.getElementById("library-shelf-" + button.dataset.shelfJump).hidden; });
     }
