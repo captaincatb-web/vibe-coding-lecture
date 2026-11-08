@@ -12,6 +12,9 @@
 <script src="src/reading-core.js"></script>
 <link rel="stylesheet" href="src/textbook.css">
 <link rel="stylesheet" href="src/bookcase.css">
+<link rel="stylesheet" href="src/weekly.css">
+<script src="src/weekly-data.js"></script>
+<script src="src/weekly-core.js"></script>
 <script src="src/textbook-core.js"></script>
 <link rel="icon" href="data:,">
 <style>[hidden]{display:none!important}body{margin:0}img{max-width:100%}</style>
@@ -1222,6 +1225,8 @@ dl.facts dd { margin: 0; }
     });
     h += '</div><section class="library-evidence" aria-label="수록 범위와 자료 확인 상태"><h2>책장을 읽기 전에</h2><p class="ent-n">협력사 46행(같은 기업의 두 번째 사업 1행 제외, 고유 기업 레코드 45건)을 수록했습니다. ' + esc(ENT.recordNote) + '</p><div class="legend"><span><span class="chip A">자료 확인</span> ' + cnt.A + '개 사</span><span><span class="chip B">부분 확인</span> ' + cnt.B + '개 사</span><span><span class="chip C">미검증</span> ' + cnt.C + '개 사</span><span>신뢰도는 자료를 확보한 정도이며, 문장별 원문 대조는 ' + ENT.facts.length + '건(' + Object.keys(ENT.facts.reduce(function (o, f) { o[f.ent] = 1; return o; }, {})).length + '개 기업)뿐입니다.</span><span>표지의 점: 꽉 참 = 확인, 반 = 부분, 빈 원 = 미검증</span></div></section><section class="journey"><h2>개념에서 기업까지, 한 번에 이어 읽기</h2><p>설명을 읽고 직접 조작한 뒤, 관련 품목과 기업의 근거 자료를 확인하세요.</p><div class="kchips"><a class="kchip" href="#learn">처음이라면 · 4단계 학습 경로</a><a class="kchip" href="#explore?q=ALD&amp;type=product">ALD · 전구체에서 기업까지</a><a class="kchip" href="#explore?q=HBM&amp;type=process">HBM · 적층과 검사 따라가기</a><a class="kchip" href="#labs">직접 조작하는 학습 랩</a></div></section></div>';
     app.innerHTML = h;
+    var weeklyHome = document.createElement("div"); weeklyHome.className = "weekly-slot"; weeklyHome.dataset.weeklyMode = "all"; app.append(weeklyHome);
+    if (window.SiliconWeeklyUI) window.SiliconWeeklyUI.mount(app);
     app.querySelectorAll("[data-shelf-jump]").forEach(function (button) { button.onclick = function () {
       var id = button.dataset.shelfJump, target = document.getElementById(id === "catalog" ? "library-catalog" : "library-shelf-" + id), heading = target.querySelector("h2");
       heading.focus({ preventScroll: true });
@@ -1430,6 +1435,7 @@ dl.facts dd { margin: 0; }
       rh += '<p class="empty">찾은 증권사 리포트가 없습니다. 비상장사·외국계 법인이거나 커버리지가 없는 회사입니다.</p>';
     }
     P.push(["최근 동향", rh]);
+    P[P.length - 1][1] += '<div class="weekly-slot" data-weekly-products="' + esc((TXN[b.n] || []).join(",")) + '"></div>';
     var srcKeys = b.src.slice();
     reps.forEach(function (r) { if (r.s && srcKeys.indexOf(r.s) < 0) srcKeys.push(r.s); });
     (xa.news || []).forEach(function (n) { if (n[2] && srcKeys.indexOf(n[2]) < 0) srcKeys.push(n[2]); });
@@ -1453,11 +1459,12 @@ dl.facts dd { margin: 0; }
       '<div class="head">' + esc(GX[b.g].head) + '</div>' +
       '<div class="item">' + esc(b.reg) + ' · ' + esc(b.item) + '</div><div class="one">' + esc(b.one) + '</div>' +
       '<div class="topics">' + GX[b.g].topics.map(function (t) { return "<span>" + esc(t) + "</span>"; }).join("") + '</div>' + coverArt(b) +
-      '<div class="foot"><span class="conf">' + chips[b.conf] + '</span><br><br>실리콘 서재<br>2026.10.31 기준</div></div>' +
+      '<div class="foot"><span class="conf">' + chips[b.conf] + '</span><br><br>실리콘 서재<br>' + libraryDateText() + ' 서재 편집 기준</div></div>' +
       '<div class="leaf"><nav class="tabs" aria-label="이 책의 목차">' + P.map(function (p, k) { return '<button type="button" data-p="' + k + '"' + (k === cur.p ? ' aria-current="page"' : "") + ">" + (k + 1) + ". " + esc(p[0]) + "</button>"; }).join("") + '</nav>' +
       '<div class="page' + (dir ? " " + dir : "") + '" id="pg"><h2 class="visually-hidden">' + esc(P[cur.p][0]) + '</h2>' + P[cur.p][1] + '</div>' +
       '<div class="folio"><button class="btn" id="pp" type="button"' + (cur.p === 0 ? " disabled" : "") + '>‹ 앞쪽</button><span>' + (cur.p + 1) + ' / ' + P.length + ' 쪽</span><button class="btn" id="np" type="button"' + (cur.p === P.length - 1 ? " disabled" : "") + '>뒤쪽 ›</button></div></div></article></div>';
     app.innerHTML = h;
+    if (window.SiliconWeeklyUI) window.SiliconWeeklyUI.mount(app);
     document.getElementById("home").onclick = function () { location.hash = homeView === "map" ? "map" : ""; };
     document.getElementById("fav").onclick = function () { if (fav[b.n]) delete fav[b.n]; else fav[b.n] = 1; saveFav(); var on = !!fav[b.n]; this.setAttribute("aria-pressed", on ? "true" : "false"); this.textContent = on ? "★ 즐겨찾기" : "☆ 즐겨찾기"; };
     document.getElementById("pb").onclick = function () { go(order[pos - 1]); };
@@ -1843,7 +1850,8 @@ dl.facts dd { margin: 0; }
   /* 기술 백과: #tech 목록, #t-공정, #x-제품기술 */
   var STAGE2P = { "웨이퍼": "wafer", "노광": "photo", "식각·세정": "etch", "증착·배선": "dep", "CMP": "cmp", "테스트": "test", "패키징": "pkg" };
   var LV = ["입문", "실무", "심화"];
-  function head(sub) { return '<div class="kicker">2026.10.31 기준</div><h1>실리콘 서재</h1><p class="sub-t">충청권 반도체 소부장 지식 라이브러리</p>' + sub; }
+  function libraryDateText() { return window.SiliconWeeklyCore ? window.SiliconWeeklyCore.dateText(window.SiliconWeeklyCore.data.as_of) : "2026.11.08"; }
+  function head(sub) { return '<div class="kicker"><time class="library-date" datetime="' + libraryDateText().replace(/\./g, "-") + '" title="서재 편집·주간 자료 확인 기준일입니다. 개별 기업 사실의 확인일은 참고자료에 표시합니다.">' + libraryDateText() + ' 기준</time></div><h1>실리콘 서재</h1><p class="sub-t">충청권 반도체 소부장 지식 라이브러리</p>' + sub; }
   function txLink(k) { var x = TX[k]; return x ? '<a class="kchip" href="#x-' + k + '">' + esc(x.t) + "</a>" : ""; }
   function pLink(id) { var p = procById(id); return p ? '<a class="kchip p" href="#t-' + id + '">' + esc(p.n) + "</a>" : ""; }
   function sbList(keys) { return '<ul class="rel">' + keys.map(function (c) { var s = SB[c], local = window.SiliconTextbookCore && window.SiliconTextbookCore.get(c); return s ? '<li>' + (local ? '<a href="' + window.SiliconTextbookCore.route(c) + '"><b>' + esc(local.title) + '</b> · 서재에서 읽기 →</a><br><small>' + esc(local.subtitle) + '</small> · ' : '') + '<a href="' + s[2] + '" target="_blank" rel="noopener noreferrer">' + esc(s[0]) + ' · 외부 참고 (새 탭)</a></li>' : ""; }).join("") + "</ul>"; }
@@ -2037,6 +2045,7 @@ dl.facts dd { margin: 0; }
 <script src="src/study-core.js"></script>
 <script src="src/lab-ui.js"></script>
 <script src="src/textbook-ui.js"></script>
+<script src="src/weekly-ui.js"></script>
 
 </body>
 </html>

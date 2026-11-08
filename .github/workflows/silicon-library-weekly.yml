@@ -1,0 +1,81 @@
+name: silicon-library-weekly
+
+on:
+  schedule:
+    - cron: "0 0 * * 1"
+  workflow_dispatch:
+  push:
+    branches: ["ccr-6094f858-7eoy34"]
+    paths: [".github/workflows/silicon-library-weekly.yml"]
+
+permissions:
+  contents: write
+  pages: write
+
+concurrency:
+  group: silicon-library-weekly-production
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      TARGET_BRANCH: claude/sharp-cannon-dyi1jj
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: claude/sharp-cannon-dyi1jj
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - name: 공식 피드와 릴리스의 새 자료 확인
+        run: node scripts/update-weekly.js
+      - name: 데이터·기존 사실 보존·생성본 검사
+        run: npm run check
+      - name: 주간 자료 화면 검사
+        run: |
+          npx playwright install --with-deps chromium
+          python3 -m http.server 8767 --bind 127.0.0.1 > /tmp/weekly-server.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid"' EXIT
+          SL_TEST_URL=http://127.0.0.1:8767/silicon-library/ SL_OFFLINE_FIXTURES=1 npm run test:weekly
+      - name: 검증된 자료를 배포 브랜치에 저장
+        id: publish
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add silicon-library/data/weekly-updates.json silicon-library/src/weekly-data.js
+          if git diff --cached --quiet; then
+            echo 'changed=false' >> "$GITHUB_OUTPUT"
+          else
+            git commit -m 'Refresh weekly semiconductor reading materials'
+            git push origin "HEAD:refs/heads/$TARGET_BRANCH"
+            echo 'changed=true' >> "$GITHUB_OUTPUT"
+          fi
+      - name: Pages 재빌드 요청 및 정확한 배포 커밋 확인
+        if: steps.publish.outputs.changed == 'true'
+        run: |
+          expected_commit=$(git rev-parse HEAD)
+          configured_branch=$(gh api "repos/$GITHUB_REPOSITORY/pages" --jq '.source.branch')
+          test "$configured_branch" = "$TARGET_BRANCH"
+          gh api --method POST "repos/$GITHUB_REPOSITORY/pages/builds" --silent
+          for attempt in $(seq 1 60); do
+            gh api "repos/$GITHUB_REPOSITORY/pages/builds/latest" > /tmp/weekly-pages-build.json
+            actual_commit=$(jq -r '.commit' /tmp/weekly-pages-build.json)
+            build_state=$(jq -r '.status' /tmp/weekly-pages-build.json)
+            if [ "$actual_commit" = "$expected_commit" ] && [ "$build_state" = 'built' ]; then
+              echo "Pages deployed $expected_commit"
+              exit 0
+            fi
+            if [ "$actual_commit" = "$expected_commit" ] && [ "$build_state" = 'errored' ]; then
+              jq '.error' /tmp/weekly-pages-build.json
+              exit 1
+            fi
+            sleep 10
+          done
+          echo 'Pages did not confirm the expected commit within ten minutes.'
+          exit 1

@@ -29,6 +29,7 @@ jobs:
           node scripts/build-deep.js --check
           npm run build:data -- --check
           node scripts/build-explorer-index.js --check
+          node scripts/update-weekly.js --check
       - name: Playwright 브라우저 설치
         run: |
           npx playwright install --with-deps chromium
@@ -47,4 +48,5 @@ jobs:
           SL_TEST_URL=http://127.0.0.1:8767/silicon-library/ npm run test:reading
           SL_TEST_URL=http://127.0.0.1:8767/silicon-library/ npm run test:shelf
           SL_TEST_URL=http://127.0.0.1:8767/silicon-library/ npm run test:textbooks
+          SL_TEST_URL=http://127.0.0.1:8767/silicon-library/ npm run test:weekly
           SL_TEST_URL=http://127.0.0.1:8767/silicon-library/ npm run test:a11y

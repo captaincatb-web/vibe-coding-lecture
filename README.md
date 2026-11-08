@@ -11,6 +11,7 @@
 - **책 본문:** 기존 품목·공정 연결을 바탕으로 읽기 길잡이와 실습 연결을 제공하고, 핵심 기술의 기존 주의사항과 수치 검증 상태를 함께 표시합니다. [책 본문 개선 안내](docs/reading-guide.md)
 - **원리 확장:** 31개 품목의 작동 흐름·관련 품목 비교·이해 확인 문답과 기업별 제품 평가 질문을 제공합니다. 확장 설명도 통합 탐색에서 검색할 수 있습니다. [반복 개선 기록](docs/reading-depth.md)
 - **내부 교과서:** 산업·공정·소재·메모리·패키징 등 11종, 33개 장과 핵심 용어 33개를 직접 작성했습니다. 기업 책의 ‘함께 읽을 교과서’에서 이어 읽고, 목차·본문 검색·전체 읽기·인쇄를 이용합니다. [교과서 안내](docs/local-textbooks.md)
+- **주간 업데이트:** 서재 기준일을 2026.11.08로 갱신했습니다. 매주 월요일 오전 9시(한국 시간)에 공식 뉴스룸·기술 매체·공식 릴리스를 확인하고, 새 자료의 제목·원문 날짜·링크를 첫 화면과 관련 책·교과서에 반영합니다. 자동 수집 자료는 ‘원문 대조 전’으로 표시합니다. [자동 갱신 안내](docs/weekly-updates.md)
 - 기존 46개 책 URL, 45개 기업 레코드, 13개 공정, 31개 기술과 PR #3의 심화 콘텐츠를 보존합니다. 기업 레코드 수는 법인 수가 아닙니다.
 
 Node.js 20 이상과 Python 3으로 실행합니다.
@@ -23,6 +24,8 @@ python3 -m http.server 8767 --bind 127.0.0.1
 ```
 
 로컬 서버에서 `/silicon-library/`를 열면 됩니다. 화면별 경로는 `#explore`, `#labs`, `#learn`입니다. 개발 브랜치에서 `npm run build` 후 생성본도 함께 커밋합니다.
+
+주간 자료를 수동 갱신하려면 `npm run update:weekly` 후 `npm run check`를 실행합니다. 주간 화면 검사는 서버가 실행된 상태에서 `npm run test:weekly`로 확인합니다. GitHub의 예약 작업은 기본 브랜치에서 실행되며 검증 후 기존 Pages 브랜치에 자료를 저장하고 재배포를 요청합니다.
 
 UI 검사는 별도 터미널에서 `npm run test:ui`, `npm run test:explorer`, `npm run test:labs`, `npm run test:study`, `npm run test:reading`, `npm run test:a11y`로 실행합니다. Playwright 브라우저 설치는 `npx playwright install chromium`을 사용합니다. 학습 기록의 동작과 저장 실패 처리는 [학습 이어가기 안내](docs/study-progress.md), 관리형 클라우드의 구체적인 검증 명령은 [통합 검증 기록](docs/v2-release-validation.md)을 참고하세요.
 

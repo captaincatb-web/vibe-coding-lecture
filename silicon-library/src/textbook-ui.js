@@ -292,6 +292,11 @@
       ),
     );
     root.append(scope);
+    var weekly = el("div", undefined, "weekly-slot");
+    weekly.dataset.weeklyMode = "topics";
+    weekly.dataset.weeklyTopics = book.id;
+    root.append(weekly);
+    if (window.SiliconWeeklyUI) window.SiliconWeeklyUI.mount(root);
   }
   function mount(root) {
     root.replaceChildren();
