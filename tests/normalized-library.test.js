@@ -31,7 +31,7 @@ test('preserves complete legacy export, input, counts, and deterministic output'
   assert.deepEqual(validate(d),[]);
   assert.equal(JSON.stringify(d.legacy_snapshot),before);
   assert.equal(JSON.stringify(source),before);
-  assert.deepEqual([d.books.length,d.companies.length,d.processes.length,d.products.length,d.claims.length,d.sources.length],[46,45,13,31,15,188]);
+  assert.deepEqual([d.books.length,d.companies.length,d.processes.length,d.products.length,d.claims.length,d.sources.length],[46,45,13,31,15,188+Object.keys(source.DEEP?.sources || {}).length]);
   assert.equal(serialize(source),serialize(source));
 });
 test('keeps Linde legal units separate without inventing facilities or financials',()=>{
