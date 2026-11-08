@@ -1770,8 +1770,8 @@ dl.facts dd { margin: 0; }
     h += sec("실무", "장비 · 소재 · 부품", '<div class="tri"><div><b>주요 장비</b>' + list(p.eq) + "</div><div><b>핵심 소재</b>" + list(p.mat) + "</div><div><b>핵심 부품</b>" + list(p.part) + "</div></div>");
     h += sec("심화", "기술 이슈", list(p.iss)) + sec("심화", "발전 방향", list(p.fut));
     h += sec("실무", "대표 기업", '<div class="tri two"><div><b>해외</b>' + list(p.gl) + "</div><div><b>국내</b>" + list(p.kr) + "</div></div>");
-    h += sec("실무", "서재 속 관련 회사", firms.length ? '<div class="chips">' + firms.map(chip).join("") + "</div>" : '<p class="empty">이 서재에 이 공정 품목을 만드는 회사가 없습니다.</p>');
-    if (p.tx.length) h += sec("실무", "관련 제품 기술", '<div class="kchips">' + p.tx.map(txLink).join("") + "</div>");
+    h += sec("실무", "서재 속 관련 회사", firms.length ? '<div class="chips">' + firms.map(chip).join("") + "</div>" : '<p class="empty">아직 연결된 회사 정보가 없습니다. 이 서재의 수록·연결 범위가 부족한 상태이며, 해당 기업이 없다는 뜻은 아닙니다. 확인된 제품·기업 근거를 확보한 뒤 연결합니다.</p>');
+    h += sec("실무", "관련 제품 기술", p.tx.length ? '<div class="kchips">' + p.tx.map(txLink).join("") + "</div>" : '<p class="empty">아직 연결된 제품 기술이 없습니다. 아래 더 읽기에서 공정 개념을 확인하거나 <a href="#tech">기술 백과 전체 보기</a>로 돌아갈 수 있습니다.</p>');
     h += sec("심화", "더 읽기", sbList(p.sb));
     h += '<nav class="pnav">' + (prev ? '<a href="#t-' + prev.id + '">← ' + esc(prev.n) + "</a>" : "<span></span>") + (next ? '<a href="#t-' + next.id + '">' + esc(next.n) + " →</a>" : "") + "</nav>";
     app.innerHTML = h;

@@ -2,13 +2,21 @@
 /* 실리콘 서재 UI 회귀 테스트 (Playwright). 실행: node tests/silicon-library-ui.js */
 const path = require('path');
 const { chromium } = require('playwright');
-const URL = 'file://' + path.join(__dirname, '..', 'silicon-library', 'index.html');
+const URL = process.env.SL_TEST_URL || 'file://' + path.join(__dirname, '..', 'silicon-library', 'index.html');
 const results = [];
+async function configureContext(context) {
+  if (process.env.SL_OFFLINE_FIXTURES === '1') {
+    await context.route('https://fonts.googleapis.com/**', r => r.fulfill({status:200, contentType:'text/css', body:'/* System font fallback; external fonts are not tested. */'}));
+    await context.route('**/favicon.ico', r => r.fulfill({status:204, body:''}));
+  }
+}
 const ok = (name, cond, extra) => { results.push([name, !!cond, extra || '']); console.log((cond ? 'PASS ' : 'FAIL ') + name + (cond ? '' : '  → ' + (extra || ''))); };
 
 (async () => {
-  const browser = await chromium.launch();
+  const browser = await chromium.launch(process.env.SL_BROWSER_EXECUTABLE ? { executablePath: process.env.SL_BROWSER_EXECUTABLE } : {});
   const ctx = await browser.newContext({ viewport: { width: 1280, height: 900 } });
+  await configureContext(ctx);
+  if (process.env.SL_OFFLINE_FIXTURES === '1') console.log('FIXTURE: system fonts and empty favicon; external font delivery excluded');
   const page = await ctx.newPage();
   const errs = [];
   page.on('pageerror', (e) => errs.push(String(e)));
@@ -113,6 +121,17 @@ const ok = (name, cond, extra) => { results.push([name, !!cond, extra || '']); c
   await page.goto(URL + '#map'); t = await text();
   ok('지도 식각·세정 단계에 에이텍솔루션 표시', /식각·세정[\s\S]*에이텍솔루션[\s\S]*증착·배선/.test(t));
 
+  await page.goto(URL + '#t-metro'); t = await text();
+  ok('계측 빈 회사 연결은 수록 범위 한계로 설명', /아직 연결된 회사 정보가 없습니다/.test(t) && /해당 기업이 없다는 뜻은 아닙니다/.test(t));
+  ok('계측 빈 제품 연결에도 안내와 복귀 링크 표시', /아직 연결된 제품 기술이 없습니다/.test(t));
+  await page.getByRole('link', { name:'기술 백과 전체 보기', exact:true }).click();
+  ok('빈 제품 안내에서 기술 백과 복귀', (await page.evaluate(() => location.hash)) === '#tech');
+  const data = require('../scripts/load-silicon-library').loadData();
+  for (const hash of data.PROC.map(p => '#t-' + p.id).concat(Object.keys(data.TX).map(k => '#x-' + k))) {
+    await page.goto(URL + hash);
+    ok('기존 지식 URL 유지 ' + hash, (await page.evaluate(() => location.hash)) === hash && await page.locator('.ttl').count() === 1);
+  }
+
   /* 모든 책 8탭 + 가로 넘침 */
   async function sweep(w) {
     const p2 = await ctx.newPage(); await p2.setViewportSize({ width: w, height: 800 }); const e2 = []; p2.on('pageerror', (e) => e2.push(String(e)));
@@ -136,7 +155,7 @@ const ok = (name, cond, extra) => { results.push([name, !!cond, extra || '']); c
   await page.keyboard.press('Escape'); await page.waitForTimeout(100);
   ok('Esc 로 책장 복귀', (await page.evaluate(() => location.hash)) === '');
   /* 다크 모드 */
-  const dp = await browser.newContext({ colorScheme: 'dark', viewport: { width: 400, height: 800 } }); const d = await dp.newPage(); const de = []; d.on('pageerror', (e) => de.push(String(e)));
+  const dp = await browser.newContext({ colorScheme: 'dark', viewport: { width: 400, height: 800 } }); await configureContext(dp); const d = await dp.newPage(); const de = []; d.on('pageerror', (e) => de.push(String(e)));
   await d.goto(URL + '#b' + sw); ok('다크 모드 책 열기 오류 없음', de.length === 0 && /삼화전기/.test(await d.locator('.cover h2').innerText()), de.join('|'));
   ok('전체 실행 중 콘솔 오류 없음', errs.length === 0, errs.join('|'));
   await browser.close();

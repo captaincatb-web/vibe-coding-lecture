@@ -18,6 +18,8 @@ jobs:
         run: node scripts/validate-silicon-library.js
       - name: 검사 스크립트 자체 검증 (일부러 망가뜨린 데이터를 잡는지)
         run: node tests/validator-negative.js
+      - name: V2 진단기 관계·중복 감지 검증
+        run: node tests/silicon-library-audit.js
       - name: Playwright 설치 (저장소에 package.json이 없어 저장 없이 설치)
         run: |
           npm install --no-save playwright@1.63.0

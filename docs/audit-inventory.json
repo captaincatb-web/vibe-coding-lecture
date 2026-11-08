@@ -1,0 +1,1472 @@
+{
+  "scope": "Source inventory; entity records are not legal-entity counts. No external URL checks.",
+  "counts": {
+    "books": 46,
+    "companies": 45,
+    "processes": 13,
+    "technologies": 31,
+    "sources": 188
+  },
+  "duplicateCompanyIds": [],
+  "duplicateProcessIds": [],
+  "companies": [
+    {
+      "id": "c01",
+      "name": "덕산테코피아",
+      "characters": 567,
+      "products": [
+        "pre"
+      ],
+      "sources": [
+        "dst",
+        "pre"
+      ],
+      "facts": 0,
+      "verification": "not-checked",
+      "quantitativeTextNeedsReview": false,
+      "missingSections": []
+    },
+    {
+      "id": "c02",
+      "name": "레이크머티리얼즈",
+      "characters": 560,
+      "products": [
+        "pre"
+      ],
+      "sources": [
+        "lake",
+        "lake2"
+      ],
+      "facts": 0,
+      "verification": "not-checked",
+      "quantitativeTextNeedsReview": true,
+      "missingSections": []
+    },
+    {
+      "id": "c03",
+      "name": "디엔에프",
+      "characters": 740,
+      "products": [
+        "pre"
+      ],
+      "sources": [
+        "dnf",
+        "dnf2",
+        "x_dn",
+        "x_dn2"
+      ],
+      "facts": 0,
+      "verification": "not-checked",
+      "quantitativeTextNeedsReview": true,
+      "missingSections": []
+    },
+    {
+      "id": "c04",
+      "name": "Merck (한국머크)",
+      "characters": 692,
+      "products": [
+        "pre"
+      ],
+      "sources": [
+        "mk1",
+        "mk2",
+        "mk3",
+        "mk4",
+        "mk5"
+      ],
+      "facts": 0,
+      "verification": "not-checked",
+      "quantitativeTextNeedsReview": true,
+      "missingSections": []
+    },
+    {
+      "id": "c05",
+      "name": "솔브레인",
+      "characters": 567,
+      "products": [
+        "etch",
+        "pre",
+        "cmp"
+      ],
+      "sources": [
+        "sb",
+        "sb2",
+        "sb3"
+      ],
+      "facts": 0,
+      "verification": "not-checked",
+      "quantitativeTextNeedsReview": true,
+      "missingSections": []
+    },
+    {
+      "id": "c06",
+      "name": "원익머트리얼즈",
+      "characters": 744,
+      "products": [
+        "gasDep",
+        "gasEtch",
+        "gasRare"
+      ],
+      "sources": [
+        "wm",
+        "wm2",
+        "temc",
+        "r_wm1",
+        "r_wm2",
+        "r_wm3"
+      ],
+      "facts": 0,
+      "verification": "not-checked",
+      "quantitativeTextNeedsReview": true,
+      "missingSections": []
+    },
+    {
+      "id": "c07",
+      "name": "솔머티리얼즈",
+      "characters": 404,
+      "products": [
+        "gasDep",
+        "gasEtch"
+      ],
+      "sources": [
+        "hs"
+      ],
+      "facts": 0,
+      "verification": "not-checked",
+      "quantitativeTextNeedsReview": false,
+      "missingSections": []
+    },
+    {
+      "id": "c08",
+      "name": "티이엠씨",
+      "characters": 789,
+      "products": [
+        "gasRare",
+        "gasEtch"
+      ],
+      "sources": [
+        "temc",
+        "at3",
+        "x_tm"
+      ],
+      "facts": 0,
+      "verification": "not-checked",
+      "quantitativeTextNeedsReview": true,
+      "missingSections": []
+    },
+    {
+      "id": "c09",
+      "name": "효성네오켐",
+      "characters": 596,
+      "products": [
+        "gasEtch"
+      ],
+      "sources": [
+        "hy",
+        "temc",
+        "x_hy",
+        "x_hy2"
+      ],
+      "facts": 0,
+      "verification": "not-checked",
+      "quantitativeTextNeedsReview": true,
+      "missingSections": []
+    },
+    {
+      "id": "c10",
+      "name": "Nippon Sanso Matheson",
+      "characters": 480,
+      "products": [
+        "gasDep",
+        "gasBulk"
+      ],
+      "sources": [
+        "ns",
+        "ns2",
+        "wm2"
+      ],
+      "facts": 0,
+      "verification": "not-checked",
+      "quantitativeTextNeedsReview": false,
+      "missingSections": []
+    },
+    {
+      "id": "c11",
+      "name": "에어리퀴드코리아",
+      "characters": 531,
+      "products": [
+        "gasRare",
+        "gasDep",
+        "gasBulk"
+      ],
+      "sources": [
+        "al1",
+        "al2",
+        "al3",
+        "al4"
+      ],
+      "facts": 0,
+      "verification": "not-checked",
+      "quantitativeTextNeedsReview": true,
+      "missingSections": []
+    },
+    {
+      "id": "c12",
+      "name": "에어프로덕츠코리아",
+      "characters": 460,
+      "products": [
+        "gasBulk"
+      ],
+      "sources": [
+        "ap1",
+        "wm2"
+      ],
+      "facts": 0,
+      "verification": "not-checked",
+      "quantitativeTextNeedsReview": true,
+      "missingSections": []
+    },
+    {
+      "id": "c13",
+      "name": "다이킨첨단머티리얼즈",
+      "characters": 429,
+      "products": [
+        "gasEtch"
+      ],
+      "sources": [
+        "x_dk"
+      ],
+      "facts": 0,
+      "verification": "not-checked",
+      "quantitativeTextNeedsReview": false,
+      "missingSections": []
+    },
+    {
+      "id": "c14",
+      "name": "칸토덴카",
+      "characters": 450,
+      "products": [
+        "gasEtch"
+      ],
+      "sources": [
+        "x_kd"
+      ],
+      "facts": 0,
+      "verification": "not-checked",
+      "quantitativeTextNeedsReview": false,
+      "missingSections": []
+    },
+    {
+      "id": "c15",
+      "name": "㈜케이씨인더스트리얼",
+      "characters": 401,
+      "products": [
+        "gasDep"
+      ],
+      "sources": [
+        "x_kc"
+      ],
+      "facts": 0,
+      "verification": "not-checked",
+      "quantitativeTextNeedsReview": true,
+      "missingSections": []
+    },
+    {
+      "id": "c16",
+      "name": "JSR",
+      "characters": 454,
+      "products": [
+        "pr"
+      ],
+      "sources": [
+        "jsr",
+        "jsr2"
+      ],
+      "facts": 0,
+      "verification": "not-checked",
+      "quantitativeTextNeedsReview": false,
+      "missingSections": []
+    },
+    {
+      "id": "c17",
+      "name": "Qnity",
+      "characters": 568,
+      "products": [
+        "pr",
+        "cmp",
+        "oring"
+      ],
+      "sources": [
+        "qn",
+        "qn2",
+        "skc",
+        "x_qn"
+      ],
+      "facts": 0,
+      "verification": "not-checked",
+      "quantitativeTextNeedsReview": true,
+      "missingSections": []
+    },
+    {
+      "id": "c18",
+      "name": "NCK",
+      "characters": 658,
+      "products": [
+        "barc"
+      ],
+      "sources": [
+        "y_nk1",
+        "y_nk2",
+        "y_nk3"
+      ],
+      "facts": 0,
+      "verification": "not-checked",
+      "quantitativeTextNeedsReview": true,
+      "missingSections": []
+    },
+    {
+      "id": "c19",
+      "name": "FNSTech (에프엔에스테크)",
+      "characters": 604,
+      "products": [
+        "cmp"
+      ],
+      "sources": [
+        "fns",
+        "fns2",
+        "x_fn"
+      ],
+      "facts": 0,
+      "verification": "not-checked",
+      "quantitativeTextNeedsReview": true,
+      "missingSections": []
+    },
+    {
+      "id": "c20",
+      "name": "FFEM",
+      "characters": 482,
+      "products": [
+        "cmp",
+        "pr"
+      ],
+      "sources": [
+        "ff1",
+        "ff2",
+        "skc"
+      ],
+      "facts": 0,
+      "verification": "not-checked",
+      "quantitativeTextNeedsReview": true,
+      "missingSections": []
+    },
+    {
+      "id": "c21",
+      "name": "GlobalWafers (MEMC코리아)",
+      "characters": 399,
+      "products": [
+        "wafer"
+      ],
+      "sources": [
+        "gw",
+        "skc"
+      ],
+      "facts": 0,
+      "verification": "not-checked",
+      "quantitativeTextNeedsReview": false,
+      "missingSections": []
+    },
+    {
+      "id": "c22",
+      "name": "에이텍솔루션",
+      "characters": 617,
+      "products": [
+        "reclaim",
+        "clean"
+      ],
+      "sources": [
+        "at1",
+        "at2",
+        "at3",
+        "at4"
+      ],
+      "facts": 3,
+      "verification": "fact-table-only",
+      "quantitativeTextNeedsReview": true,
+      "missingSections": []
+    },
+    {
+      "id": "c23",
+      "name": "삼성전기",
+      "characters": 564,
+      "products": [
+        "substrate"
+      ],
+      "sources": [
+        "sem",
+        "sem2",
+        "sem3"
+      ],
+      "facts": 0,
+      "verification": "not-checked",
+      "quantitativeTextNeedsReview": true,
+      "missingSections": []
+    },
+    {
+      "id": "c24",
+      "name": "심텍",
+      "characters": 483,
+      "products": [
+        "substrate"
+      ],
+      "sources": [
+        "sim",
+        "sim2",
+        "sim3"
+      ],
+      "facts": 0,
+      "verification": "not-checked",
+      "quantitativeTextNeedsReview": false,
+      "missingSections": []
+    },
+    {
+      "id": "c25",
+      "name": "㈜피케이엘",
+      "characters": 532,
+      "products": [
+        "mask"
+      ],
+      "sources": [
+        "pkl",
+        "skc"
+      ],
+      "facts": 0,
+      "verification": "not-checked",
+      "quantitativeTextNeedsReview": true,
+      "missingSections": []
+    },
+    {
+      "id": "c26",
+      "name": "LG화학",
+      "characters": 401,
+      "products": [
+        "pid",
+        "film"
+      ],
+      "sources": [
+        "lg"
+      ],
+      "facts": 0,
+      "verification": "not-checked",
+      "quantitativeTextNeedsReview": false,
+      "missingSections": []
+    },
+    {
+      "id": "c27",
+      "name": "린데",
+      "characters": 1117,
+      "products": [
+        "gasBulk",
+        "target"
+      ],
+      "sources": [
+        "wm2",
+        "y_ld1",
+        "y_ld2",
+        "y_ld3",
+        "y_ld4",
+        "lk_gl",
+        "lk_mo",
+        "lk_amt",
+        "lk_kr"
+      ],
+      "facts": 6,
+      "verification": "fact-table-only",
+      "quantitativeTextNeedsReview": true,
+      "missingSections": []
+    },
+    {
+      "id": "c28",
+      "name": "Solstice",
+      "characters": 496,
+      "products": [
+        "target"
+      ],
+      "sources": [
+        "x_sl",
+        "x_sl2"
+      ],
+      "facts": 0,
+      "verification": "not-checked",
+      "quantitativeTextNeedsReview": false,
+      "missingSections": []
+    },
+    {
+      "id": "c29",
+      "name": "삼화전기",
+      "characters": 573,
+      "products": [
+        "alcap"
+      ],
+      "sources": [
+        "shw",
+        "x_sh"
+      ],
+      "facts": 6,
+      "verification": "fact-table-only",
+      "quantitativeTextNeedsReview": true,
+      "missingSections": []
+    },
+    {
+      "id": "c30",
+      "name": "TSE",
+      "characters": 693,
+      "products": [
+        "socket",
+        "probe"
+      ],
+      "sources": [
+        "tse",
+        "tse2",
+        "tse3",
+        "x_ts1",
+        "x_ts2"
+      ],
+      "facts": 0,
+      "verification": "not-checked",
+      "quantitativeTextNeedsReview": true,
+      "missingSections": []
+    },
+    {
+      "id": "c31",
+      "name": "피엠티",
+      "characters": 540,
+      "products": [
+        "probe"
+      ],
+      "sources": [
+        "pmt",
+        "pmt2",
+        "tse3"
+      ],
+      "facts": 0,
+      "verification": "not-checked",
+      "quantitativeTextNeedsReview": true,
+      "missingSections": []
+    },
+    {
+      "id": "c32",
+      "name": "디에스테크노",
+      "characters": 558,
+      "products": [
+        "sisic"
+      ],
+      "sources": [
+        "dsT",
+        "dsT2",
+        "x_dt"
+      ],
+      "facts": 0,
+      "verification": "not-checked",
+      "quantitativeTextNeedsReview": true,
+      "missingSections": []
+    },
+    {
+      "id": "c33",
+      "name": "영신쿼츠",
+      "characters": 671,
+      "products": [
+        "quartz"
+      ],
+      "sources": [
+        "ysq",
+        "cm",
+        "x_ys"
+      ],
+      "facts": 0,
+      "verification": "not-checked",
+      "quantitativeTextNeedsReview": true,
+      "missingSections": []
+    },
+    {
+      "id": "c34",
+      "name": "와이컴",
+      "characters": 198,
+      "products": [
+        "sisic"
+      ],
+      "sources": [],
+      "facts": 0,
+      "verification": "not-checked",
+      "quantitativeTextNeedsReview": false,
+      "missingSections": [
+        "facts",
+        "tech",
+        "src"
+      ]
+    },
+    {
+      "id": "c35",
+      "name": "이노레스",
+      "characters": 426,
+      "products": [
+        "oring"
+      ],
+      "sources": [
+        "inn",
+        "inn2"
+      ],
+      "facts": 0,
+      "verification": "not-checked",
+      "quantitativeTextNeedsReview": false,
+      "missingSections": []
+    },
+    {
+      "id": "c36",
+      "name": "GT",
+      "characters": 178,
+      "products": [
+        "oring"
+      ],
+      "sources": [],
+      "facts": 0,
+      "verification": "not-checked",
+      "quantitativeTextNeedsReview": false,
+      "missingSections": [
+        "facts",
+        "tech",
+        "mkt",
+        "src"
+      ]
+    },
+    {
+      "id": "c37",
+      "name": "한솔아이원스",
+      "characters": 749,
+      "products": [
+        "clean",
+        "metal"
+      ],
+      "sources": [
+        "hi",
+        "r_hi1",
+        "r_hi2",
+        "r_hi3"
+      ],
+      "facts": 0,
+      "verification": "not-checked",
+      "quantitativeTextNeedsReview": true,
+      "missingSections": []
+    },
+    {
+      "id": "c38",
+      "name": "거성",
+      "characters": 630,
+      "products": [
+        "metal"
+      ],
+      "sources": [
+        "y_gs1",
+        "y_gs2",
+        "y_gs3"
+      ],
+      "facts": 0,
+      "verification": "not-checked",
+      "quantitativeTextNeedsReview": true,
+      "missingSections": []
+    },
+    {
+      "id": "c39",
+      "name": "AMMK",
+      "characters": 481,
+      "products": [
+        "hbmfilm"
+      ],
+      "sources": [
+        "lake2",
+        "x_am",
+        "x_am2"
+      ],
+      "facts": 0,
+      "verification": "not-checked",
+      "quantitativeTextNeedsReview": false,
+      "missingSections": []
+    },
+    {
+      "id": "c40",
+      "name": "EDWARDS",
+      "characters": 731,
+      "products": [
+        "pump"
+      ],
+      "sources": [
+        "y_ed1",
+        "y_ed2",
+        "y_ed3",
+        "y_ed4"
+      ],
+      "facts": 0,
+      "verification": "not-checked",
+      "quantitativeTextNeedsReview": true,
+      "missingSections": []
+    },
+    {
+      "id": "c41",
+      "name": "쿠리타한수",
+      "characters": 388,
+      "products": [
+        "upw"
+      ],
+      "sources": [
+        "ku"
+      ],
+      "facts": 0,
+      "verification": "not-checked",
+      "quantitativeTextNeedsReview": false,
+      "missingSections": []
+    },
+    {
+      "id": "c42",
+      "name": "세메스",
+      "characters": 545,
+      "products": [
+        "amhs"
+      ],
+      "sources": [
+        "se1",
+        "se2",
+        "se3"
+      ],
+      "facts": 0,
+      "verification": "not-checked",
+      "quantitativeTextNeedsReview": true,
+      "missingSections": []
+    },
+    {
+      "id": "c43",
+      "name": "와이씨",
+      "characters": 485,
+      "products": [
+        "wtester"
+      ],
+      "sources": [
+        "yc",
+        "yc2",
+        "yc3"
+      ],
+      "facts": 0,
+      "verification": "not-checked",
+      "quantitativeTextNeedsReview": true,
+      "missingSections": []
+    },
+    {
+      "id": "c44",
+      "name": "엑시콘",
+      "characters": 589,
+      "products": [
+        "ptester"
+      ],
+      "sources": [
+        "yc",
+        "r_ex1",
+        "r_ex2"
+      ],
+      "facts": 0,
+      "verification": "not-checked",
+      "quantitativeTextNeedsReview": true,
+      "missingSections": []
+    },
+    {
+      "id": "c45",
+      "name": "제이티",
+      "characters": 499,
+      "products": [
+        "handler"
+      ],
+      "sources": [
+        "jt1",
+        "jt2",
+        "jt3"
+      ],
+      "facts": 0,
+      "verification": "not-checked",
+      "quantitativeTextNeedsReview": true,
+      "missingSections": []
+    }
+  ],
+  "processes": [
+    {
+      "id": "wafer",
+      "name": "웨이퍼 제조",
+      "characters": 676,
+      "products": [
+        "wafer",
+        "reclaim"
+      ],
+      "companies": [
+        "c21",
+        "c22"
+      ],
+      "emptyProducts": false,
+      "missingSections": []
+    },
+    {
+      "id": "photo",
+      "name": "노광(포토)",
+      "characters": 910,
+      "products": [
+        "pr",
+        "barc",
+        "mask",
+        "gasRare"
+      ],
+      "companies": [
+        "c06",
+        "c08",
+        "c11",
+        "c16",
+        "c17",
+        "c18",
+        "c20",
+        "c25"
+      ],
+      "emptyProducts": false,
+      "missingSections": []
+    },
+    {
+      "id": "etch",
+      "name": "식각",
+      "characters": 877,
+      "products": [
+        "gasEtch",
+        "etch",
+        "sisic",
+        "quartz",
+        "oring"
+      ],
+      "companies": [
+        "c05",
+        "c06",
+        "c07",
+        "c08",
+        "c09",
+        "c13",
+        "c14",
+        "c17",
+        "c32",
+        "c33",
+        "c34",
+        "c35",
+        "c36"
+      ],
+      "emptyProducts": false,
+      "missingSections": []
+    },
+    {
+      "id": "dep",
+      "name": "증착·배선",
+      "characters": 815,
+      "products": [
+        "pre",
+        "gasDep",
+        "target"
+      ],
+      "companies": [
+        "c01",
+        "c02",
+        "c03",
+        "c04",
+        "c05",
+        "c06",
+        "c07",
+        "c10",
+        "c11",
+        "c15",
+        "c27",
+        "c28"
+      ],
+      "emptyProducts": false,
+      "missingSections": []
+    },
+    {
+      "id": "cmp",
+      "name": "CMP(평탄화)",
+      "characters": 704,
+      "products": [
+        "cmp"
+      ],
+      "companies": [
+        "c05",
+        "c17",
+        "c19",
+        "c20"
+      ],
+      "emptyProducts": false,
+      "missingSections": []
+    },
+    {
+      "id": "clean",
+      "name": "세정",
+      "characters": 681,
+      "products": [
+        "etch",
+        "upw",
+        "clean",
+        "reclaim"
+      ],
+      "companies": [
+        "c05",
+        "c22",
+        "c37",
+        "c41"
+      ],
+      "emptyProducts": false,
+      "missingSections": []
+    },
+    {
+      "id": "imp",
+      "name": "이온주입",
+      "characters": 677,
+      "products": [
+        "gasDep",
+        "metal"
+      ],
+      "companies": [
+        "c06",
+        "c07",
+        "c10",
+        "c11",
+        "c15",
+        "c37",
+        "c38"
+      ],
+      "emptyProducts": false,
+      "missingSections": []
+    },
+    {
+      "id": "diff",
+      "name": "확산·열처리",
+      "characters": 642,
+      "products": [
+        "quartz",
+        "sisic",
+        "gasBulk"
+      ],
+      "companies": [
+        "c10",
+        "c11",
+        "c12",
+        "c27",
+        "c32",
+        "c33",
+        "c34"
+      ],
+      "emptyProducts": false,
+      "missingSections": []
+    },
+    {
+      "id": "metro",
+      "name": "계측·검사",
+      "characters": 690,
+      "products": [],
+      "companies": [],
+      "emptyProducts": true,
+      "missingSections": []
+    },
+    {
+      "id": "pkg",
+      "name": "패키징",
+      "characters": 767,
+      "products": [
+        "substrate",
+        "pid",
+        "film"
+      ],
+      "companies": [
+        "c23",
+        "c24",
+        "c26"
+      ],
+      "emptyProducts": false,
+      "missingSections": []
+    },
+    {
+      "id": "hbm",
+      "name": "범핑·TSV·HBM",
+      "characters": 832,
+      "products": [
+        "hbmfilm",
+        "cmp",
+        "probe",
+        "film"
+      ],
+      "companies": [
+        "c05",
+        "c17",
+        "c19",
+        "c20",
+        "c26",
+        "c30",
+        "c31",
+        "c39"
+      ],
+      "emptyProducts": false,
+      "missingSections": []
+    },
+    {
+      "id": "test",
+      "name": "테스트",
+      "characters": 759,
+      "products": [
+        "probe",
+        "socket",
+        "wtester",
+        "ptester",
+        "handler"
+      ],
+      "companies": [
+        "c30",
+        "c31",
+        "c43",
+        "c44",
+        "c45"
+      ],
+      "emptyProducts": false,
+      "missingSections": []
+    },
+    {
+      "id": "infra",
+      "name": "팹 인프라",
+      "characters": 773,
+      "products": [
+        "gasBulk",
+        "upw",
+        "pump",
+        "amhs"
+      ],
+      "companies": [
+        "c10",
+        "c11",
+        "c12",
+        "c27",
+        "c40",
+        "c41",
+        "c42"
+      ],
+      "emptyProducts": false,
+      "missingSections": []
+    }
+  ],
+  "technologies": [
+    {
+      "id": "pre",
+      "name": "ALD·CVD 전구체",
+      "characters": 584,
+      "companies": [
+        "c01",
+        "c02",
+        "c03",
+        "c04",
+        "c05"
+      ],
+      "processes": [
+        "dep"
+      ],
+      "intentionalNoProcess": null
+    },
+    {
+      "id": "etch",
+      "name": "고선택비 식각액·습식 케미칼",
+      "characters": 385,
+      "companies": [
+        "c05"
+      ],
+      "processes": [
+        "etch",
+        "clean"
+      ],
+      "intentionalNoProcess": null
+    },
+    {
+      "id": "gasEtch",
+      "name": "식각·세정용 불화가스",
+      "characters": 417,
+      "companies": [
+        "c06",
+        "c07",
+        "c08",
+        "c09",
+        "c13",
+        "c14"
+      ],
+      "processes": [
+        "etch"
+      ],
+      "intentionalNoProcess": null
+    },
+    {
+      "id": "gasDep",
+      "name": "증착·도핑용 특수가스",
+      "characters": 355,
+      "companies": [
+        "c06",
+        "c07",
+        "c10",
+        "c11",
+        "c15"
+      ],
+      "processes": [
+        "dep",
+        "imp"
+      ],
+      "intentionalNoProcess": null
+    },
+    {
+      "id": "gasRare",
+      "name": "희귀가스(Ne·Kr·Xe)",
+      "characters": 345,
+      "companies": [
+        "c06",
+        "c08",
+        "c11"
+      ],
+      "processes": [
+        "photo"
+      ],
+      "intentionalNoProcess": null
+    },
+    {
+      "id": "gasBulk",
+      "name": "벌크가스·온사이트 공급",
+      "characters": 358,
+      "companies": [
+        "c10",
+        "c11",
+        "c12",
+        "c27"
+      ],
+      "processes": [
+        "diff",
+        "infra"
+      ],
+      "intentionalNoProcess": null
+    },
+    {
+      "id": "pr",
+      "name": "포토레지스트(PR)",
+      "characters": 468,
+      "companies": [
+        "c16",
+        "c17",
+        "c20"
+      ],
+      "processes": [
+        "photo"
+      ],
+      "intentionalNoProcess": null
+    },
+    {
+      "id": "barc",
+      "name": "반사방지 코팅(BARC)",
+      "characters": 363,
+      "companies": [
+        "c18"
+      ],
+      "processes": [
+        "photo"
+      ],
+      "intentionalNoProcess": null
+    },
+    {
+      "id": "cmp",
+      "name": "CMP 슬러리·패드",
+      "characters": 402,
+      "companies": [
+        "c05",
+        "c17",
+        "c19",
+        "c20"
+      ],
+      "processes": [
+        "cmp",
+        "hbm"
+      ],
+      "intentionalNoProcess": null
+    },
+    {
+      "id": "wafer",
+      "name": "실리콘 웨이퍼",
+      "characters": 364,
+      "companies": [
+        "c21"
+      ],
+      "processes": [
+        "wafer"
+      ],
+      "intentionalNoProcess": null
+    },
+    {
+      "id": "reclaim",
+      "name": "재생 웨이퍼·테스트 웨이퍼",
+      "characters": 323,
+      "companies": [
+        "c22"
+      ],
+      "processes": [
+        "wafer",
+        "clean"
+      ],
+      "intentionalNoProcess": null
+    },
+    {
+      "id": "substrate",
+      "name": "반도체 패키지 기판",
+      "characters": 378,
+      "companies": [
+        "c23",
+        "c24"
+      ],
+      "processes": [
+        "pkg"
+      ],
+      "intentionalNoProcess": null
+    },
+    {
+      "id": "mask",
+      "name": "포토마스크",
+      "characters": 347,
+      "companies": [
+        "c25"
+      ],
+      "processes": [
+        "photo"
+      ],
+      "intentionalNoProcess": null
+    },
+    {
+      "id": "film",
+      "name": "반도체 공정·패키징 필름",
+      "characters": 336,
+      "companies": [
+        "c26"
+      ],
+      "processes": [
+        "pkg",
+        "hbm"
+      ],
+      "intentionalNoProcess": null
+    },
+    {
+      "id": "pid",
+      "name": "PID(감광성 절연재)",
+      "characters": 420,
+      "companies": [
+        "c26"
+      ],
+      "processes": [
+        "pkg"
+      ],
+      "intentionalNoProcess": null
+    },
+    {
+      "id": "hbmfilm",
+      "name": "HBM용 내열 필름",
+      "characters": 314,
+      "companies": [
+        "c39"
+      ],
+      "processes": [
+        "hbm"
+      ],
+      "intentionalNoProcess": null
+    },
+    {
+      "id": "target",
+      "name": "스퍼터링 타겟",
+      "characters": 377,
+      "companies": [
+        "c27",
+        "c28"
+      ],
+      "processes": [
+        "dep"
+      ],
+      "intentionalNoProcess": null
+    },
+    {
+      "id": "alcap",
+      "name": "알루미늄 전해 커패시터",
+      "characters": 388,
+      "companies": [
+        "c29"
+      ],
+      "processes": [],
+      "intentionalNoProcess": "반도체 제품(SSD)·서버 탑재 전자부품이라 제조공정에 연결하지 않음"
+    },
+    {
+      "id": "probe",
+      "name": "프로브카드",
+      "characters": 326,
+      "companies": [
+        "c30",
+        "c31"
+      ],
+      "processes": [
+        "hbm",
+        "test"
+      ],
+      "intentionalNoProcess": null
+    },
+    {
+      "id": "socket",
+      "name": "테스트 인터페이스(보드·소켓)",
+      "characters": 343,
+      "companies": [
+        "c30"
+      ],
+      "processes": [
+        "test"
+      ],
+      "intentionalNoProcess": null
+    },
+    {
+      "id": "sisic",
+      "name": "실리콘·SiC 식각 부품",
+      "characters": 324,
+      "companies": [
+        "c32",
+        "c34"
+      ],
+      "processes": [
+        "etch",
+        "diff"
+      ],
+      "intentionalNoProcess": null
+    },
+    {
+      "id": "quartz",
+      "name": "쿼츠(석영) 부품",
+      "characters": 297,
+      "companies": [
+        "c33"
+      ],
+      "processes": [
+        "etch",
+        "diff"
+      ],
+      "intentionalNoProcess": null
+    },
+    {
+      "id": "oring",
+      "name": "반도체용 O-링·실(Seal)",
+      "characters": 314,
+      "companies": [
+        "c17",
+        "c35",
+        "c36"
+      ],
+      "processes": [
+        "etch"
+      ],
+      "intentionalNoProcess": null
+    },
+    {
+      "id": "clean",
+      "name": "장비 부품 세정·코팅",
+      "characters": 330,
+      "companies": [
+        "c22",
+        "c37"
+      ],
+      "processes": [
+        "clean"
+      ],
+      "intentionalNoProcess": null
+    },
+    {
+      "id": "metal",
+      "name": "장비용 정밀 가공 부품",
+      "characters": 311,
+      "companies": [
+        "c37",
+        "c38"
+      ],
+      "processes": [
+        "imp"
+      ],
+      "intentionalNoProcess": null
+    },
+    {
+      "id": "pump",
+      "name": "건식 진공펌프·가스처리장치",
+      "characters": 361,
+      "companies": [
+        "c40"
+      ],
+      "processes": [
+        "infra"
+      ],
+      "intentionalNoProcess": null
+    },
+    {
+      "id": "upw",
+      "name": "초순수(UPW)",
+      "characters": 314,
+      "companies": [
+        "c41"
+      ],
+      "processes": [
+        "clean",
+        "infra"
+      ],
+      "intentionalNoProcess": null
+    },
+    {
+      "id": "amhs",
+      "name": "반도체 물류자동화(AMHS)",
+      "characters": 324,
+      "companies": [
+        "c42"
+      ],
+      "processes": [
+        "infra"
+      ],
+      "intentionalNoProcess": null
+    },
+    {
+      "id": "wtester",
+      "name": "웨이퍼 테스터",
+      "characters": 306,
+      "companies": [
+        "c43"
+      ],
+      "processes": [
+        "test"
+      ],
+      "intentionalNoProcess": null
+    },
+    {
+      "id": "ptester",
+      "name": "패키지·모듈 테스터",
+      "characters": 284,
+      "companies": [
+        "c44"
+      ],
+      "processes": [
+        "test"
+      ],
+      "intentionalNoProcess": null
+    },
+    {
+      "id": "handler",
+      "name": "번인 소터·검사 장비",
+      "characters": 286,
+      "companies": [
+        "c45"
+      ],
+      "processes": [
+        "test"
+      ],
+      "intentionalNoProcess": null
+    }
+  ]
+}
