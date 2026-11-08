@@ -1,11 +1,252 @@
 {
   "version": 1,
   "as_of": "2026-11-08",
-  "last_attempt_at": "2026-11-08T10:22:32.517Z",
-  "last_success_at": "2026-11-08T10:22:32.517Z",
-  "last_content_change_at": "2026-11-08T10:22:32.517Z",
+  "last_attempt_at": "2026-11-08T10:36:50.925Z",
+  "last_success_at": "2026-11-08T10:36:50.925Z",
+  "last_content_change_at": "2026-11-08T10:36:50.925Z",
   "schedule": "매주 월요일 오전 9시 (한국 시간)",
   "entries": [
+    {
+      "id": "2800d170c9a4ce561c21",
+      "source_id": "semiengineering",
+      "source_name": "Semiconductor Engineering",
+      "title": "Chip Industry Week In Review",
+      "url": "https://semiengineering.com/chip-industry-week-in-review-163/",
+      "published_at": "2026-11-06T08:01:01.000Z",
+      "date_kind": "published",
+      "first_seen_at": "2026-11-08T10:36:50.925Z",
+      "topics": [
+        "IND"
+      ],
+      "verification": "원문 대조 전 · 자동 수집한 제목·게시일·링크"
+    },
+    {
+      "id": "205c04ab977fa489a3d9",
+      "source_id": "semiengineering",
+      "source_name": "Semiconductor Engineering",
+      "title": "Adding Network Security To AI, HPC, And Data Centers",
+      "url": "https://semiengineering.com/adding-network-security-to-ai-hpc-and-data-centers-2/",
+      "published_at": "2026-11-05T08:06:45.000Z",
+      "date_kind": "published",
+      "first_seen_at": "2026-11-08T10:36:50.925Z",
+      "topics": [
+        "IND"
+      ],
+      "verification": "원문 대조 전 · 자동 수집한 제목·게시일·링크"
+    },
+    {
+      "id": "46750173aed5a08351d6",
+      "source_id": "semiengineering",
+      "source_name": "Semiconductor Engineering",
+      "title": "Turning Conv2D Into A Practical GPU Compute Pattern",
+      "url": "https://semiengineering.com/turning-conv2d-into-a-practical-gpu-compute-pattern/",
+      "published_at": "2026-11-05T08:05:35.000Z",
+      "date_kind": "published",
+      "first_seen_at": "2026-11-08T10:36:50.925Z",
+      "topics": [
+        "IND"
+      ],
+      "verification": "원문 대조 전 · 자동 수집한 제목·게시일·링크"
+    },
+    {
+      "id": "e84fb13f1a79e1354610",
+      "source_id": "semiengineering",
+      "source_name": "Semiconductor Engineering",
+      "title": "A System-Level Approach To Protecting 3D-IC Signal Integrity",
+      "url": "https://semiengineering.com/a-system-level-approach-to-protecting-3d-ic-signal-integrity/",
+      "published_at": "2026-11-05T08:04:55.000Z",
+      "date_kind": "published",
+      "first_seen_at": "2026-11-08T10:36:50.925Z",
+      "topics": [
+        "IND"
+      ],
+      "verification": "원문 대조 전 · 자동 수집한 제목·게시일·링크"
+    },
+    {
+      "id": "55764cc585921486882d",
+      "source_id": "semiengineering",
+      "source_name": "Semiconductor Engineering",
+      "title": "Fitting AI Models To Edge Applications",
+      "url": "https://semiengineering.com/fitting-ai-models-to-edge-applications/",
+      "published_at": "2026-11-05T08:04:08.000Z",
+      "date_kind": "published",
+      "first_seen_at": "2026-11-08T10:36:50.925Z",
+      "topics": [
+        "IND"
+      ],
+      "verification": "원문 대조 전 · 자동 수집한 제목·게시일·링크"
+    },
+    {
+      "id": "9aa5e79f3d43bc6597e2",
+      "source_id": "semiengineering",
+      "source_name": "Semiconductor Engineering",
+      "title": "Why Testing Automated Driving Is Harder Than It Looks",
+      "url": "https://semiengineering.com/why-testing-automated-driving-is-harder-than-it-looks/",
+      "published_at": "2026-11-05T08:02:40.000Z",
+      "date_kind": "published",
+      "first_seen_at": "2026-11-08T10:36:50.925Z",
+      "topics": [
+        "IND",
+        "TST"
+      ],
+      "verification": "원문 대조 전 · 자동 수집한 제목·게시일·링크"
+    },
+    {
+      "id": "52f407d6c6644a66a84e",
+      "source_id": "semiengineering",
+      "source_name": "Semiconductor Engineering",
+      "title": "Why Integrated Gate Drive Regulation Matters For High Reliability Space GaN Designs",
+      "url": "https://semiengineering.com/why-integrated-gate-drive-regulation-matters-for-high-reliability-space-gan-designs/",
+      "published_at": "2026-11-05T08:01:35.000Z",
+      "date_kind": "published",
+      "first_seen_at": "2026-11-08T10:36:50.925Z",
+      "topics": [
+        "IND"
+      ],
+      "verification": "원문 대조 전 · 자동 수집한 제목·게시일·링크"
+    },
+    {
+      "id": "37944d4de6b16fa3bbaf",
+      "source_id": "semiengineering",
+      "source_name": "Semiconductor Engineering",
+      "title": "Physical AI Pushes The Limits Of Hardware",
+      "url": "https://semiengineering.com/physical-ai-pushes-the-limits-of-hardware/",
+      "published_at": "2026-11-05T08:01:19.000Z",
+      "date_kind": "published",
+      "first_seen_at": "2026-11-08T10:36:50.925Z",
+      "topics": [
+        "IND"
+      ],
+      "verification": "원문 대조 전 · 자동 수집한 제목·게시일·링크"
+    },
+    {
+      "id": "6246da1e1bb5b73a0029",
+      "source_id": "skhynix",
+      "source_name": "SK hynix 뉴스룸",
+      "title": "SK hynix Hosts First Partners Day in Japan, Sharing Business Direction with Key Local Partners",
+      "url": "https://news.skhynix.com/en/2026-partners-day-japan-3/",
+      "published_at": "2026-10-30T08:19:49.000Z",
+      "date_kind": "published",
+      "first_seen_at": "2026-11-08T10:36:50.925Z",
+      "topics": [
+        "MEM",
+        "PKG",
+        "TST"
+      ],
+      "verification": "원문 대조 전 · 자동 수집한 제목·게시일·링크"
+    },
+    {
+      "id": "20c1656105ec61b1b05e",
+      "source_id": "skhynix",
+      "source_name": "SK hynix 뉴스룸",
+      "title": "SK hynix Hosts First Partners Day in Japan, Sharing Business Direction with Key Local Partners",
+      "url": "https://news.skhynix.com/en/2026-partners-day-japan-2/",
+      "published_at": "2026-10-30T08:17:52.000Z",
+      "date_kind": "published",
+      "first_seen_at": "2026-11-08T10:36:50.925Z",
+      "topics": [
+        "MEM",
+        "PKG",
+        "TST"
+      ],
+      "verification": "원문 대조 전 · 자동 수집한 제목·게시일·링크"
+    },
+    {
+      "id": "5bb60346730323720b97",
+      "source_id": "skhynix",
+      "source_name": "SK hynix 뉴스룸",
+      "title": "SK hynix Hosts First Partners Day in Japan, Sharing Business Direction with Key Local Partners",
+      "url": "https://news.skhynix.com/en/2026-partners-day-japan-1/",
+      "published_at": "2026-10-30T08:10:27.000Z",
+      "date_kind": "published",
+      "first_seen_at": "2026-11-08T10:36:50.925Z",
+      "topics": [
+        "MEM",
+        "PKG",
+        "TST"
+      ],
+      "verification": "원문 대조 전 · 자동 수집한 제목·게시일·링크"
+    },
+    {
+      "id": "ef48f797d948e3e96f6b",
+      "source_id": "skhynix",
+      "source_name": "SK hynix 뉴스룸",
+      "title": "SK hynix Hosts First Partners Day in Japan, Sharing Business Direction with Key Local Partners",
+      "url": "https://news.skhynix.com/en/2026-partners-day-japan/",
+      "published_at": "2026-10-30T04:50:32.000Z",
+      "date_kind": "published",
+      "first_seen_at": "2026-11-08T10:36:50.925Z",
+      "topics": [
+        "MEM",
+        "PKG",
+        "TST"
+      ],
+      "verification": "원문 대조 전 · 자동 수집한 제목·게시일·링크"
+    },
+    {
+      "id": "83b56883d114683d219a",
+      "source_id": "skhynix",
+      "source_name": "SK hynix 뉴스룸",
+      "title": "[Tech Note] Why does AI still have to wait with tens of thousands of GPUs? How silicon photonics and CPO are building the ‘highways of light’",
+      "url": "https://news.skhynix.com/en/tech-note-series-ep3-6/",
+      "published_at": "2026-10-29T04:53:56.000Z",
+      "date_kind": "published",
+      "first_seen_at": "2026-11-08T10:36:50.925Z",
+      "topics": [
+        "MEM",
+        "PKG",
+        "TST"
+      ],
+      "verification": "원문 대조 전 · 자동 수집한 제목·게시일·링크"
+    },
+    {
+      "id": "df040123662281b2b3be",
+      "source_id": "skhynix",
+      "source_name": "SK hynix 뉴스룸",
+      "title": "[Tech Note] Why does AI still have to wait with tens of thousands of GPUs? How silicon photonics and CPO are building the ‘highways of light’",
+      "url": "https://news.skhynix.com/en/tech-note-series-ep3-5/",
+      "published_at": "2026-10-29T04:53:12.000Z",
+      "date_kind": "published",
+      "first_seen_at": "2026-11-08T10:36:50.925Z",
+      "topics": [
+        "MEM",
+        "PKG",
+        "TST"
+      ],
+      "verification": "원문 대조 전 · 자동 수집한 제목·게시일·링크"
+    },
+    {
+      "id": "f9b0c4ff47a035b12e0d",
+      "source_id": "skhynix",
+      "source_name": "SK hynix 뉴스룸",
+      "title": "[Tech Note] Why does AI still have to wait with tens of thousands of GPUs? How silicon photonics and CPO are building the ‘highways of light’",
+      "url": "https://news.skhynix.com/en/tech-note-series-ep3-4/",
+      "published_at": "2026-10-29T04:51:54.000Z",
+      "date_kind": "published",
+      "first_seen_at": "2026-11-08T10:36:50.925Z",
+      "topics": [
+        "MEM",
+        "PKG",
+        "TST"
+      ],
+      "verification": "원문 대조 전 · 자동 수집한 제목·게시일·링크"
+    },
+    {
+      "id": "dd00c5aee516528ee5b4",
+      "source_id": "skhynix",
+      "source_name": "SK hynix 뉴스룸",
+      "title": "[Tech Note] Why does AI still have to wait with tens of thousands of GPUs? How silicon photonics and CPO are building the ‘highways of light’",
+      "url": "https://news.skhynix.com/en/tech-note-series-ep3-3/",
+      "published_at": "2026-10-29T04:50:57.000Z",
+      "date_kind": "published",
+      "first_seen_at": "2026-11-08T10:36:50.925Z",
+      "topics": [
+        "MEM",
+        "PKG",
+        "TST"
+      ],
+      "verification": "원문 대조 전 · 자동 수집한 제목·게시일·링크"
+    },
     {
       "id": "b697f2f6ddfd3e2763c7",
       "source_id": "yosys",
@@ -47,6 +288,37 @@
       "first_seen_at": "2026-11-08T10:20:58.094Z",
       "topics": [
         "IND",
+        "PRC"
+      ],
+      "verification": "원문 대조 전 · 자동 수집한 제목·게시일·링크"
+    },
+    {
+      "id": "f244c9752922f0c6c2ff",
+      "source_id": "samsung",
+      "source_name": "Samsung 뉴스룸",
+      "title": "Samsung and Mistral AI Announce Strategic Partnership for Intelligence-Driven Semiconductor Infrastructure",
+      "url": "https://news.samsung.com/global/samsung-and-mistral-ai-announce-strategic-partnership-for-intelligence-driven-semiconductor-infrastructure",
+      "published_at": "2026-09-09T01:00:00.000Z",
+      "date_kind": "published",
+      "first_seen_at": "2026-11-08T10:36:50.925Z",
+      "topics": [
+        "IND",
+        "MEM"
+      ],
+      "verification": "원문 대조 전 · 자동 수집한 제목·게시일·링크"
+    },
+    {
+      "id": "3e6fd5cdc55fee7ef227",
+      "source_id": "samsung",
+      "source_name": "Samsung 뉴스룸",
+      "title": "Samsung Electronics and ASML Expand Strategic Collaboration for Next-Generation Semiconductor Manufacturing",
+      "url": "https://news.samsung.com/global/samsung-electronics-and-asml-expand-strategic-collaboration-for-next-generation-semiconductor-manufacturing",
+      "published_at": "2026-09-08T15:03:00.000Z",
+      "date_kind": "published",
+      "first_seen_at": "2026-11-08T10:36:50.925Z",
+      "topics": [
+        "IND",
+        "MEM",
         "PRC"
       ],
       "verification": "원문 대조 전 · 자동 수집한 제목·게시일·링크"
@@ -252,51 +524,51 @@
       "id": "openroad",
       "name": "OpenROAD 공식 릴리스",
       "url": "https://github.com/The-OpenROAD-Project/OpenROAD/releases.atom",
-      "status": "ok",
-      "checked_at": "2026-11-08T10:22:32.517Z",
+      "status": "failed",
+      "checked_at": "2026-11-08T10:36:50.925Z",
       "last_success_at": "2026-11-08T10:22:32.517Z",
       "entries": 8,
-      "error": null
+      "error": "HTTP 502"
     },
     {
       "id": "samsung",
       "name": "Samsung 뉴스룸",
       "url": "https://news.samsung.com/global/feed",
-      "status": "failed",
-      "checked_at": "2026-11-08T10:22:32.517Z",
-      "last_success_at": null,
-      "entries": 0,
-      "error": "fetch failed"
+      "status": "ok",
+      "checked_at": "2026-11-08T10:36:50.925Z",
+      "last_success_at": "2026-11-08T10:36:50.925Z",
+      "entries": 2,
+      "error": null
     },
     {
       "id": "semiengineering",
       "name": "Semiconductor Engineering",
       "url": "https://semiengineering.com/feed/",
-      "status": "failed",
-      "checked_at": "2026-11-08T10:22:32.517Z",
-      "last_success_at": null,
-      "entries": 0,
-      "error": "fetch failed"
+      "status": "ok",
+      "checked_at": "2026-11-08T10:36:50.925Z",
+      "last_success_at": "2026-11-08T10:36:50.925Z",
+      "entries": 8,
+      "error": null
     },
     {
       "id": "skhynix",
       "name": "SK hynix 뉴스룸",
       "url": "https://news.skhynix.com/feed/",
-      "status": "failed",
-      "checked_at": "2026-11-08T10:22:32.517Z",
-      "last_success_at": null,
-      "entries": 0,
-      "error": "fetch failed"
+      "status": "ok",
+      "checked_at": "2026-11-08T10:36:50.925Z",
+      "last_success_at": "2026-11-08T10:36:50.925Z",
+      "entries": 8,
+      "error": null
     },
     {
       "id": "yosys",
       "name": "Yosys 공식 릴리스",
       "url": "https://github.com/YosysHQ/yosys/releases.atom",
-      "status": "ok",
-      "checked_at": "2026-11-08T10:22:32.517Z",
+      "status": "failed",
+      "checked_at": "2026-11-08T10:36:50.925Z",
       "last_success_at": "2026-11-08T10:22:32.517Z",
       "entries": 8,
-      "error": null
+      "error": "The operation was aborted due to timeout"
     }
   ]
 }
