@@ -1,8 +1,9 @@
 (function (root, factory) {
   "use strict";
-  if (typeof module === "object" && module.exports) module.exports = factory();
-  else root.SiliconExplorerCore = factory();
-})(typeof globalThis !== "undefined" ? globalThis : this, function () {
+  if (typeof module === "object" && module.exports)
+    module.exports = factory(require("./reading-core"));
+  else root.SiliconExplorerCore = factory(root.SiliconReadingCore);
+})(typeof globalThis !== "undefined" ? globalThis : this, function (reading) {
   "use strict";
   var TYPES = ["company", "product", "process", "knowledge"];
   var ALIASES = {
@@ -113,7 +114,7 @@
         p.name,
         p.legacy.w,
         "#x-" + p.product_id,
-        strings(p.legacy),
+        strings([p.legacy, reading && reading.get(p.product_id)]),
       ),
     );
     data.processes.forEach((p) =>

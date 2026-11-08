@@ -51,23 +51,29 @@ const url = process.env.SL_TEST_URL || "http://127.0.0.1:8767/silicon-library/";
         "#labs?lab=packaging",
         "#learn",
         "#b0",
+        "#x-gasEtch",
+        "#x-pid",
       ]) {
         await page.goto(url + hash);
         await page
           .locator(
             hash === ""
               ? ".library-hero"
-              : hash.startsWith("#b")
-                ? "#pg"
-                : hash.includes("compare=")
-                  ? ".comparison-table"
-                  : hash.includes("explore")
-                    ? ".explorer-detail h2"
-                    : hash.includes("learn")
-                      ? "#glossary-query"
-                      : "#lab-result",
+              : hash.startsWith("#x-")
+                ? ".concept-reading"
+                : hash.startsWith("#b")
+                  ? "#pg"
+                  : hash.includes("compare=")
+                    ? ".comparison-table"
+                    : hash.includes("explore")
+                      ? ".explorer-detail h2"
+                      : hash.includes("learn")
+                        ? "#glossary-query"
+                        : "#lab-result",
           )
           .waitFor();
+        if (hash === "#x-pid")
+          await page.locator(".concept-check summary").click();
         await inspect(page, hash, width);
         if (hash.startsWith("#b")) {
           await page.getByRole("button", { name: /핵심 기술$/ }).click();

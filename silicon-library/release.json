@@ -1,6 +1,6 @@
 {
-  "release": "silicon-library-2.2-colorful-books-20261108",
-  "application_base_commit": "54936951a55a44c5c6b89f26d8efd76112284f27",
+  "release": "silicon-library-2.3-reading-depth-20261108",
+  "application_base_commit": "1b4cd7b130de9443183e7cab7feddbc05e2388d5",
   "entrypoints": ["#explore", "#labs", "#learn"],
   "hosting": "GitHub Pages static files"
 }

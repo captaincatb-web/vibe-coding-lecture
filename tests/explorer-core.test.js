@@ -39,6 +39,19 @@ test("Korean/English and spaced aliases find the same product", () => {
       .some((r) => r.key === "company:c22"),
   );
 });
+test("expanded reading content is searchable without inventing company or process records", () => {
+  const matches = core.search(index, "비저항 하나만으로", "product");
+  assert.deepEqual(
+    matches.map((record) => record.key),
+    ["product:upw"],
+  );
+  assert.ok(
+    core
+      .search(index, "재료 두께", "product")
+      .some((record) => record.key === "product:reclaim"),
+  );
+  assert.equal(index.records.length, 94);
+});
 test("deep text is searchable and type filters remain strict", () => {
   assert.ok(
     core.search(index, "Preston").some((r) => r.key === "knowledge:deep:cmp"),

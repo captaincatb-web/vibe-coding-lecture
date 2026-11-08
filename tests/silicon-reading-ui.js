@@ -1,6 +1,7 @@
 "use strict";
 const assert = require("node:assert/strict");
 const { chromium } = require("playwright");
+const reading = require("../silicon-library/src/reading-core");
 const url = process.env.SL_TEST_URL || "http://127.0.0.1:8767/silicon-library/";
 let passed = 0;
 function ok(name, condition) {
@@ -58,6 +59,28 @@ function ok(name, condition) {
         )) {
         links.add(href);
       }
+      await page.getByRole("button", { name: /사업·제품$/ }).click();
+      ok(
+        book.name + " has product-specific evaluation questions",
+        (await page.locator(".product-questions li").count()) > 0,
+      );
+      await page.getByRole("button", { name: /핵심 기술$/ }).click();
+      ok(
+        book.name +
+          " includes a three-stage explanation and a self-check for each topic",
+        await page
+          .locator(".concept-reading")
+          .evaluateAll(
+            (nodes) =>
+              nodes.length > 0 &&
+              nodes.every(
+                (node) =>
+                  node.querySelectorAll(".concept-flow li").length === 3 &&
+                  node.querySelector(".concept-check summary") &&
+                  node.querySelector(".concept-compare a"),
+              ),
+          ),
+      );
     }
     for (const href of links) {
       await page.goto(url + href);
@@ -69,7 +92,63 @@ function ok(name, condition) {
       await page.locator(destination).waitFor();
       ok("reading link resolves: " + href, new URL(page.url()).hash === href);
     }
+    for (const [key, topic] of Object.entries(reading.topics)) {
+      await page.goto(url + "#x-" + key);
+      const article = page.locator('[data-reading-topic="' + key + '"]');
+      await article.waitFor();
+      ok(
+        "standalone topic publishes the matching explanation and comparison: " +
+          key,
+        (await article.locator(".concept-role").innerText()) === topic.role &&
+          (await article.locator(".concept-flow li").count()) === 3 &&
+          (await article.locator(".concept-compare a").getAttribute("href")) ===
+            "#x-" + topic.compare.id,
+      );
+    }
+    await page.goto(url + "#x-pr");
+    await page.locator(".concept-check summary").focus();
+    await page.keyboard.press("Enter");
+    ok(
+      "self-check explanation can be opened with the keyboard",
+      (await page.locator(".concept-check").getAttribute("open")) !== null &&
+        (await page.locator(".concept-check p").innerText()) ===
+          reading.get("pr").answer,
+    );
+    const prText = await page.locator("#app").innerText();
+    ok(
+      "PR chapter distinguishes material families and records both editorial corrections",
+      /감광성 재료/.test(prText) &&
+        /예를 들어 화학증폭형/.test(prText) &&
+        /모든 PR의 반응 방식/.test(prText) &&
+        (await page.locator(".concept-corrections li").count()) === 2,
+    );
+    await page.goto(url + "#explore?item=product%3AgasEtch");
+    await page.locator(".explorer-detail h2").waitFor();
+    ok(
+      "integrated explorer shows the corrected WF6 scope",
+      /WF6.*텅스텐 증착 원료/.test(
+        await page.locator(".explorer-detail").innerText(),
+      ),
+    );
+    await page.goto(url);
+    await page.locator("#q").fill("비저항 하나만으로");
+    ok(
+      "bookshelf knowledge search finds expanded explanatory text",
+      (await page.locator('#hits a[href="#x-upw"]').count()) === 1,
+    );
 
+    await page.goto(
+      url +
+        "#explore?q=" +
+        encodeURIComponent("비저항 하나만으로") +
+        "&type=product",
+    );
+    await page.locator(".explorer-results button").first().waitFor();
+    ok(
+      "integrated search also finds the expanded explanation",
+      (await page.locator(".explorer-results button").count()) === 1 &&
+        /초순수/.test(await page.locator(".explorer-results").innerText()),
+    );
     const book = (name) => books.find((entry) => entry.name === name);
     await page.goto(url + book("덕산테코피아").hash);
     ok(

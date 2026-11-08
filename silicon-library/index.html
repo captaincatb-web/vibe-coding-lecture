@@ -8,6 +8,8 @@
 <link rel="stylesheet" href="src/explorer.css">
 <link rel="stylesheet" href="src/lab.css">
 <link rel="stylesheet" href="src/shelf.css">
+<link rel="stylesheet" href="src/reading.css">
+<script src="src/reading-core.js"></script>
 <link rel="icon" href="data:,">
 <style>[hidden]{display:none!important}body{margin:0}img{max-width:100%}</style>
 </head>
@@ -806,7 +808,7 @@ dl.facts dd { margin: 0; }
 
   /* 제품 기술 해설: 품목별 일반 기술 설명(교과서 수준). t 제목, w 무엇인가, h 원리, p 공정 위치, k 핵심 기술, r 트렌드 */
   var TX = {
-    pre: { t: "ALD·CVD 전구체", w: "웨이퍼 위에 원하는 박막을 쌓기 위해 기체 상태로 챔버에 넣는 금속·실리콘 유기화합물입니다.",
+    pre: { t: "ALD·CVD 전구체", w: "웨이퍼 위에 원하는 박막을 쌓기 위해 기체 상태로 챔버에 넣는 금속·실리콘 등을 포함하는 반응 원료입니다. 유기화합물뿐 아니라 무기화합물도 있으며 공급 시 기화·이송 조건을 구분해야 합니다.",
       h: "ALD(원자층증착)는 전구체 주입 → 퍼지 → 반응가스(O3·H2O·NH3) 주입 → 퍼지를 반복해 사이클마다 아주 얇은 막(보통 한 원자층 이하)을 쌓습니다. 표면 반응 자리가 차면 더 쌓이지 않는 자기제한 반응이라, 전구체 노출이 충분한 조건에서는 깊은 홈 안쪽까지 두께가 고르게 쌓입니다. 노출이 부족하거나 CVD성 반응이 섞이면 깊이에 따라 달라집니다.",
       p: "증착(Deposition): 커패시터 유전막, 게이트 절연막, 스페이서, 3D NAND 워드라인·채널",
       k: ["High-k 전구체(Hf·Zr 계열): DRAM 커패시터와 로직 게이트용 고유전율 막", "실리콘 전구체(HCDS, DIPAS, BDEAS 등): 질화막·산화막, 저온 공정용", "금속 전구체(W·Mo·Ru·Co): 배선·워드라인. 3D NAND에서 Mo가 W를 대체 중", "핵심 경쟁력: 99.9999%(6N) 이상 순도, 금속 불순물 ppb 관리, 증기압·열안정성, 용기·공급 시스템"],
@@ -816,9 +818,9 @@ dl.facts dd { margin: 0; }
       p: "식각·세정(Etch/Clean): 3D NAND 질화막 제거, 산화막 식각(BOE·HF), 세정(SC1·SC2)",
       k: ["선택비와 식각 균일도", "금속 이온·파티클 ppt(1조분의 1) 수준 관리", "고객 공정별 맞춤 배합과 공급 안정성"],
       r: "NAND 단수가 높아질수록 깊은 구조 안쪽까지 균일하게 식각하는 능력이 중요해집니다." },
-    gasEtch: { t: "식각·세정용 불화가스", w: "플라즈마 식각과 챔버 세정에 쓰는 불소 화합물 가스입니다. NF3, CF4, C4F6, C4F8, WF6, SF6 등이 있습니다.",
-      h: "챔버 안에서 플라즈마로 가스를 분해하면 불소 라디칼이 생기고, 이 라디칼이 실리콘·산화막과 반응해 휘발성 물질(SiF4 등)로 날려 보냅니다. NF3는 CVD 챔버 벽에 쌓인 막을 청소하는 데 가장 많이 쓰입니다.",
-      p: "식각(Etch), CVD 챔버 세정, 텅스텐 증착(WF6)",
+    gasEtch: { t: "식각·세정용 불화가스", w: "플라즈마 식각과 챔버 세정에 쓰는 불소 화합물 가스입니다. NF3, CF4, C4F6, C4F8, SF6 등이 대표 예입니다. WF6는 불소를 포함하지만 여기서는 텅스텐 증착 원료로 구분합니다.",
+      h: "플라즈마로 생성한 반응종이 대상 막과 반응해 제거에 관여합니다. 반응종·이온의 영향과 부산물은 가스·재료·공정 조건에 따라 달라집니다. NF3는 CVD 챔버 벽에 남은 막을 세정하는 데 쓰이는 가스의 한 예이며, 이 설명만으로 가스별 사용 비중을 판단하지 않습니다.",
+      p: "식각(Etch), CVD 챔버 세정. WF6의 텅스텐 증착 용도는 증착 원료로 구분합니다.",
       k: ["5N~6N 고순도 정제와 수분·금속 불순물 제어", "C4F6 같은 고종횡비 식각용 가스", "고압 용기 충전·운송·실린더 관리"],
       r: "적층 구조가 깊어지며 식각 공정 수가 늘고, 온실가스 규제로 지구온난화지수(GWP)가 낮은 대체 가스 개발이 진행 중입니다." },
     gasDep: { t: "증착·도핑용 특수가스", w: "막을 만드는 원료가스(SiH4, NH3, N2O, DCS)와 불순물을 넣는 도핑가스(B2H6, PH3, AsH3)입니다.",
@@ -832,12 +834,12 @@ dl.facts dd { margin: 0; }
       k: ["대형 ASU 부산물 회수·정제 기술", "레이저용 혼합가스(Ne-F-Ar 등) 배합", "가스 재활용·회수 시스템"],
       r: "2022년 우크라이나 사태로 공급이 흔들린 뒤 국내 생산과 회수 재사용이 확대되었습니다." },
     gasBulk: { t: "벌크가스·온사이트 공급", w: "팹에서 가장 많이 쓰는 질소·산소·아르곤·수소 같은 대용량 가스입니다.",
-      h: "공기를 압축·냉각해 액화한 뒤 끓는점 차이로 분리하는 심랭식 공기분리설비(ASU)를 팹 옆에 짓고, 배관으로 직접 공급합니다. 질소는 퍼지·분위기 가스로 팹 가스 사용량의 대부분을 차지합니다.",
+      h: "질소·산소·아르곤은 공기를 압축·냉각해 분리하는 공기분리설비(ASU)로 생산할 수 있습니다. 팹 옆 설비에서 배관으로 공급하는 온사이트 방식은 공급 형태의 한 예입니다. 수소의 생산·공급 방식은 공기분리와 구분해야 하며, 질소는 퍼지·분위기 유지 등에 사용합니다.",
       p: "팹 전체 인프라: 퍼지, 분위기 유지, 냉각, 장비 구동",
       k: ["대형 ASU 설계·운영 효율(전력이 원가의 대부분)", "초고순도(ppb) 질소 정제", "15~20년 장기 공급계약과 무중단 공급"],
-      r: "신규 팹마다 전용 ASU가 함께 들어서며, 전력 절감과 탄소 저감이 경쟁 요소가 되고 있습니다." },
-    pr: { t: "포토레지스트(PR)", w: "빛을 받은 부분의 화학 성질이 바뀌는 감광성 고분자입니다. 회로 패턴을 웨이퍼에 옮기는 '필름' 역할을 합니다.",
-      h: "웨이퍼에 얇게 바르고 마스크를 통해 빛을 쬐면, 노광 부위에서 광산발생제(PAG)가 산을 만들고 그 산이 고분자 구조를 바꿔 현상액에 녹게(또는 안 녹게) 합니다. 이 방식을 화학증폭형(CAR)이라 합니다.",
+      r: "팹의 가스 수요와 공급 조건에 따라 온사이트 생산설비 등의 공급 방식을 검토합니다. 전력 사용·공급 안정성·탄소 저감은 함께 살펴볼 항목입니다." },
+    pr: { t: "포토레지스트(PR)", w: "빛에 반응해 현상 후 선택적인 패턴을 만드는 감광성 재료입니다. 재료 계열에 따라 반응 원리가 다릅니다. 회로 패턴을 웨이퍼에 옮기는 '필름' 역할을 합니다.",
+      h: "웨이퍼에 감광막을 형성한 뒤 노광·현상으로 남길 부분과 제거할 부분을 구분합니다. 예를 들어 화학증폭형(CAR)은 광산발생제(PAG)가 만든 산을 이용해 후속 처리에서 재료의 용해성을 바꿉니다. 이 설명을 모든 PR의 반응 방식에 그대로 적용할 수는 없습니다.",
       p: "노광(Lithography): 코팅 → 노광 → 현상",
       k: ["광원별 제품: i-line, KrF(248nm), ArF(193nm), ArF 이머전, EUV(13.5nm)", "해상도·감도·선폭 거칠기(LER)의 3자 균형", "EUV용 금속산화물 레지스트(MOR) 등 신소재", "금속 불순물·결함 관리와 고객 공정 맞춤"],
       r: "EUV 레이어가 늘면서 EUV PR이 가장 빠르게 성장하는 품목입니다. 일본 업체가 세계 시장의 대부분을 차지합니다." },
@@ -866,8 +868,8 @@ dl.facts dd { margin: 0; }
       p: "후공정(패키징): 칩 실장 기판",
       k: ["FC-BGA: CPU·GPU·AI 가속기용 대면적·고다층 기판", "메모리용 기판: 모듈 PCB, BOC, MCP·SiP 기판", "미세 회로선폭, 휨(warpage) 제어, 대면적 수율", "유리기판: 차세대 대면적 AI 패키지용"],
       r: "AI 칩이 커지며 기판 면적·층수가 늘고, 유리기판 상용화 경쟁이 진행 중입니다." },
-    mask: { t: "포토마스크", w: "회로 원판입니다. 석영 유리 위에 크롬 등으로 회로 패턴을 그려 노광 때 빛을 선택적으로 통과시킵니다.",
-      h: "블랭크 마스크(석영+차광막+PR)에 전자빔으로 패턴을 그리고 현상·식각해 만듭니다. 노광기는 이 패턴을 1/4로 줄여 웨이퍼에 찍습니다. EUV 마스크는 빛을 반사하는 다층 거울 구조입니다.",
+    mask: { t: "포토마스크", w: "회로 패턴을 담은 노광 원판입니다. 광원에 따라 빛을 통과시키는 마스크와 반사시키는 마스크를 구분합니다.",
+      h: "블랭크 마스크(석영+차광막+PR)에 전자빔으로 패턴을 그리고 현상·식각해 만듭니다. 노광기는 광학계의 설계에 따른 축소 배율로 패턴을 웨이퍼에 전사합니다. 모든 장비에 같은 축소 배율을 적용할 수는 없습니다. EUV 마스크는 빛을 반사하는 다층 거울 구조입니다.",
       p: "노광(Lithography) 원판",
       k: ["선폭 정밀도(CD)와 패턴 위치 정확도", "OPC(광근접보정) 패턴 구현", "결함 검사·수리, 펠리클(보호막) 부착"],
       r: "IDM 자체 마스크숍과 전문 업체가 함께 공급하며, 레거시 노드는 외부 조달 비중이 높습니다." },
@@ -1350,6 +1352,24 @@ dl.facts dd { margin: 0; }
     if (areas.length) h += '<div class="kchips">' + areas.map(function (k) { var a = DEEP.areas[k]; return '<a class="kchip p" href="#t-' + a.procs[0] + '">' + esc(a.n) + ' · 출처와 한계 함께 읽기</a>'; }).join("") + '</div>';
     return h;
   }
+  function productReading(key, level) {
+    var content = window.SiliconReadingCore, topic = content && content.get(key);
+    if (!topic) return "";
+    var related = TX[topic.compare.id], tag = "h" + level;
+    var changes = content.corrections.filter(function (c) { return c.target.indexOf("TX." + key + ".") === 0; });
+    return '<section class="concept-reading" data-reading-topic="' + key + '" aria-label="' + esc(TX[key].t) + ' 원리 확장"><' + tag + '>공정 안에서 이해하기</' + tag + '><p class="concept-role">' + esc(topic.role) + '</p><ol class="concept-flow">' + topic.steps.map(function (text) {
+      var split = text.indexOf(":");
+      return '<li><b>' + esc(text.slice(0, split)) + '</b><p>' + esc(text.slice(split + 1).trim()) + '</p></li>';
+    }).join("") + '</ol><div class="concept-compare"><b>' + esc(related.t) + '와 구분하기</b><p>' + esc(topic.compare.text) + '</p><a href="#x-' + topic.compare.id + '">' + esc(related.t) + ' 해설로 이어 읽기 →</a></div><details class="concept-check"><summary>스스로 설명해 보기 · ' + esc(topic.question) + '</summary><p>' + esc(topic.answer) + '</p></details>' +
+      (changes.length ? '<details class="concept-corrections"><summary>이번에 바로잡은 표현 · ' + changes.length + '건</summary><ul>' + changes.map(function (change) { return '<li>' + esc(change.reason) + '</li>'; }).join("") + '</ul></details>' : '') +
+      '<p class="concept-scope">교육용 일반 원리 · 기존 품목 해설을 바탕으로 편집했습니다. 개별 기업의 제품 사양·고객 채택에 관한 새 검증 결과가 아닙니다.</p></section>';
+  }
+  function bookProductQuestions(b) {
+    var content = window.SiliconReadingCore;
+    if (!content) return "";
+    var keys = (TXN[b.n] || []).filter(function (key) { return content.get(key); });
+    return '<section class="product-questions" aria-label="사업과 제품을 읽는 질문"><h3>제품 자료에서 확인할 질문</h3><p>이 책의 연결 품목별로, 회사 소개와 실제 제품 평가를 나누어 읽어 보세요.</p><ul>' + keys.map(function (key) { return '<li><b>' + esc(TX[key].t) + '</b><p>' + esc(content.get(key).focus) + '</p></li>'; }).join("") + '</ul></section>';
+  }
   function pagesOf(b) {
     var g = groupOf[b.g], refBook = null;
     if (b.ref) B.forEach(function (x, k) { if (x.n === b.ref) refBook = k; });
@@ -1367,12 +1387,12 @@ dl.facts dd { margin: 0; }
     ov += '<h3>함께 읽을 교과서</h3><p class="empty" style="font-style:normal">품목의 공정 원리를 설명하는 SemiBooks 교과서입니다.</p><ul class="rel">' +
       gx.rel.map(function (c) { var s = SB[c]; return '<li><a href="' + s[2] + '" target="_blank" rel="noopener"><b>' + esc(s[0]) + '</b> · ' + esc(s[1]) + "</a></li>"; }).join("") + "</ul>";
     P.push(["기업 개요", ov]);
-    P.push(["사업·제품", "<h3>사업과 제품</h3>" + (b.tech.length ? list(b.tech) : '<p class="empty">확인된 기술·제품 정보가 없습니다.</p>')]);
+    P.push(["사업·제품", "<h3>사업과 제품</h3>" + (b.tech.length ? list(b.tech) : '<p class="empty">확인된 기술·제품 정보가 없습니다.</p>') + bookProductQuestions(b)]);
     var tx = (TXN[b.n] || []).map(function (k) { return TX[k]; }).filter(Boolean);
     if (tx.length) P.push(["핵심 기술", "<h3>핵심 기술 해설</h3>" + '<p class="empty" style="font-style:normal">이 회사가 만드는 품목의 일반 기술 설명입니다. 회사별 세부 사양이 아니라 품목 원리를 이해하기 위한 교과서 수준의 내용입니다.</p>' +
       (b.conf === "C" ? '<p class="note">이 회사는 아직 미검증입니다. 아래 해설은 목록 품목(' + esc(b.item) + ') 기준이며, 이 회사가 실제로 만드는 제품인지는 확인되지 않았습니다.</p>' : "") +
       (TXN[b.n] || []).map(function (k) { var x = TX[k];
-        return '<div class="txc"><h4>' + esc(x.t) + '</h4>' + txBody(x) + bookTechnologyNotes(k) + '<div class="kchips">' + (procOf[k] || []).map(pLink).join("") + '<a class="kchip" href="#x-' + k + '">같은 품목 회사 보기</a></div></div>';
+        return '<div class="txc"><h4>' + esc(x.t) + '</h4>' + txBody(x) + productReading(k, 5) + bookTechnologyNotes(k) + '<div class="kchips">' + (procOf[k] || []).map(pLink).join("") + '<a class="kchip" href="#x-' + k + '">같은 품목 회사 보기</a></div></div>';
       }).join("")]);
     var tk = TXN[b.n] || [], on = {};
     tk.forEach(function (k) { (procOf[k] || []).forEach(function (id) { on[id] = 1; }); });
@@ -1934,7 +1954,7 @@ dl.facts dd { margin: 0; }
   function renderTx(key) {
     var x = TX[key], firms = firmsOf([key]);
     var h = head("") + viewTabs("tech") + '<p class="crumb"><a href="#tech">기술 백과</a> › 제품 기술</p><h2 class="ttl">' + esc(x.t) + "</h2>" + NOTE +
-      '<div class="txc">' + txBody(x) + "</div>" +
+      '<div class="txc">' + txBody(x) + "</div>" + productReading(key, 3) +
       sec("실무", "쓰이는 공정", (procOf[key] || []).length ? '<div class="kchips">' + (procOf[key] || []).map(pLink).join("") + "</div>" : '<p class="empty">' + esc(x.noProc || "연결된 공정 없음") + "</p>") +
       (function () { var ks = Object.keys(DEEP.areas || {}).filter(function (q) { return DEEP.areas[q].tx.indexOf(key) >= 0; }); return ks.length ? sec("심화", "심화 해설", '<div class="kchips">' + ks.map(function (q) { return '<a class="kchip p" href="#t-' + DEEP.areas[q].procs[0] + '">' + esc(DEEP.areas[q].n) + '</a>'; }).join("") + '</div>') : ""; })() +
       sec("실무", "서재 속 만드는 회사", noteBox("tx:" + key) + (firms.length ? '<div class="chips">' + firms.map(chip).join("") + "</div>" : '<p class="empty">없음</p>') + LINKNOTE) + legacyBox("TX." + key + ".");
@@ -1945,7 +1965,7 @@ dl.facts dd { margin: 0; }
   function searchKnow(v) {
     var out = [];
     PROC.forEach(function (p) { var dk = deepAreaOf(p.id); if ((hitText(p) + (dk ? hitText(DEEP.areas[dk]) : "")).indexOf(v) >= 0) out.push('<a class="kchip p" href="#t-' + p.id + '">공정 · ' + esc(p.n) + "</a>"); });
-    Object.keys(TX).forEach(function (k) { if (hitText(TX[k]).indexOf(v) >= 0) out.push('<a class="kchip" href="#x-' + k + '">기술 · ' + esc(TX[k].t) + "</a>"); });
+    Object.keys(TX).forEach(function (k) { var topic = window.SiliconReadingCore && window.SiliconReadingCore.get(k); if ((hitText(TX[k]) + (topic ? hitText(topic) : "")).indexOf(v) >= 0) out.push('<a class="kchip" href="#x-' + k + '">기술 · ' + esc(TX[k].t) + "</a>"); });
     return out;
   }
   function route() {
