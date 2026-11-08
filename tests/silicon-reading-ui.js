@@ -44,6 +44,10 @@ function ok(name, condition) {
         await overview.click();
       }
       const guide = page.locator(".reading-guide");
+      ok(
+        book.name + " offers a local accompanying textbook",
+        (await page.locator('ul.rel a[href^="#textbook?book="]').count()) > 0,
+      );
       await guide.waitFor();
       ok(
         book.name +

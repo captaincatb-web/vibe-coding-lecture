@@ -1,6 +1,6 @@
 # Silicon Library 배포와 복구
 
-배포 대상은 https://captaincatb-web.github.io/vibe-coding-lecture/silicon-library/ 이며, Pages 브랜치는 `claude/sharp-cannon-dyi1jj`다. 이번 본문 확장 전 운영 기준은 1b4cd7b130de9443183e7cab7feddbc05e2388d5이며, [Pages 실행 #42451119419](https://github.com/captaincatb-web/vibe-coding-lecture/actions/runs/42451119419)의 성공으로 배포를 확인했다.
+배포 대상은 https://captaincatb-web.github.io/vibe-coding-lecture/silicon-library/ 이며, Pages 브랜치는 `claude/sharp-cannon-dyi1jj`다. 이번 내부 교과서 추가 전 운영 기준은 3e0cb47ecd615749c883ab6d7cdfda19da2a9234이며, [Pages 실행 #42452466279](https://github.com/captaincatb-web/vibe-coding-lecture/actions/runs/42452466279)의 성공으로 배포를 확인했다.
 
 이전 버전의 1152432(책갈피 백업 포함)에서 발견한 CI 실패는 새 펼침 메뉴가 추가되면서 `.explorer-saved summary`가 2개와 일치한 회귀 테스트의 모호한 선택자 때문이었다. 49ae1b6에서 의도한 '탐색 책갈피와 최근 본 항목'을 정확히 선택하도록 수정했으며 검사를 생략하지 않았다. 이번 개선은 그 운영 버전을 이어서 학습 기록과 책 본문 읽기 안내를 보완한다.
 
@@ -16,4 +16,4 @@
 
 ## 복구
 
-이번 개선의 배포 전 운영 기준은 위의 1b4cd7b SHA다. 롤백이 필요하면 해당 트리를 되살리는 새 커밋을 현재 운영 브랜치 위에 만들고 검증·푸시한다. 과거 SHA로 force reset하거나 다른 사용자의 변경을 덮어쓰지 않는다. 브라우저 개인화 저장 키와 기존 책 URL은 배포·복구 과정에서도 유지한다.
+이번 개선의 배포 전 운영 기준은 위의 3e0cb47 SHA다. 롤백이 필요하면 해당 트리를 되살리는 새 커밋을 현재 운영 브랜치 위에 만들고 검증·푸시한다. 과거 SHA로 force reset하거나 다른 사용자의 변경을 덮어쓰지 않는다. 브라우저 개인화 저장 키와 기존 책 URL은 배포·복구 과정에서도 유지한다.

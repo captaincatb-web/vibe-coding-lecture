@@ -1,6 +1,6 @@
 {
-  "release": "silicon-library-2.3-reading-depth-20261108",
-  "application_base_commit": "1b4cd7b130de9443183e7cab7feddbc05e2388d5",
-  "entrypoints": ["#explore", "#labs", "#learn"],
+  "release": "silicon-library-2.4-local-textbooks-20261108",
+  "application_base_commit": "3e0cb47ecd615749c883ab6d7cdfda19da2a9234",
+  "entrypoints": ["#explore", "#labs", "#learn", "#textbooks"],
   "hosting": "GitHub Pages static files"
 }

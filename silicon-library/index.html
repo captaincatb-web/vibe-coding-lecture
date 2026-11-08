@@ -10,6 +10,8 @@
 <link rel="stylesheet" href="src/shelf.css">
 <link rel="stylesheet" href="src/reading.css">
 <script src="src/reading-core.js"></script>
+<link rel="stylesheet" href="src/textbook.css">
+<script src="src/textbook-core.js"></script>
 <link rel="icon" href="data:,">
 <style>[hidden]{display:none!important}body{margin:0}img{max-width:100%}</style>
 </head>
@@ -1251,7 +1253,7 @@ dl.facts dd { margin: 0; }
 
   function themeIsDark() { return document.documentElement.getAttribute("data-theme") === "dark" || (!document.documentElement.getAttribute("data-theme") && window.matchMedia("(prefers-color-scheme: dark)").matches); }
   function viewTabs(cur) {
-    return '<nav class="views" aria-label="보기 전환"><a href="#"' + (cur === "shelf" ? ' aria-current="page"' : "") + '>책장</a><a href="#map"' + (cur === "map" ? ' aria-current="page"' : "") + '>공정 지도</a><a href="#tech"' + (cur === "tech" ? ' aria-current="page"' : "") + '>기술 백과</a><a href="#explore"' + (cur === "explore" ? ' aria-current="page"' : "") + '>통합 탐색</a><a href="#labs"' + (cur === "labs" ? ' aria-current="page"' : "") + '>학습 랩</a><a href="#learn"' + (cur === "learn" ? ' aria-current="page"' : "") + '>학습 경로</a><button type="button" data-theme-toggle aria-label="색상 모드 전환" aria-pressed="' + (themeIsDark() ? 'true' : 'false') + '">◐ 색상 모드</button></nav>';
+    return '<nav class="views" aria-label="보기 전환"><a href="#"' + (cur === "shelf" ? ' aria-current="page"' : "") + '>책장</a><a href="#map"' + (cur === "map" ? ' aria-current="page"' : "") + '>공정 지도</a><a href="#tech"' + (cur === "tech" ? ' aria-current="page"' : "") + '>기술 백과</a><a href="#textbooks"' + (cur === "textbooks" ? ' aria-current="page"' : "") + '>교과서</a><a href="#explore"' + (cur === "explore" ? ' aria-current="page"' : "") + '>통합 탐색</a><a href="#labs"' + (cur === "labs" ? ' aria-current="page"' : "") + '>학습 랩</a><a href="#learn"' + (cur === "learn" ? ' aria-current="page"' : "") + '>학습 경로</a><button type="button" data-theme-toggle aria-label="색상 모드 전환" aria-pressed="' + (themeIsDark() ? 'true' : 'false') + '">◐ 색상 모드</button></nav>';
   }
   function idxOf(name) { for (var k = 0; k < B.length; k++) if (B[k].n === name && !B[k].ref) return k; return -1; }
   function chip(name) {
@@ -1384,8 +1386,7 @@ dl.facts dd { margin: 0; }
     if (en) ov += entBox(en, b);
     ov += bookReadingGuide(b);
     var gx = GX[b.g];
-    ov += '<h3>함께 읽을 교과서</h3><p class="empty" style="font-style:normal">품목의 공정 원리를 설명하는 SemiBooks 교과서입니다.</p><ul class="rel">' +
-      gx.rel.map(function (c) { var s = SB[c]; return '<li><a href="' + s[2] + '" target="_blank" rel="noopener"><b>' + esc(s[0]) + '</b> · ' + esc(s[1]) + "</a></li>"; }).join("") + "</ul>";
+    ov += '<h3>함께 읽을 교과서</h3><p class="empty" style="font-style:normal">서재에서 직접 작성한 개념 교과서입니다. 원리·예시·복습을 따라 품목과 공정을 이어 읽습니다.</p>' + sbList(gx.rel);
     P.push(["기업 개요", ov]);
     P.push(["사업·제품", "<h3>사업과 제품</h3>" + (b.tech.length ? list(b.tech) : '<p class="empty">확인된 기술·제품 정보가 없습니다.</p>') + bookProductQuestions(b)]);
     var tx = (TXN[b.n] || []).map(function (k) { return TX[k]; }).filter(Boolean);
@@ -1841,7 +1842,7 @@ dl.facts dd { margin: 0; }
   function head(sub) { return '<div class="kicker">2026.10.31 기준</div><h1>실리콘 서재</h1><p class="sub-t">충청권 반도체 소부장 지식 라이브러리</p>' + sub; }
   function txLink(k) { var x = TX[k]; return x ? '<a class="kchip" href="#x-' + k + '">' + esc(x.t) + "</a>" : ""; }
   function pLink(id) { var p = procById(id); return p ? '<a class="kchip p" href="#t-' + id + '">' + esc(p.n) + "</a>" : ""; }
-  function sbList(keys) { return '<ul class="rel">' + keys.map(function (c) { var s = SB[c]; return s ? '<li><a href="' + s[2] + '" target="_blank" rel="noopener"><b>' + esc(s[0]) + "</b> · " + esc(s[1]) + "</a></li>" : ""; }).join("") + "</ul>"; }
+  function sbList(keys) { return '<ul class="rel">' + keys.map(function (c) { var s = SB[c], local = window.SiliconTextbookCore && window.SiliconTextbookCore.get(c); return s ? '<li>' + (local ? '<a href="' + window.SiliconTextbookCore.route(c) + '"><b>' + esc(local.title) + '</b> · 서재에서 읽기 →</a><br><small>' + esc(local.subtitle) + '</small> · ' : '') + '<a href="' + s[2] + '" target="_blank" rel="noopener noreferrer">' + esc(s[0]) + ' · 외부 참고 (새 탭)</a></li>' : ""; }).join("") + "</ul>"; }
   var NOTE = '<p class="note">일반 기술 해설입니다. 공정 원리는 교과서 수준의 내용이고, 대표 기업은 널리 알려진 업체 예시로 점유율이나 순위가 아닙니다. 수치가 필요한 판단에는 회사 책의 출처 자료를 쓰세요.</p>';
   function renderTech() {
     var h = head('<p class="lede">공정 13개와 제품 기술 ' + Object.keys(TX).length + '개를 설명합니다. 입문에서 심화 순서로 읽으면 반도체 제조 흐름이 잡히고, 각 항목에서 관련 소재·부품과 서재 속 회사 책으로 이어집니다.</p>') + viewTabs("tech");
@@ -1970,7 +1971,15 @@ dl.facts dd { margin: 0; }
   }
   function route() {
     var m = /^#b(\d+)$/.exec(location.hash);
-    if (/^#(?:labs|learn)(?:\?|$)/.test(location.hash)) {
+    if (/^#textbooks?(?:\?|$)/.test(location.hash)) {
+      view = "textbooks";
+      app.innerHTML = head("") + viewTabs("textbooks") + '<div id="textbook-root"></div>';
+      var textbookRoot = document.getElementById("textbook-root");
+      textbookRoot.textbookContext = { productTitles: {} };
+      Object.keys(TX).forEach(function (key) { textbookRoot.textbookContext.productTitles[key] = TX[key].t; });
+      if (window.SiliconTextbooks) window.SiliconTextbooks.mount(textbookRoot);
+      window.scrollTo(0, 0);
+    } else if (/^#(?:labs|learn)(?:\?|$)/.test(location.hash)) {
       var learning = /^#learn/.test(location.hash); view = learning ? "learn" : "labs";
       app.innerHTML = head("") + viewTabs(view) + '<h2 class="ttl">' + (learning ? '학습 경로와 용어집' : '인터랙티브 학습 랩') + '</h2><div id="lab-root" data-view="' + view + '"></div>';
       if (window.SiliconLabs) window.SiliconLabs.mount(document.getElementById("lab-root"));
@@ -2023,6 +2032,7 @@ dl.facts dd { margin: 0; }
 <script src="src/lab-core.js"></script>
 <script src="src/study-core.js"></script>
 <script src="src/lab-ui.js"></script>
+<script src="src/textbook-ui.js"></script>
 
 </body>
 </html>
