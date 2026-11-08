@@ -1977,8 +1977,8 @@ dl.facts dd { margin: 0; }
       var textbookRoot = document.getElementById("textbook-root");
       textbookRoot.textbookContext = { productTitles: {} };
       Object.keys(TX).forEach(function (key) { textbookRoot.textbookContext.productTitles[key] = TX[key].t; });
-      if (window.SiliconTextbooks) window.SiliconTextbooks.mount(textbookRoot);
       window.scrollTo(0, 0);
+      if (window.SiliconTextbooks) window.SiliconTextbooks.mount(textbookRoot);
     } else if (/^#(?:labs|learn)(?:\?|$)/.test(location.hash)) {
       var learning = /^#learn/.test(location.hash); view = learning ? "learn" : "labs";
       app.innerHTML = head("") + viewTabs(view) + '<h2 class="ttl">' + (learning ? '학습 경로와 용어집' : '인터랙티브 학습 랩') + '</h2><div id="lab-root" data-view="' + view + '"></div>';

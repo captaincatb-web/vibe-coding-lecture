@@ -119,6 +119,7 @@ function ok(name, condition) {
       );
     }
     await page.goto(url + core.route("FIL"));
+    await page.setViewportSize({ width: 400, height: 900 });
     const methods = page.locator(
       '.textbook-toc a[href="' + core.route("FIL", "methods") + '"]',
     );
@@ -126,9 +127,12 @@ function ok(name, condition) {
     await page.keyboard.press("Enter");
     await page.locator('[data-chapter="methods"]').waitFor();
     ok(
-      "keyboard table of contents focuses the chosen chapter",
-      await page.evaluate(() =>
-        document.activeElement.matches(".textbook-chapter h3"),
+      "mobile keyboard table of contents focuses and reveals the chosen chapter",
+      await page.evaluate(
+        () =>
+          document.activeElement.matches(".textbook-chapter h3") &&
+          document.activeElement.getBoundingClientRect().top >= 0 &&
+          document.activeElement.getBoundingClientRect().top < innerHeight,
       ),
     );
     await page.locator(".textbook-review summary").focus();
