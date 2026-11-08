@@ -102,7 +102,13 @@
           "siliconLibrary:" + name + ":v1",
           JSON.stringify(keys),
         );
-      } catch (e) {}
+        return true;
+      } catch (e) {
+        if (status)
+          status.textContent =
+            "브라우저에 기록을 저장하지 못했습니다. 저장 공간과 개인정보 설정을 확인하세요.";
+        return false;
+      }
     }
     root.replaceChildren();
     var intro = el(
@@ -152,6 +158,91 @@
     status.setAttribute("role", "status");
     status.setAttribute("aria-live", "polite");
     root.append(status);
+    var backup = el("details", undefined, "explorer-saved");
+    backup.append(el("summary", "탐색 책갈피 백업·복원"));
+    backup.append(
+      el(
+        "p",
+        "이 브라우저의 탐색 책갈피를 JSON 파일로 보관합니다. 복원은 기존 책갈피에 병합하며 기존 책장 즐겨찾기는 변경하지 않습니다.",
+        "cap",
+      ),
+    );
+    var download = el("button", "책갈피 백업 다운로드");
+    download.type = "button";
+    download.onclick = function () {
+      var blob = new Blob(
+        [
+          JSON.stringify(
+            {
+              format: "silicon-library-bookmarks",
+              version: 1,
+              keys: saved("bookmarks"),
+            },
+            null,
+            2,
+          ),
+        ],
+        { type: "application/json" },
+      );
+      var address = URL.createObjectURL(blob),
+        anchor = el("a");
+      anchor.href = address;
+      anchor.download = "silicon-library-bookmarks.json";
+      anchor.click();
+      setTimeout(function () {
+        URL.revokeObjectURL(address);
+      }, 1000);
+      status.textContent = "탐색 책갈피 백업 파일을 만들었습니다.";
+    };
+    var uploadLabel = el("label", "책갈피 백업 파일 복원"),
+      upload = el("input");
+    upload.type = "file";
+    upload.accept = ".json,application/json";
+    upload.id = "explorer-bookmark-import";
+    upload.onchange = async function () {
+      var file = upload.files[0];
+      if (!file) return;
+      try {
+        if (file.size > 1048576)
+          throw new Error("백업 파일은 1MB 이하여야 합니다.");
+        var data = JSON.parse(await file.text());
+        if (
+          !data ||
+          data.format !== "silicon-library-bookmarks" ||
+          data.version !== 1 ||
+          !Array.isArray(data.keys) ||
+          data.keys.length > 100 ||
+          data.keys.some((k) => typeof k !== "string")
+        )
+          throw new Error("지원하는 책갈피 백업 형식이 아닙니다.");
+        var valid = data.keys.filter((k) =>
+          index.records.some((r) => r.key === k),
+        );
+        var merged = [...new Set(saved("bookmarks").concat(valid))];
+        if (merged.length > 100)
+          throw new Error(
+            "병합 결과가 100개를 넘습니다. 기존 책갈피를 정리한 뒤 복원하세요.",
+          );
+        if (!save("bookmarks", merged)) return;
+        drawSaved();
+        drawDetails(false);
+        status.textContent =
+          "책갈피 " +
+          merged.length +
+          "개를 보관했습니다. 현재 자료에 없는 항목 " +
+          (data.keys.length - valid.length) +
+          "개는 제외했습니다.";
+      } catch (e) {
+        status.textContent =
+          "복원하지 못했습니다. 기존 책갈피는 유지됩니다. " +
+          (e instanceof SyntaxError ? "JSON 파일을 확인하세요." : e.message);
+      } finally {
+        upload.value = "";
+      }
+    };
+    uploadLabel.append(upload);
+    backup.append(download, uploadLabel);
+    root.append(backup);
     var comparisonPanel = el("section", undefined, "comparison-panel");
     comparisonPanel.setAttribute(
       "aria-labelledby",
@@ -479,7 +570,7 @@
             return k !== record.key;
           });
         else keys.unshift(record.key);
-        save("bookmarks", keys.slice(0, 100));
+        if (!save("bookmarks", keys.slice(0, 100))) return;
         drawDetails(false);
         drawSaved();
         detail.querySelector("#explorer-bookmark").focus();
