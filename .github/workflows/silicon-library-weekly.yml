@@ -58,24 +58,12 @@ jobs:
           fi
       - name: Pages 재빌드 요청 및 정확한 배포 커밋 확인
         if: steps.publish.outputs.changed == 'true'
-        run: |
-          expected_commit=$(git rev-parse HEAD)
-          configured_branch=$(gh api "repos/$GITHUB_REPOSITORY/pages" --jq '.source.branch')
-          test "$configured_branch" = "$TARGET_BRANCH"
-          gh api --method POST "repos/$GITHUB_REPOSITORY/pages/builds" --silent
-          for attempt in $(seq 1 60); do
-            gh api "repos/$GITHUB_REPOSITORY/pages/builds/latest" > /tmp/weekly-pages-build.json
-            actual_commit=$(jq -r '.commit' /tmp/weekly-pages-build.json)
-            build_state=$(jq -r '.status' /tmp/weekly-pages-build.json)
-            if [ "$actual_commit" = "$expected_commit" ] && [ "$build_state" = 'built' ]; then
-              echo "Pages deployed $expected_commit"
-              exit 0
-            fi
-            if [ "$actual_commit" = "$expected_commit" ] && [ "$build_state" = 'errored' ]; then
-              jq '.error' /tmp/weekly-pages-build.json
-              exit 1
-            fi
-            sleep 10
-          done
-          echo 'Pages did not confirm the expected commit within ten minutes.'
-          exit 1
+        run: node scripts/rebuild-pages.js
+      - name: 배포 확인 기록 보관
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: silicon-weekly-deployment
+          path: ${{ runner.temp }}/silicon-weekly-deployment.json
+          if-no-files-found: ignore
+          retention-days: 30
