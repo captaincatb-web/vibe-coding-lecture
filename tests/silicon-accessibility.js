@@ -22,6 +22,7 @@ const url = process.env.SL_TEST_URL || "http://127.0.0.1:8767/silicon-library/";
       const page = await ctx.newPage();
       for (const hash of [
         "#explore?item=product%3Apre",
+        "#explore?compare=company:c05,company:c22,company:c27",
         "#labs?lab=lithography",
         "#labs?lab=ald",
         "#labs?lab=cmp",
@@ -31,11 +32,13 @@ const url = process.env.SL_TEST_URL || "http://127.0.0.1:8767/silicon-library/";
         await page.goto(url + hash);
         await page
           .locator(
-            hash.includes("explore")
-              ? ".explorer-detail h2"
-              : hash.includes("learn")
-                ? "#glossary-query"
-                : "#lab-result",
+            hash.includes("compare=")
+              ? ".comparison-table"
+              : hash.includes("explore")
+                ? ".explorer-detail h2"
+                : hash.includes("learn")
+                  ? "#glossary-query"
+                  : "#lab-result",
           )
           .waitFor();
         const result = await new AxeBuilder({ page }).analyze();

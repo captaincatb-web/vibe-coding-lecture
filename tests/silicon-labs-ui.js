@@ -92,6 +92,19 @@ const ok = (name, result) => {
     );
     await page.getByRole("button", { name: "마지막 단계 취소" }).click();
     ok("sequence supports undo", /세정$/.test(await result()));
+    await page.locator('[data-step="dep"]').click();
+    ok(
+      "redeposition draws a new unpatterned film",
+      (await page.locator('.lab-figure svg rect[fill="#d4964b"]').count()) ===
+        1,
+    );
+    await page.locator('[data-step="photo"]').click();
+    await page.locator('[data-step="etch"]').click();
+    ok(
+      "a second etch patterns the new film",
+      (await page.locator('.lab-figure svg rect[fill="#d4964b"]').count()) ===
+        4,
+    );
     await page.locator('.lab-tabs a[href="#labs?lab=packaging"]').click();
     await range("dies", 12);
     await range("rotation", 15);

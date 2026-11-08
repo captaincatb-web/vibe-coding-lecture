@@ -11,7 +11,8 @@
     "test:ui": "node tests/silicon-library-ui.js",
     "test:explorer": "node tests/silicon-explorer-ui.js",
     "test:labs": "node tests/silicon-labs-ui.js",
-    "test:a11y": "node tests/silicon-accessibility.js"
+    "test:a11y": "node tests/silicon-accessibility.js",
+    "test:comparison": "node tests/silicon-comparison-ui.js"
   },
   "devDependencies": {"@axe-core/playwright": "4.10.2", "ajv": "8.17.1", "playwright": "1.63.0"}
 }

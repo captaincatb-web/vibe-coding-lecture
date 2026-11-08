@@ -90,6 +90,21 @@
         byKey.get("company:" + c.company_id).aliases = c.aliases.concat(
           ALIASES["company:" + c.company_id] || [],
         );
+        byKey.get("company:" + c.company_id).company_profile = {
+          classification: c.classification_view,
+          secondary_classifications: c.secondary_classifications,
+          material_grade: c.material_grade,
+          supply_chain_class: c.supply_chain_class,
+          supply_chain_basis: c.supply_chain_basis,
+          country: c.country,
+          units: data.business_units
+            .filter((u) => u.company_id === c.company_id)
+            .map((u) => ({
+              name: u.display_name,
+              legal_name: u.legal_name,
+              legal_verified: u.legal_verified,
+            })),
+        };
       });
     data.products.forEach((p) =>
       add(
@@ -183,6 +198,40 @@
       !Array.isArray(index.claims)
     )
       return ["Unsupported index"];
+    function stringArray(values) {
+      return (
+        Array.isArray(values) && values.every((v) => typeof v === "string")
+      );
+    }
+    if (
+      index.sources.some(
+        (s) =>
+          !s ||
+          typeof s.source_id !== "string" ||
+          typeof s.title !== "string" ||
+          typeof s.url !== "string",
+      ) ||
+      index.claims.some(
+        (c) =>
+          !c ||
+          typeof c.claim_id !== "string" ||
+          typeof c.statement !== "string" ||
+          typeof c.scope !== "string" ||
+          !(c.company_id === null || typeof c.company_id === "string") ||
+          !(c.checked_at === null || typeof c.checked_at === "string") ||
+          !stringArray(c.source_ids) ||
+          !["verified", "partial", "unverified"].includes(
+            c.verification_status,
+          ),
+      )
+    )
+      return ["Invalid source or claim"];
+    if (
+      new Set(index.sources.map((s) => s.source_id)).size !==
+        index.sources.length ||
+      new Set(index.claims.map((c) => c.claim_id)).size !== index.claims.length
+    )
+      errors.push("Duplicate source or claim ID");
     var ids = new Set(),
       sources = new Set(index.sources.map((s) => s.source_id)),
       claims = new Set(index.claims.map((c) => c.claim_id));
@@ -195,14 +244,45 @@
         typeof r.title !== "string" ||
         typeof r.summary !== "string" ||
         typeof r.search_text !== "string" ||
-        !Array.isArray(r.aliases) ||
-        !Array.isArray(r.related_keys) ||
-        !Array.isArray(r.source_ids) ||
-        !Array.isArray(r.claim_ids) ||
+        !stringArray(r.aliases) ||
+        !stringArray(r.related_keys) ||
+        !stringArray(r.source_ids) ||
+        !stringArray(r.claim_ids) ||
         !/^#(?:b\d+|[tx]-[\w-]+)$/.test(r.route)
       )
         errors.push("Invalid record");
       if (r) ids.add(r.key);
+      if (r?.company_profile !== undefined && r?.company_profile !== null) {
+        var p = r.company_profile;
+        if (
+          r.type !== "company" ||
+          typeof p !== "object" ||
+          Array.isArray(p) ||
+          !["소재", "부품", "장비", "기타"].includes(p.classification) ||
+          !["A", "B", "C"].includes(p.material_grade) ||
+          !["직접", "간접", "관련 산업", "검증 필요"].includes(
+            p.supply_chain_class,
+          ) ||
+          typeof p.supply_chain_basis !== "string" ||
+          !stringArray(p.secondary_classifications) ||
+          !(p.country === null || typeof p.country === "string") ||
+          !Array.isArray(p.units) ||
+          p.units.some(
+            (u) =>
+              !u ||
+              typeof u.name !== "string" ||
+              !(u.legal_name === null || typeof u.legal_name === "string") ||
+              typeof u.legal_verified !== "boolean",
+          )
+        )
+          errors.push("Invalid company profile");
+      }
+    });
+    if (errors.includes("Invalid record")) return errors;
+    var claimById = new Map(index.claims.map((c) => [c.claim_id, c]));
+    index.claims.forEach((c) => {
+      if (c.source_ids.some((id) => !sources.has(id)))
+        errors.push("Orphan claim source");
     });
     index.records.forEach((r) => {
       if (
@@ -218,6 +298,13 @@
         r.claim_ids.some((k) => !claims.has(k))
       )
         errors.push("Orphan reference");
+      if (
+        r.type === "company" &&
+        r.claim_ids.some(
+          (id) => claimById.has(id) && claimById.get(id).company_id !== r.id,
+        )
+      )
+        errors.push("Wrong company claim");
     });
     var byKey = new Map(index.records.filter(Boolean).map((r) => [r.key, r]));
     index.records.forEach((r) => {
@@ -240,11 +327,13 @@
   }
   function search(index, query, type) {
     var tokens = String(query || "")
+        .normalize("NFKC")
         .trim()
-        .split(/\s+/)
+        .split(/[\s/·]+/)
         .map(text)
         .filter(Boolean),
       exact = text(query);
+    if (String(query || "").trim() && !tokens.length) return [];
     return index.records
       .filter(
         (r) =>
@@ -281,6 +370,7 @@
       query: (q.get("q") || "").slice(0, 200),
       type: TYPES.includes(q.get("type")) ? q.get("type") : "all",
       item: q.get("item") || "",
+      compare: comparisonKeys((q.get("compare") || "").split(",")),
     };
   }
   function stateHash(state) {
@@ -288,7 +378,59 @@
     if (state.query) p.set("q", state.query.slice(0, 200));
     if (TYPES.includes(state.type)) p.set("type", state.type);
     if (state.item) p.set("item", state.item);
+    var compare = comparisonKeys(state.compare);
+    if (compare.length) p.set("compare", compare.join(","));
     return "#explore" + (p.size ? "?" + p.toString() : "");
+  }
+  function comparisonKeys(keys) {
+    if (!Array.isArray(keys)) return [];
+    return [
+      ...new Set(
+        keys.filter(
+          (k) => typeof k === "string" && /^company:[A-Za-z0-9_-]+$/.test(k),
+        ),
+      ),
+    ].slice(0, 3);
+  }
+  function compareCompanies(index, keys) {
+    return comparisonKeys(keys)
+      .map((key) =>
+        index.records.find((r) => r.key === key && r.type === "company"),
+      )
+      .filter(Boolean)
+      .map((record) => {
+        var products = related(index, record.key).filter(
+            (r) => r.type === "product",
+          ),
+          processes = new Map();
+        products.forEach((p) =>
+          related(index, p.key)
+            .filter((r) => r.type === "process")
+            .forEach((p) => processes.set(p.key, p)),
+        );
+        var claims = index.claims.filter((c) =>
+          record.claim_ids.includes(c.claim_id),
+        );
+        return {
+          record: record,
+          profile: record.company_profile || null,
+          products: products,
+          processes: [...processes.values()],
+          facts: claims.reduce(
+            (counts, c) => {
+              counts[c.verification_status]++;
+              return counts;
+            },
+            { verified: 0, partial: 0, unverified: 0 },
+          ),
+          last_checked_at:
+            claims
+              .map((c) => c.checked_at)
+              .filter(Boolean)
+              .sort()
+              .at(-1) || null,
+        };
+      });
   }
   return {
     createIndex: createIndex,
@@ -297,5 +439,7 @@
     related: related,
     readState: readState,
     stateHash: stateHash,
+    comparisonKeys: comparisonKeys,
+    compareCompanies: compareCompanies,
   };
 });

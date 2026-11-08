@@ -67,6 +67,18 @@ test("sequence rejects unsupported orders and length", () => {
   ])
     assert.throws(() => c.sequence(steps), RangeError);
 });
+test("sequence requires a film before photo and does not advertise impossible next steps", () => {
+  const beforeFilm = c.sequence(["wafer", "metro"]);
+  assert.ok(!beforeFilm.next.includes("photo"));
+  assert.throws(() => c.sequence(["wafer", "metro", "photo"]), /박막/);
+  assert.ok(c.sequence(["wafer", "dep", "metro"]).next.includes("photo"));
+});
+test("redeposition starts an unpatterned top layer and another etch patterns it again", () => {
+  const first = ["wafer", "dep", "photo", "etch", "clean"];
+  assert.equal(c.sequence(first).patterned, true);
+  assert.equal(c.sequence([...first, "dep"]).patterned, false);
+  assert.equal(c.sequence([...first, "dep", "photo", "etch"]).patterned, true);
+});
 test("every lab has equation, units, assumptions, limitations, reference and quiz", () => {
   assert.equal(Object.keys(c.models).length, 5);
   for (const m of Object.values(c.models)) {

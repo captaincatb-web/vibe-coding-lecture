@@ -72,6 +72,9 @@
           return [s.source_id, s];
         }),
       );
+    state.compare = core
+      .compareCompanies(index, state.compare)
+      .map((c) => c.record.key);
     function saved(name) {
       try {
         var keys = JSON.parse(
@@ -149,6 +152,12 @@
     status.setAttribute("role", "status");
     status.setAttribute("aria-live", "polite");
     root.append(status);
+    var comparisonPanel = el("section", undefined, "comparison-panel");
+    comparisonPanel.setAttribute(
+      "aria-labelledby",
+      "explorer-comparison-title",
+    );
+    root.append(comparisonPanel);
     var layout = el("div", undefined, "explorer-layout"),
       results = el("ul", undefined, "explorer-results"),
       detail = el("section", undefined, "explorer-detail");
@@ -179,6 +188,7 @@
       drawDetails(true);
       drawResults();
       drawSaved();
+      drawComparison();
     }
     function drawSaved() {
       savedBody.replaceChildren();
@@ -231,6 +241,200 @@
           ),
         );
     }
+    function changeComparison(key) {
+      if (state.compare.includes(key))
+        state.compare = state.compare.filter((k) => k !== key);
+      else {
+        if (state.compare.length >= 3) {
+          status.textContent =
+            "비교는 최대 3곳까지 가능합니다. 기존 기업을 제외한 뒤 추가하세요.";
+          return;
+        }
+        state.compare.push(key);
+      }
+      updateURL(true);
+      drawComparison();
+      drawDetails(false);
+      status.textContent =
+        "비교 기업 " +
+        state.compare.length +
+        "/3곳 · 선택은 공유 주소에 함께 저장됩니다.";
+    }
+    function drawComparison() {
+      comparisonPanel.replaceChildren();
+      var columns = core.compareCompanies(index, state.compare);
+      comparisonPanel.hidden = columns.length === 0;
+      if (!columns.length) return;
+      var heading = el("h2", "기업 비교 · " + columns.length + "/3곳");
+      heading.id = "explorer-comparison-title";
+      comparisonPanel.append(
+        heading,
+        el(
+          "p",
+          "기업 레코드 단위 비교입니다. 법인 수나 특정 고객의 납품 관계를 뜻하지 않습니다. A/B/C는 자료 확보 수준이며 사실별 검증과 구분합니다.",
+          "cap",
+        ),
+        el("p", "좁은 화면에서는 표를 좌우로 스크롤할 수 있습니다.", "cap"),
+      );
+      var clear = el("button", "비교 전체 비우기");
+      clear.type = "button";
+      clear.onclick = function () {
+        state.compare = [];
+        updateURL(true);
+        drawComparison();
+        drawDetails(false);
+        status.textContent = "비교 선택을 비웠습니다.";
+        query.focus();
+      };
+      comparisonPanel.append(clear);
+      var scroll = el("div", undefined, "comparison-scroll");
+      scroll.tabIndex = 0;
+      scroll.setAttribute("role", "region");
+      scroll.setAttribute(
+        "aria-label",
+        "기업 비교 표 · 좌우로 스크롤할 수 있습니다",
+      );
+      var table = el("table", undefined, "comparison-table");
+      table.dataset.columns = columns.length;
+      table.append(el("caption", "수록 분류·공정 연결·기존 근거 비교"));
+      var head = el("thead"),
+        names = el("tr"),
+        first = el("th", "비교 항목");
+      first.scope = "col";
+      names.append(first);
+      columns.forEach((c) => {
+        var th = el("th");
+        th.scope = "col";
+        th.append(el("strong", c.record.title));
+        var remove = el("button", "제외");
+        remove.type = "button";
+        remove.setAttribute("aria-label", c.record.title + " 비교에서 제외");
+        remove.onclick = function () {
+          changeComparison(c.record.key);
+          var toggle = detail.querySelector("#explorer-compare");
+          (toggle || query).focus();
+        };
+        th.append(remove);
+        names.append(th);
+      });
+      head.append(names);
+      table.append(head);
+      var body = el("tbody");
+      function row(title, renderCell) {
+        var tr = el("tr"),
+          th = el("th", title);
+        th.scope = "row";
+        tr.append(th);
+        columns.forEach((c) => {
+          var td = el("td");
+          renderCell(td, c, c.profile || {});
+          tr.append(td);
+        });
+        body.append(tr);
+      }
+      function records(td, items) {
+        if (!items.length) {
+          td.append(el("span", "연결 미수록"));
+          return;
+        }
+        items.forEach((r) => td.append(recordButton(r)));
+      }
+      row("주 분류 / 보조 분류", (td, c, p) =>
+        td.append(
+          el(
+            "span",
+            (p.classification || "미확인") +
+              (p.secondary_classifications?.length
+                ? " / " + p.secondary_classifications.join(", ")
+                : ""),
+          ),
+        ),
+      );
+      row("자료 확보 등급", (td, c, p) =>
+        td.append(
+          el(
+            "span",
+            p.material_grade
+              ? p.material_grade + " · 자료 확보 수준"
+              : "미확인",
+          ),
+        ),
+      );
+      row("공급망 구분과 판단 근거", (td, c, p) =>
+        td.append(
+          el(
+            "span",
+            (p.supply_chain_class || "미확인") +
+              " · " +
+              (p.supply_chain_basis || "판단 근거 미수록"),
+          ),
+        ),
+      );
+      row("소재 국가", (td, c, p) =>
+        td.append(el("span", p.country || "미확인")),
+      );
+      row("사업·법인 구분", (td, c, p) => {
+        if (!p.units?.length) {
+          td.append(el("span", "별도 사업·법인 단위 미수록"));
+          return;
+        }
+        var ul = el("ul");
+        p.units.forEach((u) =>
+          ul.append(
+            el(
+              "li",
+              u.name +
+                " · " +
+                (u.legal_name || "법인명 미확인") +
+                " (" +
+                (u.legal_verified ? "기존 법인명 확인" : "법인명 미확인") +
+                ")",
+            ),
+          ),
+        );
+        td.append(ul);
+      });
+      row("연결 제품", (td, c) => records(td, c.products));
+      row("제품에서 이어진 공정", (td, c) => records(td, c.processes));
+      row("기존 사실 대조", (td, c) => {
+        var f = c.facts,
+          total = f.verified + f.partial + f.unverified;
+        td.append(
+          el(
+            "span",
+            total
+              ? "검증 " +
+                  f.verified +
+                  " · 부분 " +
+                  f.partial +
+                  " · 미검증 " +
+                  f.unverified
+              : "등록된 사실 대조 기록 없음",
+          ),
+        );
+      });
+      row("기존 대조 최신 날짜", (td, c) =>
+        td.append(
+          el("span", c.last_checked_at || "등록된 사실 대조 기록 없음"),
+        ),
+      );
+      row("등록 참고자료", (td, c) =>
+        td.append(
+          el("span", c.record.source_ids.length + "건 · 이번 원문 재확인 전"),
+        ),
+      );
+      row("정규화 공시·재무", (td) =>
+        td.append(el("span", "공시 기반 정규화 데이터 미수록")),
+      );
+      row("기존 상세 페이지", (td, c) => {
+        var a = el("a", "회사 책 열기");
+        a.href = c.record.route;
+        td.append(a);
+      });
+      table.append(body);
+      scroll.append(table);
+      comparisonPanel.append(scroll);
+    }
     function drawDetails(focus) {
       detail.replaceChildren();
       var record = index.records.find(function (r) {
@@ -281,6 +485,25 @@
         detail.querySelector("#explorer-bookmark").focus();
       };
       actions.append(bookmark);
+      if (record.type === "company") {
+        var compare = el(
+          "button",
+          state.compare.includes(record.key)
+            ? "기업 비교에서 제외"
+            : "기업 비교에 추가",
+        );
+        compare.type = "button";
+        compare.id = "explorer-compare";
+        compare.setAttribute(
+          "aria-pressed",
+          String(state.compare.includes(record.key)),
+        );
+        compare.onclick = function () {
+          changeComparison(record.key);
+          detail.querySelector("#explorer-compare").focus();
+        };
+        actions.append(compare);
+      }
       var share = el("button", "공유 주소 복사");
       share.type = "button";
       share.onclick = async function () {
@@ -425,6 +648,7 @@
     drawResults();
     drawDetails(false);
     drawSaved();
+    drawComparison();
   }
   window.SiliconExplorer = { mount: mount };
   var root = document.getElementById("explorer-root");

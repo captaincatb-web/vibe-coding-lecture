@@ -79,13 +79,105 @@ test("sources retain original access limits and historical facts", () => {
   );
 });
 test("shared URL state round trips Korean queries and typed selections", () => {
-  const state = { query: "원자층 증착", type: "product", item: "product:pre" };
+  const state = {
+    query: "원자층 증착",
+    type: "product",
+    item: "product:pre",
+    compare: [],
+  };
   assert.deepEqual(core.readState(core.stateHash(state)), state);
   assert.equal(core.readState("#explore?type=invalid").type, "all");
   assert.equal(
     core.readState("#explore?q=" + "a".repeat(300)).query.length,
     200,
   );
+});
+test("slash-separated bilingual queries and punctuation-only queries are meaningful", () => {
+  for (const q of ["ALD/CVD", "ＡＬＤ／ＣＶＤ", "ALD·CVD"])
+    assert.ok(
+      core.search(index, q, "product").some((r) => r.key === "product:pre"),
+    );
+  for (const q of ["---", "/", "·", "..."])
+    assert.deepEqual(core.search(index, q), []);
+  assert.equal(core.search(index, "").length, 94);
+});
+test("comparison keeps canonical company identity, legal units and evidence scopes", () => {
+  const rows = core.compareCompanies(index, [
+    "company:c05",
+    "company:c22",
+    "company:c27",
+  ]);
+  assert.equal(rows.length, 3);
+  assert.equal(rows[0].profile.material_grade, "A");
+  assert.deepEqual(rows[0].facts, { verified: 0, partial: 0, unverified: 0 });
+  assert.equal(rows[0].last_checked_at, null);
+  assert.equal(rows[1].profile.units.length, 2);
+  assert.ok(rows[1].profile.units.every((u) => !u.legal_verified));
+  assert.equal(rows[2].profile.units.length, 2);
+  assert.ok(rows[2].profile.units.every((u) => u.legal_verified));
+  assert.equal(
+    rows[2].facts.verified + rows[2].facts.partial + rows[2].facts.unverified,
+    6,
+  );
+  assert.equal(rows[2].last_checked_at, "2026-11-02");
+  assert.ok(rows[0].processes.some((p) => p.key === "process:cmp"));
+  assert.ok(rows.every((r) => r.profile.country === null));
+});
+test("comparison rejects non-company keys and unknown records without merging names", () => {
+  const rows = core.compareCompanies(index, [
+    "product:pre",
+    "company:missing",
+    "company:c22",
+    "company:c22",
+  ]);
+  assert.equal(rows.length, 1);
+  assert.equal(rows[0].record.key, "company:c22");
+  assert.deepEqual(core.comparisonKeys(null), []);
+  assert.equal(
+    core.comparisonKeys([
+      "company:c01",
+      "company:c02",
+      "company:c03",
+      "company:c04",
+    ]).length,
+    3,
+  );
+});
+test("comparison survives shared URL state with a bounded canonical selection", () => {
+  const state = {
+    query: "솔브레인",
+    type: "company",
+    item: "company:c05",
+    compare: ["company:c05", "company:c27"],
+  };
+  assert.deepEqual(core.readState(core.stateHash(state)), state);
+  assert.deepEqual(
+    core.readState(
+      "#explore?compare=company:c05,company:c05,product:pre,company:c27",
+    ).compare,
+    ["company:c05", "company:c27"],
+  );
+});
+test("malformed source, claim and relation payloads return validation errors instead of throwing", () => {
+  const mutations = [
+    (d) => (d.sources[0] = null),
+    (d) => (d.claims[0] = null),
+    (d) => (d.records[0].related_keys = 4),
+    (d) => (d.records[0].aliases = [null]),
+    (d) => d.sources.push(d.sources[0]),
+    (d) => d.claims.push(d.claims[0]),
+    (d) => d.claims[0].source_ids.push("missing"),
+    (d) => (d.records[0].company_profile.material_grade = "S"),
+    (d) => (d.records[0].company_profile = 0),
+    (d) => (d.records[0].company_profile = false),
+    (d) => d.records[0].claim_ids.push("f001"),
+  ];
+  for (const mutate of mutations) {
+    const d = JSON.parse(JSON.stringify(index));
+    mutate(d);
+    assert.doesNotThrow(() => core.validateIndex(d));
+    assert.ok(core.validateIndex(d).length);
+  }
 });
 test("duplicate keys, orphan links, asymmetric edges and unsafe sources fail", () => {
   const clone = () => JSON.parse(JSON.stringify(index));

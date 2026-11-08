@@ -61,19 +61,32 @@
       steps[0] !== "wafer"
     )
       throw new RangeError("웨이퍼로 시작하는 최대 24단계 학습 모델입니다.");
+    var hasFilm = false,
+      patterned = false;
     steps.forEach(function (s, i) {
       if (!STEPS[s] || (i > 0 && !NEXT[steps[i - 1]].includes(s)))
         throw new RangeError(
           "이 단순 학습 모델에서 가능한 다음 순서: " +
             (NEXT[steps[i - 1]] || ["wafer"]).map((k) => STEPS[k]).join(", "),
         );
+      if (s === "photo" && !hasFilm)
+        throw new RangeError(
+          "이 학습 모델에서는 박막을 추가한 뒤 포토를 진행하세요.",
+        );
+      if (s === "dep") {
+        hasFilm = true;
+        patterned = false;
+      }
+      if (s === "etch") patterned = true;
     });
     return {
       steps: steps.slice(),
       last: steps[steps.length - 1],
-      has_film: steps.includes("dep"),
-      patterned: steps.includes("etch"),
-      next: NEXT[steps[steps.length - 1]].slice(),
+      has_film: hasFilm,
+      patterned: patterned,
+      next: NEXT[steps[steps.length - 1]].filter(
+        (k) => k !== "photo" || hasFilm,
+      ),
     };
   }
   var MODELS = {

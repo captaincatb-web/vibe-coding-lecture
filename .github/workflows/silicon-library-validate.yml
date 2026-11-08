@@ -40,5 +40,6 @@ jobs:
           server_pid=$!
           trap 'kill "$server_pid"' EXIT
           SL_TEST_URL=http://127.0.0.1:8767/silicon-library/ npm run test:explorer
+          SL_TEST_URL=http://127.0.0.1:8767/silicon-library/ npm run test:comparison
           SL_TEST_URL=http://127.0.0.1:8767/silicon-library/ npm run test:labs
           SL_TEST_URL=http://127.0.0.1:8767/silicon-library/ npm run test:a11y

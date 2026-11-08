@@ -1,5 +1,7 @@
 # 통합 버전 검증 기록
 
+이 기록은 21dbc89 시점의 통합 버전 기준이다. 이후 기업 비교·검색·공정 랩 수정의 검증은 [추가 개선 기록](comparison-improvements.md)을 참조한다.
+
 2026-11-08 KST. 로컬 Node 24.22.1, npm 11.9.0, 시스템 Chromium, Playwright 1.63.0. CI는 Node 20과 고정 package-lock을 사용한다.
 
 ## 실행 결과
