@@ -44,7 +44,13 @@ const ok = (name, result) => {
       (await page.locator("#lab-na").getAttribute("max")) === "0.55" &&
         !/NaN|Infinity/.test(await result()),
     );
-    await page.locator('.lab-tabs a[href="#labs?lab=ald"]').click();
+    await page.locator('.lab-tabs a[href="#labs?lab=ald"]').focus();
+    await page.keyboard.press("Enter");
+    await page.locator("#lab-cycles").waitFor();
+    ok(
+      "keyboard lab navigation focuses the new heading",
+      await page.locator("#lab-root h3").evaluate((el) => el === document.activeElement),
+    );
     await range("cycles", 100);
     ok("ALD updates thickness to 10 nm", /10\.00 nm/.test(await result()));
     const shared = page.url();
@@ -83,6 +89,15 @@ const ok = (name, result) => {
       "invalid sequence explains the toy-model rule",
       /학습 모델/.test(await page.locator(".lab-message").innerText()) &&
         (await result()) === "웨이퍼",
+    );
+    await page.locator('[data-step="dep"]').click();
+    await page.locator('[data-step="dep"]').click();
+    const rejectedSequenceMessage = await page.locator(".lab-message").innerText();
+    await page.getByRole("button", { name: "마지막 단계 취소" }).click();
+    ok(
+      "undo clears guidance for a rejected sequence state",
+      (await result()) === "웨이퍼" &&
+        (await page.locator(".lab-message").innerText()) !== rejectedSequenceMessage,
     );
     for (const k of ["dep", "photo", "etch", "clean", "metro"])
       await page.locator('[data-step="' + k + '"]').click();
@@ -174,6 +189,16 @@ const ok = (name, result) => {
       "invalid shared parameters fall back safely",
       /5\.00 nm/.test(await result()),
     );
+    for (const key of ["constructor", "toString", "__proto__", "unknown-lab"]) {
+      await page.goto(url + "#labs?lab=" + encodeURIComponent(key));
+      await page.locator("#lab-result").waitFor();
+      ok(
+        "unsupported lab key falls back safely: " + key,
+        (await page.locator("#lab-root h3").innerText()) === "노광 · 빛과 패턴" &&
+          (await page.locator(".lab-quiz input").count()) > 0 &&
+          errors.length === 0,
+      );
+    }
     ok("no lab or learning runtime errors", errors.length === 0);
     console.log(passed + "/" + passed + " lab UI checks passed");
   } finally {

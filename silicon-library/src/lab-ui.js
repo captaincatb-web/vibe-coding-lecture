@@ -1,7 +1,29 @@
 (function () {
   "use strict";
   var core = window.SiliconLabCore,
-    NS = "http://www.w3.org/2000/svg";
+    study = window.SiliconStudyCore,
+    NS = "http://www.w3.org/2000/svg",
+    studyKey = "siliconLibrary:study:v1",
+    focusOnMount = false;
+  function readStudy() {
+    try {
+      return study.parse(localStorage.getItem(studyKey));
+    } catch (_) {
+      return study.empty();
+    }
+  }
+  function saveStudy(state, status) {
+    try {
+      localStorage.getItem(studyKey);
+      localStorage.setItem(studyKey, JSON.stringify(state));
+      status.textContent = "이 브라우저에 학습 기록을 저장했습니다.";
+      return true;
+    } catch (_) {
+      status.textContent =
+        "학습 기록을 저장하지 못했습니다. 브라우저 저장 공간과 설정을 확인하세요. 현재 실습은 계속할 수 있습니다.";
+      return false;
+    }
+  }
   function el(tag, text, cls) {
     var n = document.createElement(tag);
     if (text !== undefined) n.textContent = text;
@@ -25,7 +47,8 @@
     }
     var params = new URLSearchParams(location.hash.split("?")[1] || ""),
       key = params.get("lab") || "lithography";
-    if (!core.models[key]) key = "lithography";
+    if (!Object.prototype.hasOwnProperty.call(core.models, key))
+      key = "lithography";
     var model = core.models[key];
     root.replaceChildren();
     var nav = el("nav", undefined, "lab-tabs");
@@ -33,6 +56,18 @@
     Object.keys(core.models).forEach((k) => {
       var a = link(core.models[k].title.split(" · ")[0], "#labs?lab=" + k);
       if (k === key) a.setAttribute("aria-current", "page");
+      a.onclick = function (event) {
+        if (
+          event.button ||
+          event.ctrlKey ||
+          event.metaKey ||
+          event.shiftKey ||
+          event.altKey
+        )
+          return;
+        if (a.hash === location.hash) heading.focus();
+        else focusOnMount = true;
+      };
       nav.append(a);
     });
     root.append(nav);
@@ -70,13 +105,19 @@
     var message = el("p", undefined, "lab-message");
     message.setAttribute("role", "status");
     controls.append(message);
+    var saveStatus = el("p", undefined, "study-status");
+    saveStatus.id = "study-save-status";
+    saveStatus.setAttribute("role", "status");
+    controls.append(saveStatus);
     var values = {},
       inputs = {};
     function share() {
       var p = new URLSearchParams();
       p.set("lab", key);
       Object.keys(values).forEach((k) => p.set(k, String(values[k])));
-      history.replaceState(null, "", "#labs?" + p.toString());
+      var hash = "#labs?" + p.toString();
+      history.replaceState(null, "", hash);
+      saveStudy(study.resume(readStudy(), key, hash), saveStatus);
     }
     function range(id, label, min, max, step, initial, unit) {
       var wrap = el("label", undefined, "lab-control"),
@@ -236,6 +277,7 @@
         if (s.length > 1) s.pop();
         values.steps = s.join(",");
         share();
+        message.textContent = "현재 단계: " + core.steps[s[s.length - 1]] + ".";
         draw();
       };
       controls.append(undo);
@@ -437,8 +479,13 @@
     reset.type = "button";
     reset.id = "lab-reset";
     reset.onclick = function () {
-      history.replaceState(null, "", "#labs?lab=" + key);
+      var hash = "#labs?lab=" + key;
+      history.replaceState(null, "", hash);
       mount(root);
+      saveStudy(
+        study.resume(readStudy(), key, hash),
+        root.querySelector("#study-save-status"),
+      );
       root.querySelector("h3").focus();
     };
     controls.append(reset);
@@ -463,23 +510,50 @@
     quiz.append(el("legend", model.quiz.question));
     var feedback = el("p");
     feedback.setAttribute("role", "status");
+    var savedChoice = readStudy().answers[key];
+    function explain(choice, saved) {
+      feedback.textContent =
+        (choice === model.quiz.answer
+          ? "정답입니다. "
+          : "다시 생각해 보세요. ") +
+        model.quiz.explanation +
+        (saved
+          ? " 선택한 답안을 이 브라우저에 저장했습니다."
+          : " 이번 방문에서 선택한 답안입니다. 저장되지 않았습니다.");
+    }
     model.quiz.options.forEach((o, i) => {
       var l = el("label"),
         r = el("input");
       r.type = "radio";
       r.name = "lab-quiz";
       r.value = i;
+      r.checked = savedChoice === i;
       r.onchange = function () {
-        feedback.textContent =
-          (i === model.quiz.answer ? "정답입니다. " : "다시 생각해 보세요. ") +
-          model.quiz.explanation;
+        var p = new URLSearchParams();
+        p.set("lab", key);
+        Object.keys(values).forEach((k) => p.set(k, String(values[k])));
+        var state = study.resume(
+          study.answer(readStudy(), key, i),
+          key,
+          "#labs?" + p.toString(),
+        );
+        explain(i, saveStudy(state, saveStatus));
       };
       l.append(r, document.createTextNode(" " + o));
       quiz.append(l);
     });
     quiz.append(feedback);
+    if (
+      Number.isInteger(savedChoice) &&
+      savedChoice < model.quiz.options.length
+    )
+      explain(savedChoice, true);
     root.append(quiz);
     draw();
+    if (focusOnMount) {
+      focusOnMount = false;
+      heading.focus();
+    }
   }
   function learning(root) {
     root.replaceChildren(
@@ -489,57 +563,100 @@
         "lede",
       ),
     );
-    var paths = [
-      [
-        "입문 · 제조 흐름 잡기",
-        [
-          ["웨이퍼", "#t-wafer"],
-          ["노광", "#t-photo"],
-          ["박막과 증착", "#t-dep"],
-          ["빛과 패턴 실험", "#labs?lab=lithography"],
-        ],
-      ],
-      [
-        "실무 · 품목과 공정 잇기",
-        [
-          ["전구체", "#x-pre"],
-          ["식각", "#t-etch"],
-          ["CMP", "#t-cmp"],
-          ["공정 시퀀스 실험", "#labs?lab=sequence"],
-        ],
-      ],
-      [
-        "심화 · 적층과 검사 이해하기",
-        [
-          ["HBM 심화", "#t-hbm"],
-          ["테스트", "#t-test"],
-          ["적층 구조 탐색", "#labs?lab=packaging"],
-          ["ALD 실험", "#labs?lab=ald"],
-        ],
-      ],
-      [
-        "산업 · 기업과 근거 따라가기",
-        [
-          ["통합 탐색", "#explore"],
-          ["기업별 자료", "#explore?type=company"],
-          ["품목별 연결", "#explore?type=product"],
-          ["공정 지도", "#map"],
-        ],
-      ],
-    ];
+    var state = readStudy(),
+      summary = el("div", undefined, "study-summary"),
+      total = el("p"),
+      progress = el("progress"),
+      status = el("p", undefined, "study-status"),
+      counters = [];
+    total.id = "study-total";
+    progress.id = "study-progress";
+    progress.max = 16;
+    progress.setAttribute("aria-label", "학습 경로 완료 진행률");
+    status.id = "study-status";
+    status.setAttribute("role", "status");
+    summary.append(
+      el("h3", "나의 학습 기록"),
+      total,
+      progress,
+      el(
+        "p",
+        "다 읽거나 실습을 마친 단계의 완료 칸을 직접 표시하세요. 기록은 이 브라우저에 저장됩니다. 방문이나 퀴즈 풀이만으로 완료 처리하지 않습니다.",
+        "cap",
+      ),
+    );
+    if (state.lastLab) {
+      var resume = link(
+        "마지막 실습 이어가기 · " +
+          core.models[state.lastLab.id].title.split(" · ")[0],
+        state.lastLab.hash,
+      );
+      resume.id = "study-resume";
+      summary.append(resume);
+    } else
+      summary.append(
+        el(
+          "p",
+          "실습을 조작하면 마지막 설정을 여기서 이어갈 수 있습니다.",
+          "cap",
+        ),
+      );
+    summary.append(status);
+    root.append(summary);
+    function refreshProgress() {
+      var correct = Object.keys(core.models).filter(
+        (id) => state.answers[id] === core.models[id].quiz.answer,
+      ).length;
+      total.textContent =
+        "완료 " +
+        state.completed.length +
+        " / 16 · 퀴즈 정답 " +
+        correct +
+        " / 5";
+      progress.value = state.completed.length;
+      root.querySelectorAll("[data-study-step]").forEach((checkbox) => {
+        checkbox.checked = state.completed.includes(checkbox.dataset.studyStep);
+      });
+      counters.forEach((entry) => {
+        entry.node.textContent =
+          "완료 " +
+          entry.path.steps.filter((step) => state.completed.includes(step.id))
+            .length +
+          " / " +
+          entry.path.steps.length;
+      });
+    }
     var cards = el("div", undefined, "learning-paths");
-    paths.forEach((p, i) => {
-      var s = el("section");
-      s.append(el("h3", i + 1 + ". " + p[0]));
+    study.paths.forEach((p, i) => {
+      var s = el("section"),
+        count = el("p", undefined, "cap");
+      count.dataset.studyPath = p.id;
+      counters.push({ node: count, path: p });
+      s.append(el("h3", i + 1 + ". " + p.title), count);
       var ol = el("ol");
-      p[1].forEach((x) => {
-        var li = el("li");
-        li.append(link(x[0], x[1]));
+      p.steps.forEach((step) => {
+        var li = el("li"),
+          checkbox = el("input"),
+          label = el("label", undefined, "study-check");
+        checkbox.type = "checkbox";
+        checkbox.dataset.studyStep = step.id;
+        checkbox.checked = state.completed.includes(step.id);
+        checkbox.setAttribute("aria-label", step.title + " 학습 완료");
+        checkbox.onchange = function () {
+          var next = study.toggle(readStudy(), step.id, checkbox.checked);
+          if (saveStudy(next, status)) {
+            state = next;
+            refreshProgress();
+          } else checkbox.checked = state.completed.includes(step.id);
+        };
+        label.append(checkbox, document.createTextNode(" 완료"));
+        li.append(link(step.title, step.href), label);
         ol.append(li);
       });
       s.append(ol);
       cards.append(s);
     });
+    refreshProgress();
     root.append(
       cards,
       el("h3", "용어집"),
@@ -557,9 +674,9 @@
     label.append(input);
     root.append(label);
     var list = el("dl", undefined, "glossary-list"),
-      status = el("p");
-    status.setAttribute("role", "status");
-    root.append(status, list);
+      glossaryStatus = el("p");
+    glossaryStatus.setAttribute("role", "status");
+    root.append(glossaryStatus, list);
     input.value = (
       new URLSearchParams(location.hash.split("?")[1] || "").get("q") || ""
     ).slice(0, 200);
@@ -569,7 +686,7 @@
       var rows = core.glossary.filter((r) =>
         r.join(" ").toLowerCase().replace(/\s/g, "").includes(q),
       );
-      status.textContent = rows.length + "개 용어";
+      glossaryStatus.textContent = rows.length + "개 용어";
       rows.forEach((r) => {
         var dt = el("dt");
         dt.append(link(r[0] + " · " + r[1], r[3]));

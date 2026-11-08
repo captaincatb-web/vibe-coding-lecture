@@ -57,7 +57,7 @@ const ok = (name, cond, extra) => { results.push([name, !!cond, extra || '']); c
   await page.goto(URL); await page.goto(URL + '#b' + aetsClean);
   await page.waitForTimeout(300);
   ok('기존 세정 행 URL이 통합 기업으로 이동', (await page.evaluate(() => location.hash)) === '#b' + aets, await page.evaluate(() => location.hash));
-  ok('통합 기업 책이 열림', /에이텍솔루션/.test(await page.locator('.cover h2').innerText()));
+  ok('통합 기업 책이 열림', /에이텍솔루션/.test(await page.locator('.cover h1').innerText()));
 
   /* 린데 */
   const linde = +(await page.evaluate(() => (location.hash = '', [...document.querySelectorAll('.spine')].length, 0)));
@@ -229,7 +229,7 @@ const ok = (name, cond, extra) => { results.push([name, !!cond, extra || '']); c
   ok('Esc 로 책장 복귀', (await page.evaluate(() => location.hash)) === '');
   /* 다크 모드 */
   const dp = await browser.newContext({ colorScheme: 'dark', viewport: { width: 400, height: 800 } }); await configureContext(dp); const d = await dp.newPage(); const de = []; d.on('pageerror', (e) => de.push(String(e)));
-  await d.goto(URL + '#b' + sw); ok('다크 모드 책 열기 오류 없음', de.length === 0 && /삼화전기/.test(await d.locator('.cover h2').innerText()), de.join('|'));
+  await d.goto(URL + '#b' + sw); ok('다크 모드 책 열기 오류 없음', de.length === 0 && /삼화전기/.test(await d.locator('.cover h1').innerText()), de.join('|'));
   ok('전체 실행 중 콘솔 오류 없음', errs.length === 0, errs.join('|'));
   await browser.close();
   const fail = results.filter((r) => !r[1]);

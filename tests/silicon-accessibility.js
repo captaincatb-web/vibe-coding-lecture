@@ -10,6 +10,27 @@ const url = process.env.SL_TEST_URL || "http://127.0.0.1:8767/silicon-library/";
   );
   let count = 0,
     failures = [];
+  async function inspect(page, hash, width) {
+    await page.evaluate(() =>
+      Promise.all(
+        document
+          .getAnimations()
+          .map((animation) => animation.finished.catch(() => {})),
+      ),
+    );
+    const result = await new AxeBuilder({ page }).analyze();
+    count++;
+    if (result.violations.length)
+      failures.push({
+        hash,
+        width,
+        violations: result.violations.map((v) => ({
+          id: v.id,
+          impact: v.impact,
+          targets: v.nodes.map((n) => n.target),
+        })),
+      });
+  }
   try {
     for (const width of [400, 1280]) {
       const ctx = await browser.newContext({
@@ -28,31 +49,27 @@ const url = process.env.SL_TEST_URL || "http://127.0.0.1:8767/silicon-library/";
         "#labs?lab=cmp",
         "#labs?lab=packaging",
         "#learn",
+        "#b0",
       ]) {
         await page.goto(url + hash);
         await page
           .locator(
-            hash.includes("compare=")
-              ? ".comparison-table"
-              : hash.includes("explore")
-                ? ".explorer-detail h2"
-                : hash.includes("learn")
-                  ? "#glossary-query"
-                  : "#lab-result",
+            hash.startsWith("#b")
+              ? "#pg"
+              : hash.includes("compare=")
+                ? ".comparison-table"
+                : hash.includes("explore")
+                  ? ".explorer-detail h2"
+                  : hash.includes("learn")
+                    ? "#glossary-query"
+                    : "#lab-result",
           )
           .waitFor();
-        const result = await new AxeBuilder({ page }).analyze();
-        count++;
-        if (result.violations.length)
-          failures.push({
-            hash,
-            width,
-            violations: result.violations.map((v) => ({
-              id: v.id,
-              impact: v.impact,
-              targets: v.nodes.map((n) => n.target),
-            })),
-          });
+        await inspect(page, hash, width);
+        if (hash.startsWith("#b")) {
+          await page.getByRole("button", { name: /핵심 기술$/ }).click();
+          await inspect(page, hash + " · 핵심 기술", width);
+        }
       }
       await ctx.close();
     }

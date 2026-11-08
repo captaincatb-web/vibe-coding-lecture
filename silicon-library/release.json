@@ -1,6 +1,6 @@
 {
-  "release": "silicon-library-2.0-20261108",
-  "application_base_commit": "11524320166b0c454cbcf44e86e60e56f1f6ec5e",
+  "release": "silicon-library-2.1-study-20261108",
+  "application_base_commit": "49ae1b604cc30ac521d5156ae160c4a9e5d63b89",
   "entrypoints": ["#explore", "#labs", "#learn"],
   "hosting": "GitHub Pages static files"
 }

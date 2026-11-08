@@ -101,7 +101,7 @@ h1 { font-family: var(--serif); font-size: 1.95rem; line-height: 1.3; margin: 0 
 .cover { position: relative; color: var(--spine-fg); padding: 36px 30px; border-radius: 4px 0 0 4px; display: flex; flex-direction: column; gap: 14px; }
 .cover::after { content: ""; position: absolute; top: 0; right: 0; bottom: 0; width: 14px; background: linear-gradient(90deg, rgba(0,0,0,0), rgba(0,0,0,.22)); }
 .cover .series { font-size: 12px; letter-spacing: .1em; opacity: .85; }
-.cover h2 { font-family: var(--serif); font-size: 2rem; line-height: 1.25; margin: 0; text-wrap: balance; }
+.cover h1 { font-family: var(--serif); font-size: 2rem; line-height: 1.25; margin: 0; text-wrap: balance; }
 .cover .item { font-size: 15px; border-top: 1px solid rgba(255,255,255,.4); border-bottom: 1px solid rgba(255,255,255,.4); padding: 6px 0; }
 .cover .one { font-family: var(--serif); font-size: 15.5px; line-height: 1.6; opacity: .95; }
 .cover .head { font-size: 13.5px; opacity: .85; margin-top: -6px; }
@@ -119,6 +119,7 @@ ul.rel a { text-decoration: none; }
 .tabs button[aria-current="page"] { color: var(--fg); font-weight: 600; box-shadow: 0 2px 0 var(--accent); }
 .tabs button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .page { flex: 1; min-width: 0; }
+.visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
 .page.fwd { animation: turnF .32s ease; }
 .page.back { animation: turnB .32s ease; }
 @keyframes turnF { from { opacity: 0; transform: translateX(28px) rotateY(-8deg); } to { opacity: 1; transform: none; } }
@@ -202,6 +203,7 @@ dl.facts dd { margin: 0; }
 .txc ul { margin: 0 0 6px; }
 .txr { color: var(--muted); }
 .ctx { background: var(--accent-soft); border-radius: 4px; padding: 10px 14px; font-size: 14px; margin: 0 0 12px; max-width: 64ch; }
+.reading-guide .rt .kchip { display: inline-block; max-width: 100%; border-radius: 6px; overflow-wrap: anywhere; }
 .empty { color: var(--muted); font-style: italic; }
 .src li { font-size: 13.5px; }
 /* 조밀한 배치: 리포트는 넓은 화면에서 2열, 표지 그림, 즐겨찾기, 보기 전환, 공정 지도 */
@@ -239,7 +241,7 @@ dl.facts dd { margin: 0; }
   .book { grid-template-columns: minmax(0, 1fr); min-height: 0; }
   .cover { border-radius: 4px 4px 0 0; padding: 24px 20px; }
   .cover::after { display: none; }
-  .cover h2 { font-size: 1.6rem; }
+  .cover h1 { font-size: 1.6rem; }
   .leaf { padding: 20px 18px 16px; }
   .spine { width: 38px; }
 }
@@ -1298,6 +1300,40 @@ dl.facts dd { margin: 0; }
       return '<tr><td class="wr">' + esc(f.text) + '<br><small>' + esc(f.id) + '</small></td><td class="wr">' + esc(f.scope) + (f.unit ? ' (' + esc(f.unit) + ')' : '') + '<br>' + esc(f.kind) + '</td><td class="wr">' + (ss || '<small>원문 없음</small>') + '<br><small>' + esc(dt) + '</small></td><td class="wr">' + esc(f.vs) + '</td></tr>';
     }).join("") + '</tbody></table>';
   }
+  /* 책 읽기 길잡이: 기존 품목·공정 해설의 구분점을 질문으로 연결한다. 기업별 사양을 추가하지 않는다. */
+  var BOOK_GUIDES = [
+    { keys: ["pre"], text: "ALD와 CVD에 쓰는 원료를 구분하고, 어떤 막을 만드는지부터 읽어 보세요. ALD의 사이클당 성장량은 언제나 한 원자층과 같은 값이 아니며, 깊은 구조의 피복성도 노출량과 반응 조건에 따라 달라집니다.", links: [["#t-dep", "증착 심화 · 성장량과 피복성"], ["#labs?lab=ald", "ALD 랩 · 사이클과 두께"]] },
+    { keys: ["pr", "barc", "mask", "gasRare"], text: "감광막(PR), 반사를 줄이는 하부막(BARC), 회로 원판인 마스크, 광원용 가스를 구분해 보세요. 이 책의 품목이 패턴 형성의 어느 위치에 관여하는지 확인한 뒤, 해상도와 결함·정렬 문제를 나누어 읽으면 좋습니다.", links: [["#t-photo", "노광 해설 · 소재와 광원의 역할"], ["#labs?lab=lithography", "노광 랩 · 파장과 개구수"]] },
+    { keys: ["cmp"], text: "슬러리의 화학 성분·연마 입자와 패드의 접촉·슬러리 유지 역할을 구분해 보세요. 제거속도뿐 아니라 선택비, 스크래치, 패드 수명 중 어떤 특성을 설명하는 자료인지 함께 확인하세요.", links: [["#t-cmp", "CMP 심화 · 제거와 결함"], ["#labs?lab=cmp", "CMP 랩 · 압력·속도·시간"]] },
+    { keys: ["substrate", "pid", "film", "hbmfilm"], text: "패키지 기판의 전기적 연결, PID가 남기는 절연층, 보호·접착·이형 필름의 역할은 서로 다릅니다. 어느 단계에서 쓰이고 공정 뒤에 남는지부터 확인하세요. HBM 구조 설명과 개별 소재의 채택·성능 근거도 따로 읽어야 합니다.", links: [["#t-hbm", "HBM 심화 · 적층과 연결"], ["#labs?lab=packaging", "적층 랩 · 다이·TSV·연결부"]] },
+    { keys: ["probe", "socket", "wtester", "ptester", "handler"], text: "웨이퍼 단계와 패키지·모듈 단계의 시험을 구분해 보세요. 신호를 주고받는 테스터, 칩에 접촉하는 프로브·소켓, 칩을 옮기고 분류하는 장비 중 이 품목의 역할이 무엇인지 확인하세요. 적층 전 양품 판별과 적층 후 검사는 같은 조건의 검사가 아닙니다.", links: [["#t-test", "테스트 심화 · 검사 단계와 접근성"], ["#t-hbm", "HBM 심화 · 적층과 검사"]] },
+    { keys: ["etch", "gasEtch"], text: "습식 약액과 플라즈마용 가스가 막을 제거하는 방식을 구분해 보세요. 원하는 막을 얼마나 잘 골라 깎는지(선택비)와 패턴 모양을 어떻게 유지하는지는 서로 다른 확인 항목입니다.", links: [["#t-etch", "식각 심화 · 선택비와 형상"], ["#labs?lab=sequence", "공정 랩 · 증착부터 식각까지"]] },
+    { keys: ["gasDep", "target"], text: "증착 원료가스, 도핑가스, PVD용 금속 타겟은 같은 역할의 재료가 아닙니다. 이 책의 품목이 막을 만드는지, 전기적 성질을 바꾸는지부터 구분하고 해당 공정 설명으로 이어 읽으세요.", links: [["#t-dep", "증착 심화 · ALD·CVD·PVD 구분"], ["#labs?lab=sequence", "공정 랩 · 막과 패턴의 순서"]] },
+    { keys: ["wafer", "reclaim"], text: "칩을 만드는 제품 웨이퍼와 장비 점검·공정 모니터링에 쓰는 재생 웨이퍼를 구분해 보세요. 평탄도·결함·오염, 또는 재생 과정의 두께 손실 중 어떤 항목을 설명하는지 확인하세요.", links: [["#t-wafer", "웨이퍼 해설 · 제조와 재생의 용도"]] },
+    { keys: ["clean"], text: "이 품목은 사용한 장비 부품의 오염을 제거하고 보호 코팅을 다시 입히는 유지보수 서비스입니다. 웨이퍼 자체를 씻는 약액·초순수와 구분하고, 부품 손상·코팅·파티클 관리에 관한 설명을 확인하세요.", links: [["#x-clean", "장비 부품 세정·코팅 해설"], ["#t-etch", "식각 심화 · 챔버와 오염 관리"]] },
+    { keys: ["sisic", "quartz", "oring", "metal"], text: "챔버 안의 소모 부품, 밀봉 부품, 정밀 가공 부품을 구분해 보세요. 막을 직접 만드는 원료와 달리 이 책의 품목은 장비의 조건을 유지하는 역할이므로, 내식성·파티클·치수·누설 중 어떤 요구를 설명하는지 확인하세요.", links: [["#t-etch", "식각 심화 · 장비 부품의 역할"]] },
+    { keys: ["gasBulk", "pump", "upw", "amhs"], text: "가스·물 공급, 진공·배출가스 처리, 웨이퍼 운반 중 어느 기능을 맡는 품목인지 구분해 보세요. 개별 공정의 반응 원리와 공급·청정도·이송 조건을 유지하는 인프라의 역할을 나누어 읽으면 좋습니다.", links: [["#t-infra", "팹 인프라 해설 · 공급과 이송"]] },
+    { keys: ["alcap"], text: "반도체를 만드는 공정에 투입되는 재료와 SSD·서버의 전원 회로에 탑재되는 전자부품을 구분해 보세요. 이 책의 품목은 후자이며, 반도체 수요와 관련 있다는 이유만으로 제조공정 공급 관계가 확인되는 것은 아닙니다.", links: [["#x-alcap", "전해 커패시터 해설 · 사용 위치"]] }
+  ];
+  function bookReadingGuide(b) {
+    var keys = (TXN[b.n] || []).filter(function (k) { return TX[k]; });
+    if (!keys.length) return "";
+    var guides = BOOK_GUIDES.filter(function (g) { return g.keys.some(function (k) { return keys.indexOf(k) >= 0; }); });
+    var seen = {}, links = [];
+    guides.forEach(function (g) { g.links.forEach(function (a) { if (!seen[a[0]]) { seen[a[0]] = true; links.push(a); } }); });
+    return '<section class="ctx reading-guide" aria-label="이 책의 읽기 길잡이"><h3>이 책의 읽기 길잡이</h3><p>먼저 품목이 맡는 일을 짚고, 아래 질문을 따라 핵심 기술과 참고자료를 읽어 보세요. 기존 품목·공정 해설을 바탕으로 정리한 학습 안내입니다.</p>' +
+      '<table class="rt"><thead><tr><th>이 책의 연결 품목</th><th>기록된 역할·사용 위치</th></tr></thead><tbody>' + keys.map(function (k) { return '<tr><td class="wr">' + txLink(k) + '</td><td class="wr">' + esc(TX[k].p) + '</td></tr>'; }).join("") + '</tbody></table>' +
+      '<h4>읽으며 확인할 질문</h4>' + list(guides.map(function (g) { return g.text; })) +
+      '<p class="note">품목의 일반 원리와 학습용 연결입니다. 이 회사의 개별 제품 사양·고객 채택·실제 납품이 확인됐다는 뜻은 아닙니다. 기업 개요의 자료 확보 수준과 참고자료의 사실별 원문 대조 상태를 함께 확인하세요.</p>' +
+      '<nav class="kchips" aria-label="이 책에서 이어 읽기">' + links.map(function (a) { return '<a class="kchip" href="' + esc(a[0]) + '">' + esc(a[1]) + '</a>'; }).join("") + '<a class="kchip" href="#learn">학습 경로 · 읽기와 실습 기록</a></nav></section>';
+  }
+  function bookTechnologyNotes(key) {
+    var h = noteBox("tx:" + key), nums = (DEEP.legacyNum || []).filter(function (n) { return n.where.indexOf("TX." + key + ".") === 0; });
+    if (nums.length) h += '<div class="note book-number-notice"><h5>기존 수치의 확인 상태</h5><p>아래 수치는 기존 해설에 남아 있지만 출처가 연결되지 않은 미검증 항목입니다. 일반적인 공정 기준값이나 이 회사의 제품 사양으로 읽지 마세요.</p>' + list(nums.map(function (n) { return n.text + " · " + n.status + " · " + n.kind; })) + '</div>';
+    var areas = Object.keys(DEEP.areas || {}).filter(function (k) { return DEEP.areas[k].tx.indexOf(key) >= 0; });
+    if (areas.length) h += '<div class="kchips">' + areas.map(function (k) { var a = DEEP.areas[k]; return '<a class="kchip p" href="#t-' + a.procs[0] + '">' + esc(a.n) + ' · 출처와 한계 함께 읽기</a>'; }).join("") + '</div>';
+    return h;
+  }
   function pagesOf(b) {
     var g = groupOf[b.g], refBook = null;
     if (b.ref) B.forEach(function (x, k) { if (x.n === b.ref) refBook = k; });
@@ -1310,6 +1346,7 @@ dl.facts dd { margin: 0; }
     if (refBook !== null) ov += '<p><a href="#b' + refBook + '">' + esc(b.ref) + ' 책에서 전체 내용 보기</a></p>';
     var en = entOf(b);
     if (en) ov += entBox(en, b);
+    ov += bookReadingGuide(b);
     var gx = GX[b.g];
     ov += '<h3>함께 읽을 교과서</h3><p class="empty" style="font-style:normal">품목의 공정 원리를 설명하는 SemiBooks 교과서입니다.</p><ul class="rel">' +
       gx.rel.map(function (c) { var s = SB[c]; return '<li><a href="' + s[2] + '" target="_blank" rel="noopener"><b>' + esc(s[0]) + '</b> · ' + esc(s[1]) + "</a></li>"; }).join("") + "</ul>";
@@ -1319,7 +1356,7 @@ dl.facts dd { margin: 0; }
     if (tx.length) P.push(["핵심 기술", "<h3>핵심 기술 해설</h3>" + '<p class="empty" style="font-style:normal">이 회사가 만드는 품목의 일반 기술 설명입니다. 회사별 세부 사양이 아니라 품목 원리를 이해하기 위한 교과서 수준의 내용입니다.</p>' +
       (b.conf === "C" ? '<p class="note">이 회사는 아직 미검증입니다. 아래 해설은 목록 품목(' + esc(b.item) + ') 기준이며, 이 회사가 실제로 만드는 제품인지는 확인되지 않았습니다.</p>' : "") +
       (TXN[b.n] || []).map(function (k) { var x = TX[k];
-        return '<div class="txc"><h4>' + esc(x.t) + '</h4>' + txBody(x) + '<div class="kchips">' + (procOf[k] || []).map(pLink).join("") + '<a class="kchip" href="#x-' + k + '">같은 품목 회사 보기</a></div></div>';
+        return '<div class="txc"><h4>' + esc(x.t) + '</h4>' + txBody(x) + bookTechnologyNotes(k) + '<div class="kchips">' + (procOf[k] || []).map(pLink).join("") + '<a class="kchip" href="#x-' + k + '">같은 품목 회사 보기</a></div></div>';
       }).join("")]);
     var tk = TXN[b.n] || [], on = {};
     tk.forEach(function (k) { (procOf[k] || []).forEach(function (id) { on[id] = 1; }); });
@@ -1371,13 +1408,13 @@ dl.facts dd { margin: 0; }
       '<button class="btn" id="pb" type="button"' + (pos <= 0 ? " disabled" : "") + '>이전 책</button>' +
       '<button class="btn" id="nb" type="button"' + (pos >= order.length - 1 ? " disabled" : "") + '>다음 책</button></div>' +
       '<article class="book' + (opening ? " opening" : "") + '" aria-label="' + esc(b.n) + '">' +
-      '<div class="cover" style="background:var(' + g.c + ')"><div class="series"><b>' + esc(b.code) + '</b> · ' + esc(s.name + " · " + g.name) + ' · ' + (pos + 1) + ' / ' + order.length + '</div><h2>' + esc(b.n) + '</h2>' +
+      '<div class="cover" style="background:var(' + g.c + ')"><div class="series"><b>' + esc(b.code) + '</b> · ' + esc(s.name + " · " + g.name) + ' · ' + (pos + 1) + ' / ' + order.length + '</div><h1>' + esc(b.n) + '</h1>' +
       '<div class="head">' + esc(GX[b.g].head) + '</div>' +
       '<div class="item">' + esc(b.reg) + ' · ' + esc(b.item) + '</div><div class="one">' + esc(b.one) + '</div>' +
       '<div class="topics">' + GX[b.g].topics.map(function (t) { return "<span>" + esc(t) + "</span>"; }).join("") + '</div>' + coverArt(b) +
       '<div class="foot"><span class="conf">' + chips[b.conf] + '</span><br><br>실리콘 서재<br>2026.10.31 기준</div></div>' +
       '<div class="leaf"><nav class="tabs" aria-label="이 책의 목차">' + P.map(function (p, k) { return '<button type="button" data-p="' + k + '"' + (k === cur.p ? ' aria-current="page"' : "") + ">" + (k + 1) + ". " + esc(p[0]) + "</button>"; }).join("") + '</nav>' +
-      '<div class="page' + (dir ? " " + dir : "") + '" id="pg">' + P[cur.p][1] + '</div>' +
+      '<div class="page' + (dir ? " " + dir : "") + '" id="pg"><h2 class="visually-hidden">' + esc(P[cur.p][0]) + '</h2>' + P[cur.p][1] + '</div>' +
       '<div class="folio"><button class="btn" id="pp" type="button"' + (cur.p === 0 ? " disabled" : "") + '>‹ 앞쪽</button><span>' + (cur.p + 1) + ' / ' + P.length + ' 쪽</span><button class="btn" id="np" type="button"' + (cur.p === P.length - 1 ? " disabled" : "") + '>뒤쪽 ›</button></div></div></article></div>';
     app.innerHTML = h;
     document.getElementById("home").onclick = function () { location.hash = homeView === "map" ? "map" : ""; };
@@ -1948,6 +1985,7 @@ dl.facts dd { margin: 0; }
 <script src="src/explorer-core.js"></script>
 <script src="src/explorer-ui.js"></script>
 <script src="src/lab-core.js"></script>
+<script src="src/study-core.js"></script>
 <script src="src/lab-ui.js"></script>
 
 </body>

@@ -6,7 +6,8 @@
 
 - **통합 탐색:** 한글·영문·약어 검색, 제품↔공정↔기업 연결, 최대 3곳 기업 비교, 탐색 책갈피·최근 본 항목·공유·인쇄.
 - **학습 랩:** 노광, ALD, CMP 교육 모델, 공정 시퀀스, HBM 개념 구조. 수식·단위·가정·한계·퀴즈를 함께 표시합니다.
-- **학습 경로:** 입문·실무·심화·산업의 4단계와 용어집.
+- **학습 경로:** 입문·실무·심화·산업 4개 경로의 16단계 완료 표시, 퀴즈 선택 기록, 마지막 실습 이어가기와 용어집. 기록은 현재 브라우저에 저장됩니다.
+- **책 본문:** 기존 품목·공정 연결을 바탕으로 읽기 길잡이와 실습 연결을 제공하고, 핵심 기술의 기존 주의사항과 수치 검증 상태를 함께 표시합니다. [책 본문 개선 안내](docs/reading-guide.md)
 - 기존 46개 책 URL, 45개 기업 레코드, 13개 공정, 31개 기술과 PR #3의 심화 콘텐츠를 보존합니다. 기업 레코드 수는 법인 수가 아닙니다.
 
 Node.js 20 이상과 Python 3으로 실행합니다.
@@ -20,9 +21,11 @@ python3 -m http.server 8767 --bind 127.0.0.1
 
 로컬 서버에서 `/silicon-library/`를 열면 됩니다. 화면별 경로는 `#explore`, `#labs`, `#learn`입니다. 개발 브랜치에서 `npm run build` 후 생성본도 함께 커밋합니다.
 
-UI 검사는 별도 터미널에서 `npm run test:ui`, `npm run test:explorer`, `npm run test:labs`로 실행합니다. Playwright 브라우저 설치는 `npx playwright install chromium`을 사용합니다. 관리형 클라우드에서 `/usr/bin/chromium`을 사용하는 구체적인 명령과 검증 범위는 [통합 검증 기록](docs/v2-release-validation.md)을 참고하세요.
+UI 검사는 별도 터미널에서 `npm run test:ui`, `npm run test:explorer`, `npm run test:labs`, `npm run test:study`, `npm run test:reading`, `npm run test:a11y`로 실행합니다. Playwright 브라우저 설치는 `npx playwright install chromium`을 사용합니다. 학습 기록의 동작과 저장 실패 처리는 [학습 이어가기 안내](docs/study-progress.md), 관리형 클라우드의 구체적인 검증 명령은 [통합 검증 기록](docs/v2-release-validation.md)을 참고하세요.
 
 공정 연결은 특정 고객 납품을 뜻하지 않으며, 교육 모델의 계산값은 실제 양산 성능 예측값이 아닙니다. [구현·사용 안내](docs/v2-experience.md)와 [출처 정책](docs/sources-and-licenses.md)을 함께 확인하세요.
+
+학습 기록과 책 본문 개선의 검사 범위·결과는 [추가 검증 기록](docs/study-reading-validation.md)에 정리했습니다.
 
 ## Showreel
 
