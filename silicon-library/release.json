@@ -1,6 +1,6 @@
 {
-  "release": "silicon-library-2.6-weekly-reading-20261108",
-  "application_base_commit": "a5dc3620a276fb5f810f97f69c590f77a96b1897",
-  "entrypoints": ["#explore", "#labs", "#learn", "#textbooks"],
+  "release": "silicon-library-2.7-reading-continuity-20261108",
+  "application_base_commit": "8f10667be2d2393a65ba16cf0fea81e917cd20ae",
+  "entrypoints": ["#explore", "#labs", "#learn", "#textbooks", "#updates"],
   "hosting": "GitHub Pages static files"
 }

@@ -155,6 +155,75 @@ function ok(name, condition) {
       "keyboard activation of a cover opens the correct book",
       (await page.locator(".cover h1").innerText()) === chosenName,
     );
+    await page.getByRole("button", { name: "← 책장으로", exact: true }).click();
+    await page.locator("#q").waitFor();
+    ok(
+      "returning from a book keeps the active favorite filter and restores focus",
+      (await page.locator("#fc").inputValue()) === "F" &&
+        (await page.locator(".spine:not([hidden])").count()) === 2 &&
+        (await page
+          .locator(".spine:not([hidden])")
+          .evaluateAll((nodes) =>
+            nodes.some((n) => n === document.activeElement),
+          )),
+    );
+    await page.locator("#q").fill("TSE");
+    await page.locator(".spine:not([hidden])").click();
+    await page.locator(".cover h1").waitFor();
+    await page.getByRole("button", { name: "← 책장으로", exact: true }).click();
+    await page.locator("#q").waitFor();
+    ok(
+      "combined query and filter survive reading a book",
+      (await page.locator("#q").inputValue()) === "TSE" &&
+        (await page.locator("#fc").inputValue()) === "F" &&
+        (await page.locator(".spine:not([hidden])").count()) === 1,
+    );
+    await page.reload();
+    await page.locator("#q").waitFor();
+    ok(
+      "shelf search state also survives a page reload in this tab",
+      (await page.locator("#q").inputValue()) === "TSE" &&
+        (await page.locator("#fc").inputValue()) === "F" &&
+        (await page.locator(".spine:not([hidden])").count()) === 1,
+    );
+    await page.locator(".spine:not([hidden])").click();
+    await page.locator(".cover h1").waitFor();
+    await page.locator("#fav").click();
+    await page.getByRole("button", { name: "← 책장으로", exact: true }).click();
+    await page.locator("#q").waitFor();
+    ok(
+      "removing a favorite never restores focus to a now-hidden book",
+      (await page.locator(".spine:not([hidden])").count()) === 0 &&
+        (await page
+          .locator("#q")
+          .evaluate((n) => n === document.activeElement)),
+    );
+    await page.locator("#shelf-reset").click();
+    ok(
+      "one reset restores all book spines and focuses search",
+      (await page.locator(".spine:not([hidden])").count()) === 46 &&
+        (await page
+          .locator("#q")
+          .evaluate((n) => n === document.activeElement)),
+    );
+    await page.evaluate(() =>
+      Object.defineProperty(sessionStorage, "setItem", {
+        value: () => {
+          throw new Error("storage unavailable");
+        },
+      }),
+    );
+    await page.locator("#q").fill("TSE");
+    await page.locator(".spine:not([hidden])").click();
+    await page.locator(".cover h1").waitFor();
+    await page.getByRole("button", { name: "← 책장으로", exact: true }).click();
+    await page.locator("#q").waitFor();
+    ok(
+      "book search remains usable when session storage is unavailable",
+      (await page.locator("#q").inputValue()) === "TSE" &&
+        (await page.locator(".spine:not([hidden])").count()) === 1,
+    );
+    await page.locator("#shelf-reset").click();
     await page.goto(url);
     await page.locator(".spine").first().waitFor();
     ok(

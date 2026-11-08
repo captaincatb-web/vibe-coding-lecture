@@ -9,6 +9,7 @@ const config = JSON.parse(
   fs.readFileSync(path.join(root, "data/weekly-sources.json"), "utf8"),
 );
 const dataPath = path.join(root, "data/weekly-updates.json");
+const { RequestError, retryAfter, withRetry } = require("./network-retry");
 function koreanDate(now) {
   return new Date(new Date(now).getTime() + 9 * 3600000)
     .toISOString()
@@ -42,21 +43,30 @@ function parseFeed(xml) {
   if (result.status !== 0) throw new Error("RSS/Atom parse failed");
   return JSON.parse(result.stdout);
 }
-async function fetchFeed(source, fetcher = fetch) {
+async function fetchFeed(source, fetcher = fetch, retryOptions = {}) {
+  return withRetry(() => fetchFeedOnce(source, fetcher), retryOptions);
+}
+async function fetchFeedOnce(source, fetcher) {
   let address = source.url;
   for (let redirects = 0; redirects < 4; redirects++) {
-    const response = await fetcher(address, {
-      redirect: "manual",
-      signal: AbortSignal.timeout(20000),
-      headers: {
-        "User-Agent":
-          "SiliconLibraryWeekly/1.0 (+https://captaincatb-web.github.io/vibe-coding-lecture/)",
-        Accept:
-          "application/atom+xml, application/rss+xml, application/xml, text/xml",
-      },
-    });
+    let response;
+    try {
+      response = await fetcher(address, {
+        redirect: "manual",
+        signal: AbortSignal.timeout(20000),
+        headers: {
+          "User-Agent":
+            "SiliconLibraryWeekly/1.0 (+https://captaincatb-web.github.io/vibe-coding-lecture/)",
+          Accept:
+            "application/atom+xml, application/rss+xml, application/xml, text/xml",
+        },
+      });
+    } catch (error) {
+      throw new RequestError(error.message, { retryable: true });
+    }
     if ([301, 302, 303, 307, 308].includes(response.status)) {
       const next = new URL(response.headers.get("location"), address);
+      await response.body?.cancel().catch(() => {});
       if (
         next.protocol !== "https:" ||
         !source.hosts.includes(next.hostname) ||
@@ -67,12 +77,24 @@ async function fetchFeed(source, fetcher = fetch) {
       address = next.href;
       continue;
     }
-    if (!response.ok) throw new Error("HTTP " + response.status);
+    if (!response.ok) {
+      await response.body?.cancel().catch(() => {});
+      throw new RequestError("HTTP " + response.status, {
+        status: response.status,
+        retryable: response.status === 429 || response.status >= 500,
+        retryAfterMs: retryAfter(response.headers.get("retry-after")),
+      });
+    }
     const reader = response.body.getReader();
     let total = 0,
       chunks = [];
     while (true) {
-      const part = await reader.read();
+      let part;
+      try {
+        part = await reader.read();
+      } catch (error) {
+        throw new RequestError(error.message, { retryable: true });
+      }
       if (part.done) break;
       total += part.value.byteLength;
       if (total > 2 * 1024 * 1024) {
@@ -157,12 +179,12 @@ async function refresh(
       const old = oldStatuses.get(source.id);
       try {
         const rows = await loader(source);
-        successful++;
         const incoming = rows
           .map((row) => entryFrom(row, source, now))
           .filter(Boolean)
           .sort((a, b) => b.published_at.localeCompare(a.published_at))
           .slice(0, 8);
+        successful++;
         incoming.forEach((entry) => {
           const prior = entries.get(entry.id);
           entries.set(entry.id, {
@@ -248,6 +270,7 @@ module.exports = {
   koreanDate,
   safeUrl,
   parseFeed,
+  fetchFeed,
   entryFrom,
   refresh,
   javascript,

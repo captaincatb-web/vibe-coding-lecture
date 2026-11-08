@@ -57,7 +57,7 @@ function ok(name, condition) {
     ok(
       "source links use HTTPS and safe new-tab attributes",
       await page
-        .locator(".weekly-materials a")
+        .locator(".weekly-source-link")
         .evaluateAll((nodes) =>
           nodes.every(
             (n) =>
@@ -112,6 +112,110 @@ function ok(name, condition) {
     ok(
       "weekly data does not replace the 46 company book records",
       (await page.locator(".spine").count()) === 46,
+    );
+    await page.locator(".weekly-more").click();
+    await page.locator("#weekly-root h2").waitFor();
+    ok(
+      "all saved materials are reachable beyond the six-item homepage preview",
+      (await page.locator("#weekly-root ol > li").count()) ===
+        data.entries.length && data.entries.length > 6,
+    );
+    ok(
+      "archive route moves keyboard focus to its heading",
+      await page
+        .locator("#weekly-root h2")
+        .evaluate((n) => n === document.activeElement),
+    );
+    await page.getByLabel("출처", { exact: true }).selectOption("yosys");
+    ok(
+      "source filter narrows the complete archive",
+      (await page.locator("#weekly-root ol > li").count()) ===
+        data.entries.filter((e) => e.source_id === "yosys").length,
+    );
+    const releaseTitle = data.entries.find(
+      (e) => e.source_id === "yosys",
+    ).title;
+    await page.getByLabel("자료 찾기", { exact: true }).fill(releaseTitle);
+    ok(
+      "typing preserves focus while encoding filters in the shareable URL",
+      (await page.locator("#weekly-root ol > li").count()) === 1 &&
+        core.resolve(new URL(page.url()).hash).q === releaseTitle &&
+        (await page
+          .getByLabel("자료 찾기", { exact: true })
+          .evaluate((n) => n === document.activeElement)),
+    );
+    await page.reload();
+    await page.locator("#weekly-root h2").waitFor();
+    ok(
+      "reloading a shared URL restores query and source filters",
+      (await page.getByLabel("자료 찾기", { exact: true }).inputValue()) ===
+        releaseTitle &&
+        (await page.getByLabel("출처", { exact: true }).inputValue()) ===
+          "yosys" &&
+        (await page.locator("#weekly-root ol > li").count()) === 1,
+    );
+    await page
+      .getByRole("button", { name: "검색 초기화", exact: true })
+      .click();
+    await page.getByLabel("자료 찾기", { exact: true }).fill("메모리");
+    ok(
+      "Korean topic search finds relevant English-language materials",
+      (await page.locator("#weekly-root ol > li").count()) ===
+        core.search({ q: "메모리" }).length &&
+        core.search({ q: "메모리" }).length > 0,
+    );
+    await page.getByLabel("주제", { exact: true }).selectOption("MEM");
+    ok(
+      "topic links lead from source materials into local textbooks",
+      (await page
+        .locator('.weekly-topics a[href="#textbook?book=MEM"]')
+        .count()) > 0,
+    );
+    await page
+      .getByLabel("자료 찾기", { exact: true })
+      .fill("__no_matching_material__");
+    ok(
+      "empty archive results explain recovery and announce a zero count",
+      (await page.locator(".weekly-empty").isVisible()) &&
+        /^0건/.test(await page.locator(".weekly-result-count").innerText()),
+    );
+    await page
+      .getByRole("button", { name: "검색 초기화", exact: true })
+      .click();
+    ok(
+      "reset clears all archive filters and restores keyboard focus",
+      (await page.locator("#weekly-root ol > li").count()) ===
+        data.entries.length &&
+        (await page
+          .getByLabel("자료 찾기", { exact: true })
+          .evaluate((n) => n === document.activeElement)),
+    );
+    for (const width of [320, 400, 1280]) {
+      await page.setViewportSize({ width, height: 900 });
+      ok(
+        "complete archive and filter controls fit width " + width,
+        await page.evaluate(
+          () => document.documentElement.scrollWidth <= innerWidth + 1,
+        ),
+      );
+    }
+    await page.goto(
+      url + "#updates?source=unknown&topic=INVALID&q=%3Cimg%20src%3Dx%3E",
+    );
+    await page.locator("#weekly-root h2").waitFor();
+    ok(
+      "untrusted URL state is rendered as plain search text and unknown filters are ignored",
+      (await page.locator("#weekly-root img").count()) === 0 &&
+        (await page.getByLabel("출처", { exact: true }).inputValue()) === "" &&
+        (await page.getByLabel("주제", { exact: true }).inputValue()) === "",
+    );
+    await page.goto(url + "#textbook?book=MEM");
+    await page.locator(".weekly-more").waitFor();
+    await page.locator(".weekly-more").click();
+    await page.locator("#weekly-root h2").waitFor();
+    ok(
+      "textbook preview opens the archive with its topic selected",
+      (await page.getByLabel("주제", { exact: true }).inputValue()) === "MEM",
     );
     ok("no weekly-material runtime errors", errors.length === 0);
     console.log(passed + "/" + passed + " weekly UI checks passed");

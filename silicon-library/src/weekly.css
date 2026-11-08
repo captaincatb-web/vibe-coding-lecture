@@ -42,7 +42,101 @@
   cursor: pointer;
 }
 .weekly-materials a:focus-visible,
-.weekly-materials summary:focus-visible {
+.weekly-materials summary:focus-visible,
+.weekly-materials input:focus-visible,
+.weekly-materials select:focus-visible,
+.weekly-materials button:focus-visible {
   outline: 3px solid var(--accent);
   outline-offset: 3px;
+}
+.weekly-more {
+  display: inline-block;
+  margin: 4px 0 18px;
+}
+.weekly-archive > h2:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 5px;
+  border-radius: 2px;
+}
+.weekly-filters {
+  display: grid;
+  grid-template-columns:
+    minmax(180px, 2fr) minmax(120px, 1fr) minmax(100px, 1fr)
+    auto;
+  gap: 12px;
+  align-items: end;
+  margin: 24px 0 12px;
+}
+.weekly-field {
+  display: grid;
+  gap: 6px;
+  font-size: 13px;
+  min-width: 0;
+}
+.weekly-filters input,
+.weekly-filters select,
+.weekly-filters button,
+#shelf-reset {
+  font: inherit;
+  color: var(--fg);
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  min-height: 44px;
+  padding: 9px 12px;
+  min-width: 0;
+}
+.weekly-filters button,
+#shelf-reset {
+  cursor: pointer;
+}
+.weekly-filters button:disabled,
+#shelf-reset:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+.weekly-topics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  margin-top: 10px;
+}
+.weekly-topics a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  font-size: 12px;
+  font-weight: 400;
+}
+.weekly-result-count {
+  font-variant-numeric: tabular-nums;
+}
+.weekly-materials .weekly-stale,
+.weekly-empty {
+  padding: 12px;
+  border-inline-start: 3px solid var(--accent);
+  background: var(--paper);
+  color: var(--fg);
+}
+@media (max-width: 760px) {
+  .weekly-filters {
+    grid-template-columns: 1fr 1fr;
+  }
+  .weekly-filters .weekly-field:first-child {
+    grid-column: 1 / -1;
+  }
+}
+@media (max-width: 400px) {
+  .weekly-filters {
+    grid-template-columns: 1fr;
+  }
+}
+@media print {
+  .weekly-filters,
+  .weekly-more {
+    display: none;
+  }
+  .weekly-materials li {
+    break-inside: avoid;
+  }
 }

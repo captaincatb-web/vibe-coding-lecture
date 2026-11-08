@@ -1178,6 +1178,11 @@ dl.facts dd { margin: 0; }
   function list(a) { return a && a.length ? "<ul>" + a.map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + "</ul>" : ""; }
 
   /* 책장 */
+  var shelfState = { query: "", filter: "" }, shelfStateKey = "siliconLibrary:shelfFilters:v1";
+  try {
+    var savedShelfState = JSON.parse(sessionStorage.getItem(shelfStateKey) || "null");
+    if (savedShelfState && typeof savedShelfState.query === "string" && ["", "A", "B", "C", "F"].indexOf(savedShelfState.filter) >= 0) shelfState = { query: savedShelfState.query.slice(0, 160), filter: savedShelfState.filter };
+  } catch (e) {}
   function volumeStyle(b) {
     var colors = [["#20566a", "#f4d9a1"], ["#743b53", "#f6c8b6"], ["#2e4c78", "#d4dcf2"], ["#8a482f", "#ffe0a6"], ["#37594a", "#e7e3b1"], ["#5d467c", "#efceee"], ["#813d43", "#ffdbaf"], ["#3c596c", "#cbe8ed"], ["#69502e", "#f9dfaa"], ["#354b65", "#e2d8c5"]];
     var color = colors[seedOf(b.code + b.n) % colors.length];
@@ -1196,7 +1201,7 @@ dl.facts dd { margin: 0; }
     B.forEach(function (b) { if (!b.ref) cnt[b.conf]++; });
     var h = '<div class="library-home"><header class="library-masthead"><div>' + head("") + '</div>' + viewTabs("shelf") + '</header>' + shelfHero() +
       '<section class="library-catalog-heading" id="library-catalog" aria-labelledby="library-catalog-title"><div><p class="library-eyebrow">THE COLLECTION</p><h2 id="library-catalog-title" tabindex="-1">지식이 꽂힌 책장</h2><p>책등을 누르면 기업의 이야기와 기술이 펼쳐집니다.</p></div><div class="library-shelf-links" aria-label="서가 바로가기"><button type="button" data-shelf-jump="mat">소재 <span>29</span></button><button type="button" data-shelf-jump="part">부품 <span>11</span></button><button type="button" data-shelf-jump="eq">장비 <span>6</span></button></div></section>' +
-      '<div class="tools"><input id="q" type="search" placeholder="회사·품목·기술·공정 찾기 (예: ALD, FFKM, HBM)" aria-label="책 찾기"><select id="fc" aria-label="신뢰도"><option value="">신뢰도 전체</option><option value="A">자료 확인</option><option value="B">부분 확인</option><option value="C">미검증</option><option value="F">★ 즐겨찾기만</option></select></div>' +
+      '<div class="tools"><input id="q" type="search" maxlength="160" placeholder="회사·품목·기술·공정 찾기 (예: ALD, FFKM, HBM)" aria-label="책 찾기"><select id="fc" aria-label="신뢰도"><option value="">신뢰도 전체</option><option value="A">자료 확인</option><option value="B">부분 확인</option><option value="C">미검증</option><option value="F">★ 즐겨찾기만</option></select><button type="button" id="shelf-reset" aria-label="책장 검색과 필터 초기화">초기화</button></div>' +
       '<div id="hits" class="hits" role="status" hidden></div><div class="case">';
     var shelfStat = {};
     shelves.forEach(function (s) {
@@ -1238,13 +1243,8 @@ dl.facts dd { margin: 0; }
       busy = true; el.classList.add("pulling");
       setTimeout(function () { busy = false; location.hash = "b" + el.dataset.i; }, 400);
     }); });
-    if (lastBook !== null) {
-      var back = app.querySelector('.spine[data-i="' + lastBook + '"]');
-      if (back && !reduced()) { back.classList.add("returning"); back.addEventListener("animationend", function () { back.classList.remove("returning"); }, { once: true }); }
-      if (back) back.focus({ preventScroll: true });
-      lastBook = null;
-    }
     var q = document.getElementById("q"), fc = document.getElementById("fc");
+    q.value = shelfState.query; fc.value = shelfState.filter;
     function filt() {
       var v = q.value.trim().toLowerCase(), c = fc.value;
       app.querySelectorAll(".spine").forEach(function (el) { var n = B[+el.dataset.i].n; el.hidden = !!((v && el.dataset.q.indexOf(v) < 0) || (c === "F" ? !fav[n] : (c && el.dataset.c !== c))); el.parentElement.hidden = el.hidden; });
@@ -1256,13 +1256,27 @@ dl.facts dd { margin: 0; }
       var nbs = {}; app.querySelectorAll(".spine:not([hidden])").forEach(function (el) { var bb = B[+el.dataset.i]; nbs[bb.ref || bb.n] = 1; });
       var nb = Object.keys(nbs).length;
       hits.hidden = !v && !fc.value; hits.innerHTML = !hits.hidden ? '<b>회사 ' + nb + '권</b>' + (v ? (r.length ? ' · <b>기술 백과 ' + r.length + '건</b><div class="kchips">' + r.join("") + "</div>" : ' · 기술 백과 결과 없음') : '') + (!nb && !r.length ? '<p>' + (fc.value === "F" && !v ? '아직 즐겨찾은 책이 없습니다. 책을 열고 ☆ 즐겨찾기를 눌러 나만의 서가를 만들어 보세요.' : '찾는 책이 없습니다. 검색어나 신뢰도 필터를 바꿔 보세요.') + '</p>' : '') : ""; };
-    q.addEventListener("input", filt); fc.addEventListener("change", filt);
+    var resetShelf = document.getElementById("shelf-reset");
+    function updateShelf() {
+      shelfState = { query: q.value.slice(0, 160), filter: fc.value };
+      try { sessionStorage.setItem(shelfStateKey, JSON.stringify(shelfState)); } catch (e) {}
+      filt(); resetShelf.disabled = !q.value && !fc.value;
+    }
+    resetShelf.onclick = function () { q.value = ""; fc.value = ""; updateShelf(); q.focus(); };
+    q.addEventListener("input", updateShelf); fc.addEventListener("change", updateShelf);
+    updateShelf();
+    if (lastBook !== null) {
+      var back = app.querySelector('.spine[data-i="' + lastBook + '"]');
+      if (back && !back.hidden && !reduced()) { back.classList.add("returning"); back.addEventListener("animationend", function () { back.classList.remove("returning"); }, { once: true }); }
+      if (back && !back.hidden) back.focus({ preventScroll: true }); else q.focus({ preventScroll: true });
+      lastBook = null;
+    }
     try { var st = sessionStorage.getItem("shelfY"); if (st) window.scrollTo(0, +st); } catch (e) {}
   }
 
   function themeIsDark() { return document.documentElement.getAttribute("data-theme") === "dark" || (!document.documentElement.getAttribute("data-theme") && window.matchMedia("(prefers-color-scheme: dark)").matches); }
   function viewTabs(cur) {
-    return '<nav class="views" aria-label="보기 전환"><a href="#"' + (cur === "shelf" ? ' aria-current="page"' : "") + '>책장</a><a href="#map"' + (cur === "map" ? ' aria-current="page"' : "") + '>공정 지도</a><a href="#tech"' + (cur === "tech" ? ' aria-current="page"' : "") + '>기술 백과</a><a href="#textbooks"' + (cur === "textbooks" ? ' aria-current="page"' : "") + '>교과서</a><a href="#explore"' + (cur === "explore" ? ' aria-current="page"' : "") + '>통합 탐색</a><a href="#labs"' + (cur === "labs" ? ' aria-current="page"' : "") + '>학습 랩</a><a href="#learn"' + (cur === "learn" ? ' aria-current="page"' : "") + '>학습 경로</a><button type="button" data-theme-toggle aria-label="색상 모드 전환" aria-pressed="' + (themeIsDark() ? 'true' : 'false') + '">◐ 색상 모드</button></nav>';
+    return '<nav class="views" aria-label="보기 전환"><a href="#"' + (cur === "shelf" ? ' aria-current="page"' : "") + '>책장</a><a href="#map"' + (cur === "map" ? ' aria-current="page"' : "") + '>공정 지도</a><a href="#tech"' + (cur === "tech" ? ' aria-current="page"' : "") + '>기술 백과</a><a href="#textbooks"' + (cur === "textbooks" ? ' aria-current="page"' : "") + '>교과서</a><a href="#updates"' + (cur === "updates" ? ' aria-current="page"' : "") + '>주간 자료</a><a href="#explore"' + (cur === "explore" ? ' aria-current="page"' : "") + '>통합 탐색</a><a href="#labs"' + (cur === "labs" ? ' aria-current="page"' : "") + '>학습 랩</a><a href="#learn"' + (cur === "learn" ? ' aria-current="page"' : "") + '>학습 경로</a><button type="button" data-theme-toggle aria-label="색상 모드 전환" aria-pressed="' + (themeIsDark() ? 'true' : 'false') + '">◐ 색상 모드</button></nav>';
   }
   function idxOf(name) { for (var k = 0; k < B.length; k++) if (B[k].n === name && !B[k].ref) return k; return -1; }
   function chip(name) {
@@ -1983,7 +1997,12 @@ dl.facts dd { margin: 0; }
   }
   function route() {
     var m = /^#b(\d+)$/.exec(location.hash);
-    if (/^#textbooks?(?:\?|$)/.test(location.hash)) {
+    if (/^#updates(?:\?|$)/.test(location.hash)) {
+      view = "updates";
+      app.innerHTML = head("") + viewTabs("updates") + '<div id="weekly-root"></div>';
+      window.scrollTo(0, 0);
+      if (window.SiliconWeeklyUI) window.SiliconWeeklyUI.mountArchive(document.getElementById("weekly-root"));
+    } else if (/^#textbooks?(?:\?|$)/.test(location.hash)) {
       view = "textbooks";
       app.innerHTML = head("") + viewTabs("textbooks") + '<div id="textbook-root"></div>';
       var textbookRoot = document.getElementById("textbook-root");

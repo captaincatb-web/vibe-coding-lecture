@@ -50,6 +50,8 @@ const url = process.env.SL_TEST_URL || "http://127.0.0.1:8767/silicon-library/";
         "#labs?lab=cmp",
         "#labs?lab=packaging",
         "#learn",
+        "#updates",
+        "#updates?topic=MEM&q=HBM",
         "#b0",
         "#x-gasEtch",
         "#x-pid",
@@ -62,19 +64,21 @@ const url = process.env.SL_TEST_URL || "http://127.0.0.1:8767/silicon-library/";
           .locator(
             hash === ""
               ? ".library-hero"
-              : hash.startsWith("#textbook")
-                ? "#textbook-root h2"
-                : hash.startsWith("#x-")
-                  ? ".concept-reading"
-                  : hash.startsWith("#b")
-                    ? "#pg"
-                    : hash.includes("compare=")
-                      ? ".comparison-table"
-                      : hash.includes("explore")
-                        ? ".explorer-detail h2"
-                        : hash.includes("learn")
-                          ? "#glossary-query"
-                          : "#lab-result",
+              : hash.startsWith("#updates")
+                ? "#weekly-root h2"
+                : hash.startsWith("#textbook")
+                  ? "#textbook-root h2"
+                  : hash.startsWith("#x-")
+                    ? ".concept-reading"
+                    : hash.startsWith("#b")
+                      ? "#pg"
+                      : hash.includes("compare=")
+                        ? ".comparison-table"
+                        : hash.includes("explore")
+                          ? ".explorer-detail h2"
+                          : hash.includes("learn")
+                            ? "#glossary-query"
+                            : "#lab-result",
           )
           .waitFor();
         if (hash === "#x-pid")

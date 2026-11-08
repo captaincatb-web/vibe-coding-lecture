@@ -5,6 +5,94 @@
   else root.SiliconWeeklyCore = factory(root.SiliconWeeklyData);
 })(typeof globalThis !== "undefined" ? globalThis : this, function (data) {
   "use strict";
+  var topics = [
+    ["IND", "산업"],
+    ["PRC", "공정"],
+    ["FIL", "증착"],
+    ["PLS", "플라즈마"],
+    ["ETC", "식각"],
+    ["LIT", "노광"],
+    ["CMP", "평탄화"],
+    ["PKG", "패키징"],
+    ["TST", "테스트"],
+    ["MEM", "메모리"],
+    ["FAB", "팹 인프라"],
+  ];
+  function normalize(value) {
+    return String(value || "")
+      .normalize("NFKC")
+      .toLowerCase()
+      .trim()
+      .replace(/\s+/g, " ");
+  }
+  function resolve(hash) {
+    var params = new URLSearchParams(String(hash || "").split("?")[1] || ""),
+      source = params.get("source") || "",
+      topic = params.get("topic") || "";
+    return {
+      q: (params.get("q") || "").trim().slice(0, 160),
+      source: data.sources.some(function (item) {
+        return item.id === source;
+      })
+        ? source
+        : "",
+      topic: topics.some(function (item) {
+        return item[0] === topic;
+      })
+        ? topic
+        : "",
+    };
+  }
+  function route(state) {
+    var params = new URLSearchParams();
+    ["q", "source", "topic"].forEach(function (key) {
+      if (state[key]) params.set(key, state[key]);
+    });
+    return "#updates" + (params.size ? "?" + params.toString() : "");
+  }
+  function search(state) {
+    var words = normalize(state.q).split(" ").filter(Boolean);
+    var sourceAliases = {
+      skhynix: "SK하이닉스 하이닉스",
+      samsung: "삼성 삼성전자",
+      semiengineering: "세미컨덕터 엔지니어링",
+      openroad: "오픈로드",
+      yosys: "요시스",
+    };
+    return data.entries.filter(function (entry) {
+      var labels = topics
+        .filter(function (topic) {
+          return entry.topics.includes(topic[0]);
+        })
+        .map(function (topic) {
+          return topic.join(" ");
+        })
+        .join(" ");
+      var text = normalize(
+        entry.title +
+          " " +
+          entry.source_name +
+          " " +
+          (sourceAliases[entry.source_id] || "") +
+          " " +
+          labels,
+      );
+      return (
+        (!state.source || state.source === entry.source_id) &&
+        (!state.topic || entry.topics.includes(state.topic)) &&
+        words.every(function (word) {
+          return text.includes(word);
+        })
+      );
+    });
+  }
+  function freshness(now) {
+    var checked = new Date(data.last_success_at).getTime();
+    return (
+      !Number.isFinite(checked) ||
+      new Date(now || Date.now()).getTime() - checked >= 8 * 86400000
+    );
+  }
   var productTopics = {
     pre: ["FIL"],
     etch: ["ETC"],
@@ -139,6 +227,11 @@
   }
   return {
     data: data,
+    topics: topics,
+    resolve: resolve,
+    route: route,
+    search: search,
+    freshness: freshness,
     dateText: dateText,
     entries: entries,
     forProducts: forProducts,
