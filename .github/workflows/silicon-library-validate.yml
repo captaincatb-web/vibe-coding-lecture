@@ -26,9 +26,19 @@ jobs:
       - name: 정규화 스키마·관계·실패 보존 및 생성본 검사
         run: |
           npm test
+          node scripts/build-deep.js --check
           npm run build:data -- --check
+          node scripts/build-explorer-index.js --check
       - name: Playwright 브라우저 설치
         run: |
           npx playwright install --with-deps chromium
       - name: 화면 회귀 테스트
         run: node tests/silicon-library-ui.js
+      - name: 통합 탐색 사용자 시나리오와 실패 복구
+        run: |
+          python3 -m http.server 8767 --bind 127.0.0.1 > /tmp/silicon-library-server.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid"' EXIT
+          SL_TEST_URL=http://127.0.0.1:8767/silicon-library/ npm run test:explorer
+          SL_TEST_URL=http://127.0.0.1:8767/silicon-library/ npm run test:labs
+          SL_TEST_URL=http://127.0.0.1:8767/silicon-library/ npm run test:a11y

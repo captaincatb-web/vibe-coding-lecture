@@ -1,5 +1,7 @@
 # PR-B: 손실 없는 정규화 읽기 모델
 
+이 문서는 PR-B(89f17a6) 시점의 기록이다. 이후 통합 탐색에서 사용하는 정적 검색 인덱스와 PR #3 통합 상태는 [통합 버전 안내](v2-experience.md)를 참조한다.
+
 기준일 2026-11-08 KST. base는 PR-A 브랜치 `codex/silicon-library-v2-baseline`(5b35bd8)이다. PR #3은 공개 PR 화면 재조회 결과 OPEN, head abc28ea981f0ec428545458761b9e32dbad69be5. 기본 브랜치·운영 후보 브랜치·PR #3은 변경하지 않았다.
 
 ## 현재 동작

@@ -4,10 +4,14 @@
   "version": "2.0.0",
   "engines": {"node": ">=20"},
   "scripts": {
-    "check": "node scripts/validate-silicon-library.js && node tests/validator-negative.js && node tests/silicon-library-audit.js && npm test && npm run build:data -- --check",
-    "test": "node --test tests/normalized-library.test.js",
+    "check": "node scripts/build-deep.js --check && node scripts/validate-silicon-library.js && node tests/validator-negative.js && node tests/silicon-library-audit.js && npm test && npm run build:data -- --check && node scripts/build-explorer-index.js --check",
+    "test": "node --test tests/normalized-library.test.js tests/explorer-core.test.js tests/lab-core.test.js",
+    "build": "node scripts/build-deep.js --check && node scripts/build-normalized-library.js && node scripts/build-explorer-index.js",
     "build:data": "node scripts/build-normalized-library.js",
-    "test:ui": "node tests/silicon-library-ui.js"
+    "test:ui": "node tests/silicon-library-ui.js",
+    "test:explorer": "node tests/silicon-explorer-ui.js",
+    "test:labs": "node tests/silicon-labs-ui.js",
+    "test:a11y": "node tests/silicon-accessibility.js"
   },
-  "devDependencies": {"ajv": "8.17.1", "playwright": "1.63.0"}
+  "devDependencies": {"@axe-core/playwright": "4.10.2", "ajv": "8.17.1", "playwright": "1.63.0"}
 }

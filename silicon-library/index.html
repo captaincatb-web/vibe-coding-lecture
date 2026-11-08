@@ -3,10 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>실리콘 서재</title>
+<meta name="description" content="반도체 공정·소재·부품·장비와 기업을 연결하는 실리콘 서재. 통합 탐색, 출처 확인, 인터랙티브 학습 랩과 단계별 학습 경로를 제공합니다.">
+<link rel="stylesheet" href="src/explorer.css">
+<link rel="stylesheet" href="src/lab.css">
+<link rel="icon" href="data:,">
 <style>[hidden]{display:none!important}body{margin:0}img{max-width:100%}</style>
 </head>
 <body>
-<title>실리콘 서재</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600&family=Noto+Serif+KR:wght@500;700&display=swap">
 <style>
@@ -241,7 +245,8 @@ dl.facts dd { margin: 0; }
 }
 </style>
 
-<div class="wrap" id="app"></div>
+<a class="skip-link" href="#app" data-skip>본문으로 건너뛰기</a>
+<main class="wrap" id="app" tabindex="-1"></main>
 
 <script>
 (function () {
@@ -1168,7 +1173,7 @@ dl.facts dd { margin: 0; }
     var h = head("") +
       '<p class="lede">협력사 46행(같은 기업의 두 번째 사업 1행 제외, 고유 기업 레코드 45건)을 품목별 책장에 꽂았습니다. 책등을 누르면 회사 한 권이 열립니다.</p><p class="ent-n">' + esc(ENT.recordNote) + '</p>' +
       '<div class="legend"><span><span class="chip A">자료 확인</span> ' + cnt.A + '개 사</span><span><span class="chip B">부분 확인</span> ' + cnt.B + '개 사</span><span><span class="chip C">미검증</span> ' + cnt.C + '개 사</span><span style="color:var(--muted)">신뢰도는 자료를 확보한 정도이며, 문장별 원문 대조는 ' + ENT.facts.length + '건(' + Object.keys(ENT.facts.reduce(function (o, f) { o[f.ent] = 1; return o; }, {})).length + '개 기업)뿐입니다.</span><span style="color:var(--muted)">책등의 점: 꽉 참 = 확인, 반 = 부분, 빈 원 = 미검증</span></div>' +
-      viewTabs("shelf") +
+      viewTabs("shelf") + '<section class="journey"><h2>개념에서 기업까지, 한 번에 이어 읽기</h2><p>설명을 읽고 직접 조작한 뒤, 관련 품목과 기업의 근거 자료를 확인하세요.</p><div class="kchips"><a class="kchip" href="#learn">처음이라면 · 4단계 학습 경로</a><a class="kchip" href="#explore?q=ALD&amp;type=product">ALD · 전구체에서 기업까지</a><a class="kchip" href="#explore?q=HBM&amp;type=process">HBM · 적층과 검사 따라가기</a><a class="kchip" href="#labs">직접 조작하는 학습 랩</a></div></section>' +
       '<div class="tools"><input id="q" type="search" placeholder="회사·품목·기술·공정 찾기 (예: ALD, FFKM, HBM)" aria-label="책 찾기"><select id="fc" aria-label="신뢰도"><option value="">신뢰도 전체</option><option value="A">자료 확인</option><option value="B">부분 확인</option><option value="C">미검증</option><option value="F">★ 즐겨찾기만</option></select></div>' +
       '<div id="hits" class="hits" hidden></div><div class="case">';
     var shelfStat = {};
@@ -1224,8 +1229,9 @@ dl.facts dd { margin: 0; }
     try { var st = sessionStorage.getItem("shelfY"); if (st) window.scrollTo(0, +st); } catch (e) {}
   }
 
+  function themeIsDark() { return document.documentElement.getAttribute("data-theme") === "dark" || (!document.documentElement.getAttribute("data-theme") && window.matchMedia("(prefers-color-scheme: dark)").matches); }
   function viewTabs(cur) {
-    return '<nav class="views" aria-label="보기 전환"><a href="#"' + (cur === "shelf" ? ' aria-current="page"' : "") + '>책장</a><a href="#map"' + (cur === "map" ? ' aria-current="page"' : "") + '>공정 지도</a><a href="#tech"' + (cur === "tech" ? ' aria-current="page"' : "") + '>기술 백과</a></nav>';
+    return '<nav class="views" aria-label="보기 전환"><a href="#"' + (cur === "shelf" ? ' aria-current="page"' : "") + '>책장</a><a href="#map"' + (cur === "map" ? ' aria-current="page"' : "") + '>공정 지도</a><a href="#tech"' + (cur === "tech" ? ' aria-current="page"' : "") + '>기술 백과</a><a href="#explore"' + (cur === "explore" ? ' aria-current="page"' : "") + '>통합 탐색</a><a href="#labs"' + (cur === "labs" ? ' aria-current="page"' : "") + '>학습 랩</a><a href="#learn"' + (cur === "learn" ? ' aria-current="page"' : "") + '>학습 경로</a><button type="button" data-theme-toggle aria-label="색상 모드 전환" aria-pressed="' + (themeIsDark() ? 'true' : 'false') + '">◐ 색상 모드</button></nav>';
   }
   function idxOf(name) { for (var k = 0; k < B.length; k++) if (B[k].n === name && !B[k].ref) return k; return -1; }
   function chip(name) {
@@ -1360,7 +1366,7 @@ dl.facts dd { margin: 0; }
     var b = B[cur.i], g = groupOf[b.g], s = shelfOf[b.g], P = pagesOf(b);
     if (cur.p >= P.length) cur.p = P.length - 1;
     var pos = order.indexOf(cur.i);
-    var h = '<div class="bookview"><div class="bar"><button class="btn" id="home" type="button">← ' + (homeView === "map" ? "공정 지도로" : "책장으로") + '</button>' +
+    var h = viewTabs("book") + '<p class="cap"><a href="#explore?item=company%3A' + entOf(b).id + '">이 회사의 품목·공정·근거 연결 탐색 →</a></p><div class="bookview"><div class="bar"><button class="btn" id="home" type="button">← ' + (homeView === "map" ? "공정 지도로" : "책장으로") + '</button>' +
       '<button class="btn fav" id="fav" type="button" aria-pressed="' + (fav[b.n] ? "true" : "false") + '">' + (fav[b.n] ? "★ 즐겨찾기" : "☆ 즐겨찾기") + '</button><span class="spacer"></span>' +
       '<button class="btn" id="pb" type="button"' + (pos <= 0 ? " disabled" : "") + '>이전 책</button>' +
       '<button class="btn" id="nb" type="button"' + (pos >= order.length - 1 ? " disabled" : "") + '>다음 책</button></div>' +
@@ -1891,7 +1897,15 @@ dl.facts dd { margin: 0; }
   }
   function route() {
     var m = /^#b(\d+)$/.exec(location.hash);
-    if (m && B[+m[1]]) {
+    if (/^#(?:labs|learn)(?:\?|$)/.test(location.hash)) {
+      var learning = /^#learn/.test(location.hash); view = learning ? "learn" : "labs";
+      app.innerHTML = head("") + viewTabs(view) + '<h2 class="ttl">' + (learning ? '학습 경로와 용어집' : '인터랙티브 학습 랩') + '</h2><div id="lab-root" data-view="' + view + '"></div>';
+      if (window.SiliconLabs) window.SiliconLabs.mount(document.getElementById("lab-root"));
+    } else if (/^#explore(?:\?|$)/.test(location.hash)) {
+      view = "explore";
+      app.innerHTML = head("") + viewTabs("explore") + '<h2 class="ttl">통합 탐색</h2><div id="explorer-root"></div>';
+      if (window.SiliconExplorer) window.SiliconExplorer.mount(document.getElementById("explorer-root"));
+    } else if (m && B[+m[1]]) {
       var i = +m[1], toPage = 0;
       if (B[i].ref) { var ri = idxOf(B[i].ref); if (ri >= 0) { i = ri; toPage = 1; history.replaceState(null, "", "#b" + ri); } }
       if (i !== cur.i || view !== "book") { cur.p = toPage; opening = true; } else if (toPage) cur.p = toPage;
@@ -1919,9 +1933,22 @@ dl.facts dd { margin: 0; }
   });
   /* 데이터 검증 스크립트(scripts/validate-silicon-library.js)용 내보내기. 브라우저에서는 실행되지 않음 */
   if (window.__SL_EXPORT__) { window.__SL_EXPORT__({ S: S, shelves: shelves, B: B, B0: B0, PATCH: PATCH, REP: REP, TX: TX, TXN: TXN, PROC: PROC, GA: GA, X: X, XA: XA, MAP: MAP, MAP_INFRA: MAP_INFRA[3], groupOf: groupOf, ENT: ENT, DEEP: DEEP }); return; }
+  try { var theme = localStorage.getItem("siliconLibrary:theme:v1"); if (theme === "dark" || theme === "light") document.documentElement.setAttribute("data-theme", theme); } catch (e) {}
+  document.addEventListener("click", function (e) {
+    if (e.target.closest && e.target.closest("[data-skip]")) { e.preventDefault(); app.focus(); return; }
+    if (!e.target.closest || !e.target.closest("[data-theme-toggle]")) return;
+    var dark = themeIsDark();
+    var next = dark ? "light" : "dark"; document.documentElement.setAttribute("data-theme", next);
+    e.target.closest("[data-theme-toggle]").setAttribute("aria-pressed", next === "dark" ? "true" : "false");
+    try { localStorage.setItem("siliconLibrary:theme:v1", next); } catch (err) {}
+  });
   route();
 })();
 </script>
+<script src="src/explorer-core.js"></script>
+<script src="src/explorer-ui.js"></script>
+<script src="src/lab-core.js"></script>
+<script src="src/lab-ui.js"></script>
 
 </body>
 </html>
