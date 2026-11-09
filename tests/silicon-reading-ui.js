@@ -156,15 +156,20 @@ function ok(name, condition) {
     const book = (name) => books.find((entry) => entry.name === name);
     await page.goto(url + book("덕산테코피아").hash);
     ok(
-      "precursor guidance explains conditional ALD growth and links the lab",
-      /한 원자층과 같은 값이 아니며/.test(
-        await page.locator(".reading-guide").innerText(),
-      ) &&
+      "precursor guidance asks company-specific questions and links the common ALD lab",
+      /HCDS 외 품목/.test(await page.locator(".reading-guide").innerText()) &&
         (await page
           .locator('.reading-guide a[href="#labs?lab=ald"]')
           .count()) === 1,
     );
     await page.getByRole("button", { name: /핵심 기술$/ }).click();
+    await page.locator(".company-common > summary").first().click();
+    ok(
+      "shared precursor principles retain conditional growth and exposure limits",
+      /한 원자층 이하/.test(
+        await page.locator(".company-common").innerText(),
+      ) && /노출/.test(await page.locator(".company-common").innerText()),
+    );
     ok(
       "embedded precursor chapter exposes existing unverified numbers",
       /6N/.test(await page.locator(".book-number-notice").innerText()) &&

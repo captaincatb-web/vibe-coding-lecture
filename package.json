@@ -5,7 +5,7 @@
   "engines": {"node": ">=20"},
   "scripts": {
     "check": "node scripts/build-deep.js --check && node scripts/validate-silicon-library.js && node tests/validator-negative.js && node tests/silicon-library-audit.js && npm test && npm run build:data -- --check && node scripts/build-explorer-index.js --check && node scripts/update-weekly.js --check",
-    "test": "node --test tests/normalized-library.test.js tests/explorer-core.test.js tests/lab-core.test.js tests/study-core.test.js tests/reading-core.test.js tests/textbook-core.test.js tests/weekly-update.test.js tests/weekly-recovery.test.js",
+    "test": "node --test tests/normalized-library.test.js tests/explorer-core.test.js tests/lab-core.test.js tests/study-core.test.js tests/reading-core.test.js tests/company-core.test.js tests/textbook-core.test.js tests/weekly-update.test.js tests/weekly-recovery.test.js",
     "build": "node scripts/build-deep.js --check && node scripts/build-normalized-library.js && node scripts/build-explorer-index.js && node scripts/update-weekly.js --build-only",
     "build:data": "node scripts/build-normalized-library.js",
     "test:ui": "node tests/silicon-library-ui.js",
@@ -13,6 +13,7 @@
     "test:labs": "node tests/silicon-labs-ui.js",
     "test:study": "node tests/silicon-study-ui.js",
     "test:reading": "node tests/silicon-reading-ui.js",
+    "test:companies": "node tests/silicon-company-ui.js",
     "test:shelf": "node tests/silicon-shelf-ui.js",
     "test:textbooks": "node tests/silicon-textbooks-ui.js",
     "test:weekly": "node tests/silicon-weekly-ui.js",

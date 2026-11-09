@@ -53,6 +53,11 @@ const url = process.env.SL_TEST_URL || "http://127.0.0.1:8767/silicon-library/";
         "#updates",
         "#updates?topic=MEM&q=HBM",
         "#b0",
+        "#b1",
+        "#b2",
+        "#b3",
+        "#b4",
+        "#x-pre",
         "#x-gasEtch",
         "#x-pid",
         "#textbooks",
@@ -89,6 +94,10 @@ const url = process.env.SL_TEST_URL || "http://127.0.0.1:8767/silicon-library/";
         if (hash.startsWith("#b")) {
           await page.getByRole("button", { name: /핵심 기술$/ }).click();
           await inspect(page, hash + " · 핵심 기술", width);
+          await page.locator(".company-case summary").click();
+          await page.locator(".company-evidence > summary").click();
+          await page.locator(".company-common > summary").first().click();
+          await inspect(page, hash + " · 회사 사례·출처·공통 원리 펼침", width);
         }
       }
       await page.goto(url);

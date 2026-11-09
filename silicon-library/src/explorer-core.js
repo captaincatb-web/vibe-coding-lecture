@@ -1,9 +1,9 @@
 (function (root, factory) {
   "use strict";
   if (typeof module === "object" && module.exports)
-    module.exports = factory(require("./reading-core"));
-  else root.SiliconExplorerCore = factory(root.SiliconReadingCore);
-})(typeof globalThis !== "undefined" ? globalThis : this, function (reading) {
+    module.exports = factory(require("./reading-core"), require("./company-core"));
+  else root.SiliconExplorerCore = factory(root.SiliconReadingCore, root.SiliconCompanyCore);
+})(typeof globalThis !== "undefined" ? globalThis : this, function (reading, companies) {
   "use strict";
   var TYPES = ["company", "product", "process", "knowledge"];
   var ALIASES = {
@@ -72,16 +72,18 @@
       .filter((c) => c.visibility === "public")
       .forEach((c) => {
         var book = data.legacy_snapshot.B[c.legacy_row_index];
+        var profile = companies && companies.get(c.company_id);
         add(
           "company",
           c.company_id,
           c.display_name,
-          book.one,
+          profile ? profile.tagline : book.one,
           "#b" + c.legacy_row_index,
           strings([
             book,
             c.aliases,
             data.business_units.filter((u) => u.company_id === c.company_id),
+            profile && [profile.theme, profile.materials, profile.chapters, profile.example, profile.questions],
           ]),
           c.source_ids,
           data.claims

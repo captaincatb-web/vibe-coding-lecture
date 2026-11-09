@@ -1,0 +1,183 @@
+.company-overview .btn {
+  margin: 4px 8px 4px 0;
+}
+.company-chapter {
+  margin: 20px 0 28px;
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-inline-start: 4px solid var(--accent);
+  border-radius: 6px;
+  background: var(--paper);
+}
+.company-eyebrow {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  color: var(--accent);
+  margin: 0 0 8px;
+}
+.company-chapter > h3 {
+  margin-top: 0;
+}
+.company-chapter h3:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 5px;
+}
+.company-intro {
+  color: var(--muted);
+}
+.company-section {
+  padding-top: 14px;
+  margin-top: 18px;
+  border-top: 1px solid var(--line);
+}
+.company-section h4 {
+  margin-top: 0;
+}
+.company-section p {
+  line-height: 1.95;
+}
+.company-citations {
+  font-size: 11px;
+  color: var(--muted);
+}
+.company-citations a {
+  display: inline-block;
+  min-width: 24px;
+  text-align: center;
+  padding: 2px;
+}
+.company-case {
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  padding: 15px;
+  margin: 22px 0;
+  background: var(--wall);
+}
+.company-case h4 {
+  margin-top: 0;
+}
+.company-case summary,
+.company-evidence summary,
+.company-common > summary,
+.company-legacy > summary {
+  cursor: pointer;
+  padding: 8px 0;
+  font-weight: 600;
+}
+.company-case summary {
+  color: var(--accent);
+}
+.company-peers,
+.company-evidence {
+  border-top: 1px solid var(--line);
+  padding-top: 12px;
+  margin-top: 18px;
+}
+.company-evidence {
+  font-size: 12px;
+  color: var(--muted);
+}
+.company-evidence li {
+  margin: 7px 0;
+  overflow-wrap: anywhere;
+}
+.company-common {
+  border-top: 1px solid var(--line);
+  margin-top: 16px;
+}
+.company-material-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+.company-material-grid article {
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  min-width: 0;
+}
+.company-material-grid h4 {
+  margin-top: 0;
+}
+.company-material-grid p {
+  overflow-wrap: anywhere;
+  font-size: 13px;
+}
+.company-comparison {
+  margin: 28px 0;
+}
+.company-comparison-scroll {
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: 5px;
+}
+.company-comparison table {
+  width: 100%;
+  min-width: 900px;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.company-comparison caption {
+  text-align: left;
+  padding: 12px;
+  font-weight: 600;
+}
+.company-comparison th,
+.company-comparison td {
+  padding: 12px;
+  border: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+}
+.company-comparison thead {
+  background: var(--wall);
+}
+.company-comparison th[scope="row"] {
+  min-width: 115px;
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  background: var(--paper);
+}
+.company-chapter a:focus-visible,
+.company-chapter summary:focus-visible,
+.company-common summary:focus-visible,
+.company-comparison-scroll:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
+}
+@media (max-width: 950px) {
+  .company-material-grid {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 500px) {
+  .company-chapter {
+    padding: 14px;
+  }
+}
+@media print {
+  .company-comparison th[scope="row"] {
+    position: static;
+  }
+  .company-chapter,
+  .company-case {
+    background: transparent;
+    color: #111;
+  }
+  .company-section,
+  .company-case {
+    break-inside: avoid;
+  }
+  .company-comparison-scroll {
+    overflow: visible;
+  }
+  .company-comparison table {
+    min-width: 0;
+    font-size: 10px;
+  }
+  .company-common::details-content {
+    content-visibility: visible;
+  }
+}
