@@ -38,7 +38,12 @@ function ok(name, condition) {
         p.name + " opens with its own company theme",
         (await page.locator(".company-overview").innerText()).includes(
           p.theme,
-        ) && (await page.locator(".cover .one").innerText()) === p.tagline,
+        ) &&
+          (await page.locator(".cover .one").innerText()) === p.tagline &&
+          (await page.locator(".cover .head").innerText()) === p.compare.axis &&
+          JSON.stringify(
+            await page.locator(".cover .topics span").allTextContents(),
+          ) === JSON.stringify(p.materials.map((item) => item.name)),
       );
       await page
         .getByRole("button", { name: "이 회사의 기술장 읽기 →", exact: true })

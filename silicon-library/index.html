@@ -1498,7 +1498,7 @@ dl.facts dd { margin: 0; }
     return P;
   }
   function renderBook() {
-    var b = B[cur.i], g = groupOf[b.g], s = shelfOf[b.g], P = pagesOf(b);
+    var b = B[cur.i], g = groupOf[b.g], s = shelfOf[b.g], P = pagesOf(b), profile = companyProfile(b);
     if (cur.p >= P.length) cur.p = P.length - 1;
     var pos = order.indexOf(cur.i);
     var h = viewTabs("book") + '<p class="cap"><a href="#explore?item=company%3A' + entOf(b).id + '">이 회사의 품목·공정·근거 연결 탐색 →</a></p><div class="bookview"><div class="bar"><button class="btn" id="home" type="button">← ' + (homeView === "map" ? "공정 지도로" : "책장으로") + '</button>' +
@@ -1507,9 +1507,9 @@ dl.facts dd { margin: 0; }
       '<button class="btn" id="nb" type="button"' + (pos >= order.length - 1 ? " disabled" : "") + '>다음 책</button></div>' +
       '<article class="book' + (opening ? " opening" : "") + '" aria-label="' + esc(b.n) + '">' +
       '<div class="cover" style="background:var(' + g.c + ')"><div class="series"><b>' + esc(b.code) + '</b> · ' + esc(s.name + " · " + g.name) + ' · ' + (pos + 1) + ' / ' + order.length + '</div><h1>' + esc(b.n) + '</h1>' +
-      '<div class="head">' + esc(GX[b.g].head) + '</div>' +
-      '<div class="item">' + esc(b.reg) + ' · ' + esc(b.item) + '</div><div class="one">' + esc(companyProfile(b) ? companyProfile(b).tagline : b.one) + '</div>' +
-      '<div class="topics">' + GX[b.g].topics.map(function (t) { return "<span>" + esc(t) + "</span>"; }).join("") + '</div>' + coverArt(b) +
+      '<div class="head">' + esc(profile ? profile.compare.axis : GX[b.g].head) + '</div>' +
+      '<div class="item">' + esc(b.reg) + ' · ' + esc(b.item) + '</div><div class="one">' + esc(profile ? profile.tagline : b.one) + '</div>' +
+      '<div class="topics">' + (profile ? profile.materials.map(function (item) { return item.name; }) : GX[b.g].topics).map(function (t) { return "<span>" + esc(t) + "</span>"; }).join("") + '</div>' + coverArt(b) +
       '<div class="foot"><span class="conf">' + chips[b.conf] + '</span><br><br>실리콘 서재<br>' + libraryDateText() + ' 서재 편집 기준</div></div>' +
       '<div class="leaf"><nav class="tabs" aria-label="이 책의 목차">' + P.map(function (p, k) { return '<button type="button" data-p="' + k + '"' + (k === cur.p ? ' aria-current="page"' : "") + ">" + (k + 1) + ". " + esc(p[0]) + "</button>"; }).join("") + '</nav>' +
       '<div class="page' + (dir ? " " + dir : "") + '" id="pg"><h2 class="visually-hidden">' + esc(P[cur.p][0]) + '</h2>' + P[cur.p][1] + '</div>' +
