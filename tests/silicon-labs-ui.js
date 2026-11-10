@@ -1,0 +1,210 @@
+"use strict";
+const assert = require("node:assert/strict");
+const { chromium } = require("playwright");
+const url = process.env.SL_TEST_URL || "http://127.0.0.1:8767/silicon-library/";
+let passed = 0;
+const ok = (name, result) => {
+  assert.ok(result, name);
+  console.log("PASS " + name);
+  passed++;
+};
+(async () => {
+  const browser = await chromium.launch(
+    process.env.SL_BROWSER_EXECUTABLE
+      ? { executablePath: process.env.SL_BROWSER_EXECUTABLE }
+      : {},
+  );
+  try {
+    const ctx = await browser.newContext({
+      viewport: { width: 1280, height: 900 },
+    });
+    if (process.env.SL_OFFLINE_FIXTURES === "1")
+      await ctx.route("https://fonts.googleapis.com/**", (r) =>
+        r.fulfill({ status: 200, contentType: "text/css", body: "" }),
+      );
+    const page = await ctx.newPage(),
+      errors = [];
+    page.on("pageerror", (e) => errors.push(String(e)));
+    const range = async (id, value) =>
+      page.locator("#lab-" + id).evaluate((el, v) => {
+        el.value = String(v);
+        el.dispatchEvent(new Event("input", { bubbles: true }));
+      }, value);
+    const result = () => page.locator("#lab-result").innerText();
+    await page.goto(url + "#labs");
+    await page.locator("#lab-result").waitFor();
+    ok(
+      "lithography formula and limitations are visible",
+      /CD/.test(await result()) &&
+        /실제 장비 성능/.test(await page.locator("#lab-root").innerText()),
+    );
+    await page.locator("#lab-wavelength").selectOption("13.5");
+    ok(
+      "EUV selection adjusts NA bounds and remains finite",
+      (await page.locator("#lab-na").getAttribute("max")) === "0.55" &&
+        !/NaN|Infinity/.test(await result()),
+    );
+    await page.locator('.lab-tabs a[href="#labs?lab=ald"]').focus();
+    await page.keyboard.press("Enter");
+    await page.locator("#lab-cycles").waitFor();
+    ok(
+      "keyboard lab navigation focuses the new heading",
+      await page.locator("#lab-root h3").evaluate((el) => el === document.activeElement),
+    );
+    await range("cycles", 100);
+    ok("ALD updates thickness to 10 nm", /10\.00 nm/.test(await result()));
+    const shared = page.url();
+    await page.reload();
+    await page.locator("#lab-result").waitFor();
+    ok(
+      "shared lab URL restores model values",
+      (await page.locator("#lab-cycles").inputValue()) === "100" &&
+        /10\.00/.test(await result()),
+    );
+    await page.locator("#lab-next-phase").click();
+    ok(
+      "ALD shows purge as a separate phase",
+      /퍼지/.test(await page.locator(".lab-figure svg").textContent()),
+    );
+    await page.locator('.lab-quiz input[value="1"]').check();
+    ok(
+      "quiz explains the non-monolayer model",
+      /정답입니다/.test(
+        await page.locator('.lab-quiz [role="status"]').innerText(),
+      ),
+    );
+    await page.locator("#lab-reset").click();
+    ok(
+      "reset restores ALD controls",
+      (await page.locator("#lab-cycles").inputValue()) === "50",
+    );
+    await page.locator('.lab-tabs a[href="#labs?lab=cmp"]').click();
+    await range("pressure", 2);
+    ok("CMP relative scaling is correct", /2\.00 배/.test(await result()));
+    await range("time", 0);
+    ok("CMP handles zero time", /0\.00 배/.test(await result()));
+    await page.locator('.lab-tabs a[href="#labs?lab=sequence"]').click();
+    await page.locator('[data-step="etch"]').click();
+    ok(
+      "invalid sequence explains the toy-model rule",
+      /학습 모델/.test(await page.locator(".lab-message").innerText()) &&
+        (await result()) === "웨이퍼",
+    );
+    await page.locator('[data-step="dep"]').click();
+    await page.locator('[data-step="dep"]').click();
+    const rejectedSequenceMessage = await page.locator(".lab-message").innerText();
+    await page.getByRole("button", { name: "마지막 단계 취소" }).click();
+    ok(
+      "undo clears guidance for a rejected sequence state",
+      (await result()) === "웨이퍼" &&
+        (await page.locator(".lab-message").innerText()) !== rejectedSequenceMessage,
+    );
+    for (const k of ["dep", "photo", "etch", "clean", "metro"])
+      await page.locator('[data-step="' + k + '"]').click();
+    ok(
+      "valid process loop updates the diagram",
+      /웨이퍼 → 박막 → 포토 → 식각 → 세정 → 계측/.test(await result()),
+    );
+    await page.getByRole("button", { name: "마지막 단계 취소" }).click();
+    ok("sequence supports undo", /세정$/.test(await result()));
+    await page.locator('[data-step="dep"]').click();
+    ok(
+      "redeposition draws a new unpatterned film",
+      (await page.locator('.lab-figure svg rect[fill="#d4964b"]').count()) ===
+        1,
+    );
+    await page.locator('[data-step="photo"]').click();
+    await page.locator('[data-step="etch"]').click();
+    ok(
+      "a second etch patterns the new film",
+      (await page.locator('.lab-figure svg rect[fill="#d4964b"]').count()) ===
+        4,
+    );
+    await page.locator('.lab-tabs a[href="#labs?lab=packaging"]').click();
+    await range("dies", 12);
+    await range("rotation", 15);
+    ok(
+      "HBM model has independent layered controls",
+      /12개 다이/.test(await result()) &&
+        (await page.locator("svg g").getAttribute("transform")) ===
+          "rotate(15 220 220)",
+    );
+    await page.locator("#lab-tsv").uncheck();
+    ok(
+      "TSV visibility works",
+      (await page.locator(".lab-figure svg line").count()) === 0,
+    );
+    for (const width of [400, 1280]) {
+      await page.setViewportSize({ width, height: 900 });
+      for (const lab of [
+        "lithography",
+        "ald",
+        "cmp",
+        "sequence",
+        "packaging",
+      ]) {
+        await page.goto(url + "#labs?lab=" + lab);
+        await page.locator("#lab-result").waitFor();
+        ok(
+          lab + " no overflow " + width,
+          await page.evaluate(
+            () => document.documentElement.scrollWidth <= innerWidth + 1,
+          ),
+        );
+      }
+    }
+    await page.goto(url + "#labs?lab=ald");
+    await page.locator("#lab-cycles").focus();
+    await page.keyboard.press("Home");
+    await page.keyboard.press("ArrowRight");
+    ok(
+      "range inputs support keyboard updates",
+      (await page.locator("#lab-cycles").inputValue()) === "1",
+    );
+    await page.getByRole("button", { name: "색상 모드 전환" }).click();
+    const theme = await page.locator("html").getAttribute("data-theme");
+    await page.reload();
+    await page.locator("#lab-result").waitFor();
+    ok(
+      "manual theme persists across reload",
+      (await page.locator("html").getAttribute("data-theme")) === theme,
+    );
+    await page.goto(url + "#learn");
+    await page.locator("#glossary-query").waitFor();
+    ok(
+      "four learning paths and glossary are available",
+      (await page.locator(".learning-paths section").count()) === 4 &&
+        (await page.locator(".glossary-list dt").count()) === 14,
+    );
+    await page.locator("#glossary-query").fill("원자층");
+    ok(
+      "Korean glossary search works",
+      (await page.locator(".glossary-list dt").count()) === 1,
+    );
+    await page.locator(".glossary-list a").click();
+    ok("glossary resolves to existing process", page.url().endsWith("#t-dep"));
+    await page.goto(url + "#labs?lab=ald&cycles=999&gpc=NaN");
+    await page.locator("#lab-result").waitFor();
+    ok(
+      "invalid shared parameters fall back safely",
+      /5\.00 nm/.test(await result()),
+    );
+    for (const key of ["constructor", "toString", "__proto__", "unknown-lab"]) {
+      await page.goto(url + "#labs?lab=" + encodeURIComponent(key));
+      await page.locator("#lab-result").waitFor();
+      ok(
+        "unsupported lab key falls back safely: " + key,
+        (await page.locator("#lab-root h3").innerText()) === "노광 · 빛과 패턴" &&
+          (await page.locator(".lab-quiz input").count()) > 0 &&
+          errors.length === 0,
+      );
+    }
+    ok("no lab or learning runtime errors", errors.length === 0);
+    console.log(passed + "/" + passed + " lab UI checks passed");
+  } finally {
+    await browser.close();
+  }
+})().catch((e) => {
+  console.error(e);
+  process.exitCode = 1;
+});

@@ -1,0 +1,53 @@
+name: silicon-library-validate
+on:
+  pull_request:
+    paths: ["silicon-library/**", "scripts/**", "tests/**", "package.json", "package-lock.json", ".github/workflows/silicon-library-validate.yml"]
+  push:
+    paths: ["silicon-library/**", "scripts/**", "tests/**", "package.json", "package-lock.json", ".github/workflows/silicon-library-validate.yml"]
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
+      - name: 고정 개발 의존성 설치
+        run: npm ci
+      - name: 데이터 정합성 검사 (오류가 있으면 실패)
+        run: node scripts/validate-silicon-library.js
+      - name: 검사 스크립트 자체 검증 (일부러 망가뜨린 데이터를 잡는지)
+        run: node tests/validator-negative.js
+      - name: V2 진단기 관계·중복 감지 검증
+        run: node tests/silicon-library-audit.js
+      - name: 정규화 스키마·관계·실패 보존 및 생성본 검사
+        run: |
+          npm test
+          node scripts/build-deep.js --check
+          npm run build:data -- --check
+          node scripts/build-explorer-index.js --check
+          node scripts/update-weekly.js --check
+      - name: Playwright 브라우저 설치
+        run: |
+          npx playwright install --with-deps chromium
+      - name: 화면 회귀 테스트
+        run: node tests/silicon-library-ui.js
+      - name: 통합 탐색 사용자 시나리오와 실패 복구
+        run: |
+          python3 -m http.server 8767 --bind 127.0.0.1 > /tmp/silicon-library-server.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid"' EXIT
+          SL_TEST_URL=http://127.0.0.1:8767/silicon-library/ npm run test:explorer
+          SL_TEST_URL=http://127.0.0.1:8767/silicon-library/ npm run test:comparison
+          SL_TEST_URL=http://127.0.0.1:8767/silicon-library/ node tests/silicon-bookmark-backup.js
+          SL_TEST_URL=http://127.0.0.1:8767/silicon-library/ npm run test:labs
+          SL_TEST_URL=http://127.0.0.1:8767/silicon-library/ npm run test:study
+          SL_TEST_URL=http://127.0.0.1:8767/silicon-library/ npm run test:reading
+          SL_TEST_URL=http://127.0.0.1:8767/silicon-library/ npm run test:companies
+          SL_TEST_URL=http://127.0.0.1:8767/silicon-library/ npm run test:shelf
+          SL_TEST_URL=http://127.0.0.1:8767/silicon-library/ npm run test:textbooks
+          SL_TEST_URL=http://127.0.0.1:8767/silicon-library/ npm run test:weekly
+          SL_TEST_URL=http://127.0.0.1:8767/silicon-library/ npm run test:a11y

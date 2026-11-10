@@ -1,0 +1,448 @@
+(function (root, factory) {
+  "use strict";
+  if (typeof module === "object" && module.exports)
+    module.exports = factory(require("./reading-core"), require("./company-core"));
+  else root.SiliconExplorerCore = factory(root.SiliconReadingCore, root.SiliconCompanyCore);
+})(typeof globalThis !== "undefined" ? globalThis : this, function (reading, companies) {
+  "use strict";
+  var TYPES = ["company", "product", "process", "knowledge"];
+  var ALIASES = {
+    "product:pre": [
+      "ALD",
+      "CVD",
+      "원자층 증착",
+      "atomic layer deposition",
+      "chemical vapor deposition",
+      "precursor",
+    ],
+    "process:dep": ["deposition", "박막 증착", "PVD", "물리 기상 증착"],
+    "process:hbm": [
+      "HBM",
+      "고대역폭 메모리",
+      "high bandwidth memory",
+      "TSV",
+      "패키징",
+    ],
+    "product:cmp": ["CMP", "화학 기계 연마", "chemical mechanical polishing"],
+    "process:cmp": [
+      "CMP",
+      "화학 기계 평탄화",
+      "chemical mechanical planarization",
+    ],
+    "process:photo": ["photolithography", "리소그래피", "EUV", "DUV"],
+    "product:pr": ["photoresist", "포토 레지스트"],
+    "company:c05": ["Soulbrain"],
+    "knowledge:deep:dep": ["ALD", "원자층 증착", "atomic layer deposition"],
+    "knowledge:deep:hbm": ["HBM", "고대역폭 메모리", "high bandwidth memory"],
+  };
+  function text(value) {
+    return String(value || "")
+      .normalize("NFKC")
+      .toLowerCase()
+      .replace(/[\s·._()\-]/g, "");
+  }
+  function strings(value) {
+    if (typeof value === "string") return value;
+    if (!value || typeof value !== "object") return "";
+    return Object.values(value).map(strings).join(" ");
+  }
+  function createIndex(data) {
+    var records = [],
+      byKey = new Map(),
+      sourceIds = new Set(data.sources.map((s) => s.source_id));
+    function add(type, id, title, summary, route, terms, sources, claims) {
+      var key = type + ":" + id;
+      var r = {
+        key: key,
+        type: type,
+        id: id,
+        title: title,
+        summary: summary,
+        route: route,
+        aliases: ALIASES[key] || [],
+        related_keys: [],
+        source_ids: sources || [],
+        claim_ids: claims || [],
+        search_text: terms,
+      };
+      records.push(r);
+      byKey.set(key, r);
+    }
+    data.companies
+      .filter((c) => c.visibility === "public")
+      .forEach((c) => {
+        var book = data.legacy_snapshot.B[c.legacy_row_index];
+        var profile = companies && companies.get(c.company_id);
+        add(
+          "company",
+          c.company_id,
+          c.display_name,
+          profile ? profile.tagline : book.one,
+          "#b" + c.legacy_row_index,
+          strings([
+            book,
+            c.aliases,
+            data.business_units.filter((u) => u.company_id === c.company_id),
+            profile && [profile.theme, profile.materials, profile.chapters, profile.example, profile.questions],
+          ]),
+          c.source_ids,
+          data.claims
+            .filter((f) => f.company_id === c.company_id)
+            .map((f) => f.claim_id),
+        );
+        byKey.get("company:" + c.company_id).aliases = c.aliases.concat(
+          ALIASES["company:" + c.company_id] || [],
+        );
+        byKey.get("company:" + c.company_id).company_profile = {
+          classification: c.classification_view,
+          secondary_classifications: c.secondary_classifications,
+          material_grade: c.material_grade,
+          supply_chain_class: c.supply_chain_class,
+          supply_chain_basis: c.supply_chain_basis,
+          country: c.country,
+          units: data.business_units
+            .filter((u) => u.company_id === c.company_id)
+            .map((u) => ({
+              name: u.display_name,
+              legal_name: u.legal_name,
+              legal_verified: u.legal_verified,
+            })),
+        };
+      });
+    data.products.forEach((p) =>
+      add(
+        "product",
+        p.product_id,
+        p.name,
+        p.legacy.w,
+        "#x-" + p.product_id,
+        strings([p.legacy, reading && reading.get(p.product_id)]),
+      ),
+    );
+    data.processes.forEach((p) =>
+      add(
+        "process",
+        p.process_id,
+        p.name_ko,
+        p.purpose,
+        "#t-" + p.process_id,
+        strings(p.legacy),
+      ),
+    );
+    data.knowledge.forEach((k) => {
+      var refs = new Set();
+      function collect(v) {
+        if (!v || typeof v !== "object") return;
+        if (Array.isArray(v.s))
+          v.s.filter((id) => sourceIds.has(id)).forEach((id) => refs.add(id));
+        Object.values(v).forEach(collect);
+      }
+      collect(k.legacy);
+      add(
+        "knowledge",
+        k.knowledge_id,
+        k.title,
+        k.legacy.intro || "",
+        "#t-" + k.process_ids[0],
+        strings(k.legacy),
+        [...refs],
+      );
+    });
+    function link(a, b) {
+      if (!byKey.has(a) || !byKey.has(b)) return;
+      if (!byKey.get(a).related_keys.includes(b))
+        byKey.get(a).related_keys.push(b);
+      if (!byKey.get(b).related_keys.includes(a))
+        byKey.get(b).related_keys.push(a);
+    }
+    data.company_products.forEach((r) =>
+      link("company:" + r.company_id, "product:" + r.product_id),
+    );
+    data.relationship_edges.forEach((r) =>
+      link("product:" + r.from_id, "process:" + r.to_id),
+    );
+    data.knowledge.forEach((k) => {
+      k.product_ids.forEach((id) =>
+        link("knowledge:" + k.knowledge_id, "product:" + id),
+      );
+      k.process_ids.forEach((id) =>
+        link("knowledge:" + k.knowledge_id, "process:" + id),
+      );
+    });
+    records.forEach((r) => {
+      r.search_text = text(
+        [
+          r.title,
+          r.aliases.join(" "),
+          r.search_text,
+          r.related_keys
+            .map(
+              (k) => byKey.get(k).title + " " + byKey.get(k).aliases.join(" "),
+            )
+            .join(" "),
+        ].join(" "),
+      );
+    });
+    return {
+      version: 1,
+      source_digest: data.metadata.legacy_digest,
+      records: records,
+      sources: data.sources,
+      claims: data.claims,
+    };
+  }
+  function validateIndex(index) {
+    var errors = [];
+    if (
+      !index ||
+      index.version !== 1 ||
+      !Array.isArray(index.records) ||
+      !Array.isArray(index.sources) ||
+      !Array.isArray(index.claims)
+    )
+      return ["Unsupported index"];
+    function stringArray(values) {
+      return (
+        Array.isArray(values) && values.every((v) => typeof v === "string")
+      );
+    }
+    if (
+      index.sources.some(
+        (s) =>
+          !s ||
+          typeof s.source_id !== "string" ||
+          typeof s.title !== "string" ||
+          typeof s.url !== "string",
+      ) ||
+      index.claims.some(
+        (c) =>
+          !c ||
+          typeof c.claim_id !== "string" ||
+          typeof c.statement !== "string" ||
+          typeof c.scope !== "string" ||
+          !(c.company_id === null || typeof c.company_id === "string") ||
+          !(c.checked_at === null || typeof c.checked_at === "string") ||
+          !stringArray(c.source_ids) ||
+          !["verified", "partial", "unverified"].includes(
+            c.verification_status,
+          ),
+      )
+    )
+      return ["Invalid source or claim"];
+    if (
+      new Set(index.sources.map((s) => s.source_id)).size !==
+        index.sources.length ||
+      new Set(index.claims.map((c) => c.claim_id)).size !== index.claims.length
+    )
+      errors.push("Duplicate source or claim ID");
+    var ids = new Set(),
+      sources = new Set(index.sources.map((s) => s.source_id)),
+      claims = new Set(index.claims.map((c) => c.claim_id));
+    index.records.forEach((r) => {
+      if (
+        !r ||
+        !TYPES.includes(r.type) ||
+        r.key !== r.type + ":" + r.id ||
+        ids.has(r.key) ||
+        typeof r.title !== "string" ||
+        typeof r.summary !== "string" ||
+        typeof r.search_text !== "string" ||
+        !stringArray(r.aliases) ||
+        !stringArray(r.related_keys) ||
+        !stringArray(r.source_ids) ||
+        !stringArray(r.claim_ids) ||
+        !/^#(?:b\d+|[tx]-[\w-]+)$/.test(r.route)
+      )
+        errors.push("Invalid record");
+      if (r) ids.add(r.key);
+      if (r?.company_profile !== undefined && r?.company_profile !== null) {
+        var p = r.company_profile;
+        if (
+          r.type !== "company" ||
+          typeof p !== "object" ||
+          Array.isArray(p) ||
+          !["소재", "부품", "장비", "기타"].includes(p.classification) ||
+          !["A", "B", "C"].includes(p.material_grade) ||
+          !["직접", "간접", "관련 산업", "검증 필요"].includes(
+            p.supply_chain_class,
+          ) ||
+          typeof p.supply_chain_basis !== "string" ||
+          !stringArray(p.secondary_classifications) ||
+          !(p.country === null || typeof p.country === "string") ||
+          !Array.isArray(p.units) ||
+          p.units.some(
+            (u) =>
+              !u ||
+              typeof u.name !== "string" ||
+              !(u.legal_name === null || typeof u.legal_name === "string") ||
+              typeof u.legal_verified !== "boolean",
+          )
+        )
+          errors.push("Invalid company profile");
+      }
+    });
+    if (errors.includes("Invalid record")) return errors;
+    var claimById = new Map(index.claims.map((c) => [c.claim_id, c]));
+    index.claims.forEach((c) => {
+      if (c.source_ids.some((id) => !sources.has(id)))
+        errors.push("Orphan claim source");
+    });
+    index.records.forEach((r) => {
+      if (
+        !r ||
+        !Array.isArray(r.related_keys) ||
+        !Array.isArray(r.source_ids) ||
+        !Array.isArray(r.claim_ids)
+      )
+        return;
+      if (
+        r.related_keys.some((k) => !ids.has(k)) ||
+        r.source_ids.some((k) => !sources.has(k)) ||
+        r.claim_ids.some((k) => !claims.has(k))
+      )
+        errors.push("Orphan reference");
+      if (
+        r.type === "company" &&
+        r.claim_ids.some(
+          (id) => claimById.has(id) && claimById.get(id).company_id !== r.id,
+        )
+      )
+        errors.push("Wrong company claim");
+    });
+    var byKey = new Map(index.records.filter(Boolean).map((r) => [r.key, r]));
+    index.records.forEach((r) => {
+      if (Array.isArray(r?.related_keys))
+        r.related_keys.forEach((k) => {
+          if (byKey.has(k) && !byKey.get(k).related_keys?.includes(r.key))
+            errors.push("One-way relation");
+        });
+    });
+    index.sources.forEach((s) => {
+      try {
+        var u = new URL(s.url);
+        if (!/^https?:$/.test(u.protocol) || u.username || u.password)
+          errors.push("Unsafe source URL");
+      } catch (e) {
+        errors.push("Invalid source URL");
+      }
+    });
+    return errors;
+  }
+  function search(index, query, type) {
+    var tokens = String(query || "")
+        .normalize("NFKC")
+        .trim()
+        .split(/[\s/·]+/)
+        .map(text)
+        .filter(Boolean),
+      exact = text(query);
+    if (String(query || "").trim() && !tokens.length) return [];
+    return index.records
+      .filter(
+        (r) =>
+          (!type || type === "all" || r.type === type) &&
+          tokens.every((t) => r.search_text.includes(t)),
+      )
+      .map((r) => ({
+        record: r,
+        score:
+          text(r.title) === exact
+            ? 1000
+            : r.aliases.some((a) => text(a) === exact)
+              ? 900
+              : exact && text(r.title).includes(exact)
+                ? 700
+                : 100,
+      }))
+      .sort(
+        (a, b) =>
+          b.score - a.score ||
+          a.record.title.localeCompare(b.record.title, "ko"),
+      )
+      .map((x) => x.record);
+  }
+  function related(index, key) {
+    var record = index.records.find((r) => r.key === key);
+    if (!record) return [];
+    var keys = new Set(record.related_keys);
+    return index.records.filter((r) => keys.has(r.key));
+  }
+  function readState(hash) {
+    var q = new URLSearchParams(String(hash || "").split("?")[1] || "");
+    return {
+      query: (q.get("q") || "").slice(0, 200),
+      type: TYPES.includes(q.get("type")) ? q.get("type") : "all",
+      item: q.get("item") || "",
+      compare: comparisonKeys((q.get("compare") || "").split(",")),
+    };
+  }
+  function stateHash(state) {
+    var p = new URLSearchParams();
+    if (state.query) p.set("q", state.query.slice(0, 200));
+    if (TYPES.includes(state.type)) p.set("type", state.type);
+    if (state.item) p.set("item", state.item);
+    var compare = comparisonKeys(state.compare);
+    if (compare.length) p.set("compare", compare.join(","));
+    return "#explore" + (p.size ? "?" + p.toString() : "");
+  }
+  function comparisonKeys(keys) {
+    if (!Array.isArray(keys)) return [];
+    return [
+      ...new Set(
+        keys.filter(
+          (k) => typeof k === "string" && /^company:[A-Za-z0-9_-]+$/.test(k),
+        ),
+      ),
+    ].slice(0, 3);
+  }
+  function compareCompanies(index, keys) {
+    return comparisonKeys(keys)
+      .map((key) =>
+        index.records.find((r) => r.key === key && r.type === "company"),
+      )
+      .filter(Boolean)
+      .map((record) => {
+        var products = related(index, record.key).filter(
+            (r) => r.type === "product",
+          ),
+          processes = new Map();
+        products.forEach((p) =>
+          related(index, p.key)
+            .filter((r) => r.type === "process")
+            .forEach((p) => processes.set(p.key, p)),
+        );
+        var claims = index.claims.filter((c) =>
+          record.claim_ids.includes(c.claim_id),
+        );
+        return {
+          record: record,
+          profile: record.company_profile || null,
+          products: products,
+          processes: [...processes.values()],
+          facts: claims.reduce(
+            (counts, c) => {
+              counts[c.verification_status]++;
+              return counts;
+            },
+            { verified: 0, partial: 0, unverified: 0 },
+          ),
+          last_checked_at:
+            claims
+              .map((c) => c.checked_at)
+              .filter(Boolean)
+              .sort()
+              .at(-1) || null,
+        };
+      });
+  }
+  return {
+    createIndex: createIndex,
+    validateIndex: validateIndex,
+    search: search,
+    related: related,
+    readState: readState,
+    stateHash: stateHash,
+    comparisonKeys: comparisonKeys,
+    compareCompanies: compareCompanies,
+  };
+});
