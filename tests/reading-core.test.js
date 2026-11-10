@@ -105,6 +105,13 @@ test("browser export provides all published topics without CommonJS", () => {
   const context = {};
   vm.runInNewContext(
     fs.readFileSync(
+      require.resolve("../silicon-library/src/applied-reading"),
+      "utf8",
+    ),
+    context,
+  );
+  vm.runInNewContext(
+    fs.readFileSync(
       path.join(__dirname, "../silicon-library/src/reading-core.js"),
       "utf8",
     ),
@@ -112,7 +119,68 @@ test("browser export provides all published topics without CommonJS", () => {
   );
   assert.equal(Object.keys(context.SiliconReadingCore.topics).length, 31);
   assert.equal(
+    Object.values(context.SiliconReadingCore.topics).filter((p) => p.practical)
+      .length,
+    31,
+  );
+  assert.equal(
     context.SiliconReadingCore.get("pid").question,
     reading.get("pid").question,
+  );
+});
+test("all 31 products have distinct, immutable evaluation criteria and hypothetical investigations", () => {
+  const notes = Object.entries(reading.topics).map(([id, topic]) => {
+    const p = topic.practical;
+    assert.ok(p && p.insight.length > 60, id);
+    assert.deepEqual(p.basis, ["TX." + id]);
+    assert.equal(p.metrics.length, 3);
+    for (const metric of p.metrics) {
+      assert.ok(
+        metric.name.length > 2 &&
+          metric.meaning.length > 8 &&
+          metric.conditions.length > 8,
+        id,
+      );
+    }
+    const c = p.investigation;
+    assert.equal(c.hypothetical, true);
+    assert.match(c.observation, /가정/);
+    assert.equal(c.hypotheses.length, 2);
+    assert.ok(c.comparison.length > 40 && c.interpretation.length > 40, id);
+    assert.ok(
+      Object.isFrozen(p) &&
+        Object.isFrozen(c.hypotheses) &&
+        Object.isFrozen(p.metrics[0]),
+    );
+    return p;
+  });
+  for (const field of [
+    (p) => p.insight,
+    (p) => p.investigation.observation,
+    (p) => p.investigation.comparison,
+    (p) => p.investigation.interpretation,
+  ])
+    assert.equal(new Set(notes.map(field)).size, 31);
+});
+test("practical cases preserve critical distinctions for uncertain company mappings and system-level metrics", () => {
+  assert.match(
+    reading.get("hbmfilm").practical.investigation.interpretation,
+    /AMMK.*새로 확인.*아닙니다/,
+  );
+  assert.match(
+    reading.get("sisic").practical.investigation.interpretation,
+    /와이컴.*확인.*않습니다/,
+  );
+  assert.match(
+    reading.get("oring").practical.investigation.interpretation,
+    /GT.*확인.*아닙니다/,
+  );
+  assert.match(
+    reading.get("upw").practical.insight,
+    /비저항.*모든 오염.*아닙니다/,
+  );
+  assert.match(
+    reading.get("amhs").practical.investigation.interpretation,
+    /장치 속도.*처리량.*쓰지 않습니다/,
   );
 });

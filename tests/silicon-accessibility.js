@@ -1,6 +1,8 @@
 "use strict";
 const { chromium } = require("playwright");
 const AxeBuilder = require("@axe-core/playwright").default;
+const reading = require("../silicon-library/src/reading-core"),
+  textbooks = require("../silicon-library/src/textbook-core");
 const url = process.env.SL_TEST_URL || "http://127.0.0.1:8767/silicon-library/";
 (async () => {
   const browser = await chromium.launch(
@@ -41,7 +43,7 @@ const url = process.env.SL_TEST_URL || "http://127.0.0.1:8767/silicon-library/";
           r.fulfill({ status: 200, contentType: "text/css", body: "" }),
         );
       const page = await ctx.newPage();
-      for (const hash of [
+      for (const hash of new Set([
         "",
         "#explore?item=product%3Apre",
         "#explore?compare=company:c05,company:c22,company:c27",
@@ -71,7 +73,11 @@ const url = process.env.SL_TEST_URL || "http://127.0.0.1:8767/silicon-library/";
         "#textbooks",
         "#textbook?book=FIL",
         "#textbook?book=MEM&chapter=all",
-      ]) {
+        ...Object.keys(reading.topics).map((key) => "#x-" + key),
+        ...textbooks.books.map((book) =>
+          textbooks.route(book.id, book.chapters[3].id),
+        ),
+      ])) {
         await page.goto(url + hash);
         await page
           .locator(
@@ -98,6 +104,8 @@ const url = process.env.SL_TEST_URL || "http://127.0.0.1:8767/silicon-library/";
           await page.locator(".concept-check summary").click();
         if (hash === "#textbook?book=FIL")
           await page.locator(".textbook-review summary").click();
+        if (hash.startsWith("#x-"))
+          await page.locator(".concept-investigation summary").click();
         await inspect(page, hash, width);
         if (hash.startsWith("#b")) {
           await page.getByRole("button", { name: /핵심 기술$/ }).click();
@@ -105,6 +113,7 @@ const url = process.env.SL_TEST_URL || "http://127.0.0.1:8767/silicon-library/";
           await page.locator(".company-case summary").click();
           await page.locator(".company-evidence > summary").click();
           await page.locator(".company-common > summary").first().click();
+          await page.locator(".concept-investigation summary").first().click();
           await inspect(page, hash + " · 회사 사례·출처·공통 원리 펼침", width);
         }
       }

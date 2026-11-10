@@ -66,6 +66,30 @@ function ok(name, condition) {
       "textbook library contains eleven readable covers",
       (await page.locator(".textbook-card").count()) === 11,
     );
+    const shortcuts = await page
+      .getByRole("navigation", { name: "계산 예제 바로가기" })
+      .locator("a")
+      .evaluateAll((nodes) => nodes.map((n) => n.getAttribute("href")));
+    for (const href of shortcuts) {
+      await page
+        .locator('.textbook-applied-starts a[href="' + href + '"]')
+        .click();
+      await page.locator(".textbook-worked").waitFor();
+      ok(
+        "curated calculation shortcut opens the matching lesson: " + href,
+        (await page
+          .locator(
+            '.textbook-chapter[data-chapter="' +
+              core.resolve(href).chapter.id +
+              '"]',
+          )
+          .count()) === 1,
+      );
+      await page
+        .getByRole("link", { name: "← 교과서 서가", exact: true })
+        .click();
+      await page.locator("#textbook-search").waitFor();
+    }
     await page.locator("#textbook-search").fill("지연시간");
     ok(
       "full-text search finds the memory textbook",
@@ -82,6 +106,20 @@ function ok(name, condition) {
       "shared search URL restores the query",
       (await page.locator("#textbook-search").inputValue()) === "지연시간",
     );
+    for (const [query, id] of [
+      ["18.4 nm", "FIL"],
+      ["0.102%", "TST"],
+      ["102.4 GB/s", "MEM"],
+    ]) {
+      await page.locator("#textbook-search").fill(query);
+      ok(
+        "worked example values are searchable: " + id,
+        (await page.locator(".textbook-card:not([hidden])").count()) === 1 &&
+          (await page
+            .locator(".textbook-card:not([hidden])")
+            .getAttribute("data-book")) === id,
+      );
+    }
     await page.locator("#textbook-search").fill("<img src=x onerror=alert(1)>");
     ok(
       "empty search is explicit and input is never interpreted as markup",
@@ -107,13 +145,34 @@ function ok(name, condition) {
             (await article.locator(".textbook-review p").textContent()) ===
               chapter.answer,
         );
+        if (chapter.worked) {
+          const worked = article.locator(".textbook-worked");
+          ok(
+            book.id +
+              " publishes assumptions, inputs, calculations and model limits",
+            (await worked.locator("tbody tr").count()) ===
+              chapter.worked.rows.length &&
+              (await worked.locator("ol li").allTextContents()).join(" ") ===
+                chapter.worked.steps.join(" ") &&
+              (await worked.locator(".textbook-model-result").innerText()) ===
+                chapter.worked.conclusion &&
+              (
+                await worked.locator(".textbook-model-limits").innerText()
+              ).includes(chapter.worked.limits) &&
+              /가상 수치.*실제 회사 성능.*아닙니다/.test(
+                await worked.innerText(),
+              ),
+          );
+        }
       }
       await page.goto(url + core.route(book.id, "all"));
       await page.locator(".textbook-chapter").first().waitFor();
       ok(
         book.id + " whole-book view contains every chapter and its terms",
-        (await page.locator(".textbook-chapter").count()) === 3 &&
-          (await page.locator(".textbook-terms dt").count()) === 3 &&
+        (await page.locator(".textbook-chapter").count()) ===
+          book.chapters.length &&
+          (await page.locator(".textbook-terms dt").count()) ===
+            book.terms.length &&
           (await page.locator(".textbook-product-link").count()) ===
             book.products.length,
       );
@@ -210,11 +269,11 @@ function ok(name, condition) {
           }),
         ),
       );
-      for (const id of ["FIL", "PKG", "MEM", "FAB"]) {
-        await page.goto(url + core.route(id, "all"));
+      for (const book of core.books) {
+        await page.goto(url + core.route(book.id, "all"));
         await page.locator(".textbook-chapter").first().waitFor();
         ok(
-          id + " reader fits width " + width,
+          book.id + " reader fits width " + width,
           await page.evaluate(
             () => document.documentElement.scrollWidth <= innerWidth + 1,
           ),
@@ -222,13 +281,20 @@ function ok(name, condition) {
       }
     }
     await page.emulateMedia({ media: "print" });
-    ok(
-      "whole-book print layout contains three chapters without document overflow",
-      (await page.locator(".textbook-chapter").count()) === 3 &&
-        (await page.evaluate(
-          () => document.documentElement.scrollWidth <= innerWidth + 1,
-        )),
-    );
+    for (const book of core.books) {
+      await page.goto(url + core.route(book.id, "all"));
+      await page.locator(".textbook-worked").waitFor();
+      ok(
+        book.id +
+          " print layout contains all chapters and its worked example without overflow",
+        (await page.locator(".textbook-chapter").count()) ===
+          book.chapters.length &&
+          (await page.locator(".textbook-worked").count()) === 1 &&
+          (await page.evaluate(
+            () => document.documentElement.scrollWidth <= innerWidth + 1,
+          )),
+      );
+    }
     await page.emulateMedia({ media: "screen" });
     await page.getByRole("button", { name: "색상 모드 전환" }).click();
     await page.emulateMedia({ media: "print" });

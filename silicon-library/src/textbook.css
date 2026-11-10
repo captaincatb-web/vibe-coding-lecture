@@ -456,3 +456,27 @@
     break-inside: avoid;
   }
 }
+.textbook-worked {
+  margin: 22px 0;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-inline-start: 4px solid var(--accent);
+  border-radius: 6px;
+  background: var(--accent-soft);
+  overflow-wrap: anywhere;
+}
+.textbook-worked h4 { margin: 8px 0 16px; }
+.textbook-worked h5 { font-size: 13px; margin: 14px 0 8px; }
+.textbook-model-label, .textbook-model-limits { color: var(--muted); font-size: 12px; }
+.textbook-worked table { width: 100%; border-collapse: collapse; font-size: 13px; margin: 16px 0; }
+.textbook-worked caption { text-align: left; font-weight: 600; margin-bottom: 8px; }
+.textbook-worked th, .textbook-worked td { border: 1px solid var(--line); padding: 8px; text-align: left; }
+.textbook-worked th { font-weight: 600; }
+.textbook-formula { font-family: var(--sans); font-size: 13px; padding: 12px; background: var(--paper); border-radius: 4px; }
+.textbook-worked li { margin-bottom: 8px; font-size: 13px; }
+.textbook-model-result { font-weight: 600; }
+@media (max-width: 650px) { .textbook-worked { padding: 14px; } }
+@media print {
+  .textbook-worked { background: #fff; }
+  .textbook-worked table { break-inside: avoid; }
+}

@@ -104,6 +104,32 @@
   outline: 3px solid var(--accent);
   outline-offset: 3px;
 }
+.concept-practice {
+  border-top: 1px solid var(--line);
+  margin-top: 22px;
+  padding-top: 18px;
+}
+.concept-practice > :first-child { margin-top: 0; }
+.concept-metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr));
+  gap: 10px;
+  margin: 16px 0;
+}
+.concept-metrics article {
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 14px;
+  background: var(--wall);
+}
+.concept-metrics article > :first-child { font-size: 14px; margin: 0 0 12px; }
+.concept-metrics dl { font-size: 12.5px; margin: 0; }
+.concept-metrics dt { color: var(--muted); margin-top: 8px; }
+.concept-metrics dd { margin: 3px 0 0; }
+.concept-investigation { border-top: 1px solid var(--line); padding-top: 14px; }
+.concept-investigation summary { cursor: pointer; font-weight: 600; }
+.concept-investigation p, .concept-investigation li { font-size: 13px; }
+.concept-investigation p { margin-top: 12px; }
 @media (max-width: 650px) {
   .concept-reading {
     padding: 14px;

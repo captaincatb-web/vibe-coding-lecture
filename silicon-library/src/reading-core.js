@@ -1,8 +1,8 @@
 (function (root, factory) {
   "use strict";
-  if (typeof module === "object" && module.exports) module.exports = factory();
-  else root.SiliconReadingCore = factory();
-})(typeof globalThis !== "undefined" ? globalThis : this, function () {
+  if (typeof module === "object" && module.exports) module.exports = factory(require("./applied-reading"));
+  else root.SiliconReadingCore = factory(root.SiliconAppliedReading);
+})(typeof globalThis !== "undefined" ? globalThis : this, function (applied) {
   "use strict";
   // 교육용 일반 원리의 편집 보강. 기업의 제품 사양·채택·매출을 새로 주장하지 않는다.
   var topics = {
@@ -642,7 +642,9 @@
       basis: ["TX.mask.h", "PROC.photo.how"],
     },
   ];
-  Object.values(topics).forEach(function (topic) {
+  Object.keys(topics).forEach(function (id) {
+    var topic = topics[id];
+    topic.practical = applied && applied[id];
     Object.freeze(topic.steps);
     Object.freeze(topic.compare);
     Object.freeze(topic);
@@ -654,7 +656,7 @@
   });
   Object.freeze(corrections);
   return {
-    editedAt: "2026-11-08",
+    editedAt: "2026-11-10",
     scope: "기존 품목 해설을 재구성한 교육용 일반 원리 · 이번 원문 재열람 전",
     topics: topics,
     corrections: corrections,

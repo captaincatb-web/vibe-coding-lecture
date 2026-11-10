@@ -36,7 +36,13 @@
       el("h2", "함께 읽는 교과서", "ttl"),
       el(
         "p",
-        "서재에서 직접 작성한 11종의 개념 교과서, 33개 장입니다. 원리를 읽고 예시로 생각한 뒤 품목·공정·실습으로 이어 가세요.",
+        "서재에서 직접 작성한 " +
+          core.stats.books +
+          "종의 개념 교과서, " +
+          core.stats.chapters +
+          "개 장입니다. 원리에서 출발해 계산 예제 " +
+          core.stats.worked +
+          "개와 종합 사례로 연결해 읽습니다.",
         "lede",
       ),
     );
@@ -59,6 +65,25 @@
       paths.append(link(entry[0], core.route(entry[1])));
     });
     root.append(paths);
+    var applied = el("section", undefined, "textbook-applied-starts"),
+      shortcuts = el("nav", undefined, "textbook-starts");
+    shortcuts.setAttribute("aria-label", "계산 예제 바로가기");
+    applied.append(
+      el("h3", "가상 데이터로 생각하기"),
+      el(
+        "p",
+        "각 교과서의 4장에서는 가정을 놓고 계산하고, 5장에서는 여러 지표와 근거를 함께 읽습니다. 결과가 무엇을 뜻하는지, 어디까지 말할 수 있는지 확인해 보세요.",
+      ),
+    );
+    [
+      ["박막 두께와 초기 성장", "FIL", "growth-budget"],
+      ["검사 판정과 실제 불량", "TST", "classification-counts"],
+      ["이동 속도와 전체 대기", "FAB", "waiting-budget"],
+    ].forEach(function (entry) {
+      shortcuts.append(link(entry[0] + " →", core.route(entry[1], entry[2])));
+    });
+    applied.append(shortcuts);
+    root.append(applied);
     var searchLabel = el("label", "교과서·본문 찾기", "textbook-search"),
       input = el("input"),
       count = el("p", undefined, "cap");
@@ -92,7 +117,11 @@
         ),
         el("h3", book.title),
         symbol,
-        el("span", "원리 · 예시 · 복습 / 3개 장", "textbook-cover-footer"),
+        el(
+          "span",
+          "원리 · 계산 · 사례 / " + book.chapters.length + "개 장",
+          "textbook-cover-footer",
+        ),
       );
       card.append(cover, el("p", book.subtitle, "textbook-card-caption"));
       grid.append(card);
@@ -145,6 +174,7 @@
     chapter.paragraphs.forEach(function (paragraph) {
       article.append(el("p", paragraph));
     });
+    if (chapter.worked) article.append(renderWorked(chapter.worked));
     var example = el("div", undefined, "textbook-example");
     example.append(el("h4", "예시로 생각해 보기"), el("p", chapter.example));
     article.append(example);
@@ -161,6 +191,52 @@
     });
     article.append(related);
     return article;
+  }
+  function renderWorked(worked) {
+    var section = el("section", undefined, "textbook-worked");
+    section.append(
+      el(
+        "p",
+        "가상 수치로 계산하기 · 실제 회사 성능·양산 규격이 아닙니다",
+        "textbook-model-label",
+      ),
+      el("h4", worked.title),
+    );
+    var assumptions = el("ul");
+    worked.assumptions.forEach(function (item) {
+      assumptions.append(el("li", item));
+    });
+    section.append(el("h5", "먼저 놓는 가정"), assumptions);
+    var table = el("table"),
+      head = el("thead"),
+      headers = el("tr"),
+      body = el("tbody");
+    table.append(el("caption", "계산에 사용한 가상 입력"));
+    ["항목", "가정값"].forEach(function (label) {
+      var cell = el("th", label);
+      cell.scope = "col";
+      headers.append(cell);
+    });
+    head.append(headers);
+    worked.rows.forEach(function (row) {
+      var line = el("tr"),
+        name = el("th", row[0]);
+      name.scope = "row";
+      line.append(name, el("td", row[1]));
+      body.append(line);
+    });
+    table.append(head, body);
+    section.append(table, el("p", worked.formula, "textbook-formula"));
+    var steps = el("ol");
+    worked.steps.forEach(function (step) {
+      steps.append(el("li", step));
+    });
+    section.append(
+      steps,
+      el("p", worked.conclusion, "textbook-model-result"),
+      el("p", "모델의 한계 · " + worked.limits, "textbook-model-limits"),
+    );
+    return section;
   }
   function reader(root, state) {
     var book = state.book,
@@ -196,7 +272,7 @@
       toc = el("nav", undefined, "textbook-toc"),
       body = el("div", undefined, "textbook-body");
     toc.setAttribute("aria-label", book.title + " 목차");
-    toc.append(el("p", "목차 · 3개 장"));
+    toc.append(el("p", "목차 · " + book.chapters.length + "개 장"));
     book.chapters.forEach(function (chapter, index) {
       var anchor = chapterLink(
         String(index + 1).padStart(2, "0") + " " + chapter.title,

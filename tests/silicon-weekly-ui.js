@@ -4,7 +4,16 @@ const assert = require("node:assert/strict"),
 const data = require("../silicon-library/data/weekly-updates.json"),
   core = require("../silicon-library/src/weekly-core"),
   editorial = require("../silicon-library/src/company-core"),
-  editionDate = [data.as_of, editorial.editedAt].sort().at(-1);
+  reading = require("../silicon-library/src/reading-core"),
+  textbooks = require("../silicon-library/src/textbook-core"),
+  editionDate = [
+    data.as_of,
+    editorial.editedAt,
+    reading.editedAt,
+    textbooks.editedAt,
+  ]
+    .sort()
+    .at(-1);
 const url = process.env.SL_TEST_URL || "http://127.0.0.1:8767/silicon-library/";
 let passed = 0;
 function ok(name, condition) {
@@ -96,7 +105,8 @@ function ok(name, condition) {
     await page.locator(".weekly-materials").waitFor();
     ok(
       "whole textbook retains all authored chapters alongside weekly material",
-      (await page.locator(".textbook-chapter").count()) === 3 &&
+      (await page.locator(".textbook-chapter").count()) ===
+        textbooks.get("PRC").chapters.length &&
         (await page.locator(".weekly-materials ol > li").count()) ===
           core.entries(["PRC"], 5).length,
     );

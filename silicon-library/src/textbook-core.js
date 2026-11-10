@@ -1,8 +1,9 @@
 (function (root, factory) {
   "use strict";
-  if (typeof module === "object" && module.exports) module.exports = factory();
-  else root.SiliconTextbookCore = factory();
-})(typeof globalThis !== "undefined" ? globalThis : this, function () {
+  if (typeof module === "object" && module.exports)
+    module.exports = factory(require("./textbook-advanced"));
+  else root.SiliconTextbookCore = factory(root.SiliconTextbookAdvanced);
+})(typeof globalThis !== "undefined" ? globalThis : this, function (advanced) {
   "use strict";
   function chapter(id, title, paragraphs, example, question, answer, links) {
     return {
@@ -902,7 +903,9 @@
     return value;
   }
   books.forEach(function (book) {
-    book.terms = terms[book.id];
+    var extra = advanced && advanced[book.id];
+    book.terms = terms[book.id].concat(extra ? extra.terms : []);
+    if (extra) book.chapters = book.chapters.concat(extra.chapters);
     book.reference = "https://semi.euiyun.com/" + referencePaths[book.id];
   });
   freeze(books);
@@ -973,11 +976,28 @@
   }
   return {
     books: books,
+    stats: freeze({
+      books: books.length,
+      chapters: books.reduce(function (n, book) {
+        return n + book.chapters.length;
+      }, 0),
+      terms: books.reduce(function (n, book) {
+        return n + book.terms.length;
+      }, 0),
+      worked: books.reduce(function (n, book) {
+        return (
+          n +
+          book.chapters.filter(function (c) {
+            return c.worked;
+          }).length
+        );
+      }, 0),
+    }),
     get: get,
     search: search,
     route: route,
     resolve: resolve,
-    editedAt: "2026-11-08",
+    editedAt: "2026-11-10",
     scope: "서재에서 직접 작성한 개념 교과서 · 교육용 일반 원리",
   };
 });

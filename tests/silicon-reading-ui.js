@@ -108,6 +108,35 @@ function ok(name, condition) {
           (await article.locator(".concept-compare a").getAttribute("href")) ===
             "#x-" + topic.compare.id,
       );
+      const practical = article.locator(".concept-practice");
+      ok(
+        key +
+          " publishes its three evaluation metrics with comparison conditions",
+        (await practical.locator(".concept-metrics article").count()) === 3 &&
+          (await practical.innerText()).includes(topic.practical.insight) &&
+          (
+            await practical.locator(".concept-metrics dd").allTextContents()
+          ).join(" ") ===
+            topic.practical.metrics
+              .flatMap((m) => [m.meaning, m.conditions])
+              .join(" "),
+      );
+      await practical.locator("summary").focus();
+      await page.keyboard.press("Enter");
+      ok(
+        key +
+          " reveals the hypothetical case and comparison reasoning by keyboard",
+        (await practical.locator("details").getAttribute("open")) !== null &&
+          (await practical.innerText()).includes(
+            topic.practical.investigation.comparison,
+          ) &&
+          (await practical.innerText()).includes(
+            topic.practical.investigation.interpretation,
+          ) &&
+          /실제 회사.*불량 사례.*뜻하지 않습니다/.test(
+            await practical.innerText(),
+          ),
+      );
     }
     await page.goto(url + "#x-pr");
     await page.locator(".concept-check summary").focus();
@@ -135,6 +164,11 @@ function ok(name, condition) {
       ),
     );
     await page.goto(url);
+    await page.locator("#q").fill("노출 증가에 따른 내부 두께");
+    ok(
+      "bookshelf search indexes the new practical reasoning",
+      (await page.locator('#hits a[href="#x-pre"]').count()) === 1,
+    );
     await page.locator("#q").fill("비저항 하나만으로");
     ok(
       "bookshelf knowledge search finds expanded explanatory text",
@@ -152,6 +186,18 @@ function ok(name, condition) {
       "integrated search also finds the expanded explanation",
       (await page.locator(".explorer-results button").count()) === 1 &&
         /초순수/.test(await page.locator(".explorer-results").innerText()),
+    );
+    await page.goto(
+      url +
+        "#explore?q=" +
+        encodeURIComponent("노출 증가에 따른 내부 두께") +
+        "&type=product",
+    );
+    await page.locator(".explorer-results button").first().waitFor();
+    ok(
+      "integrated search indexes the new observation-to-comparison case",
+      (await page.locator(".explorer-results button").count()) === 1 &&
+        /전구체/.test(await page.locator(".explorer-results").innerText()),
     );
     const book = (name) => books.find((entry) => entry.name === name);
     await page.goto(url + book("덕산테코피아").hash);
@@ -205,6 +251,17 @@ function ok(name, condition) {
           )
           .count()) === 0,
     );
+    await page.setViewportSize({ width: 320, height: 900 });
+    for (const key of Object.keys(reading.topics)) {
+      await page.goto(url + "#x-" + key);
+      await page.locator(".concept-investigation summary").click();
+      ok(
+        key + " evaluation metrics and expanded case fit a 320px viewport",
+        await page.evaluate(
+          () => document.documentElement.scrollWidth <= innerWidth + 1,
+        ),
+      );
+    }
     await page.setViewportSize({ width: 400, height: 900 });
     for (const name of ["솔브레인", "Qnity", "한솔아이원스", "AMMK"]) {
       await page.goto(url + book(name).hash);

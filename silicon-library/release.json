@@ -1,6 +1,6 @@
 {
-  "release": "silicon-library-2.9-all-company-chapters-20261110",
-  "application_base_commit": "e8089abb21fe80bdf5f34ee0843deb6e86e29df8",
-  "entrypoints": ["#explore", "#labs", "#learn", "#textbooks", "#updates", "#x-pre", "#x-gasEtch", "#x-cmp", "#x-oring"],
+  "release": "silicon-library-3.0-applied-reading-20261110",
+  "application_base_commit": "5879858cd4425199c9f580bae261db2540f52e44",
+  "entrypoints": ["#explore", "#labs", "#learn", "#textbooks", "#updates", "#x-pre", "#x-cmp", "#x-upw", "#textbook?book=FIL&chapter=growth-budget", "#textbook?book=TST&chapter=classification-counts", "#textbook?book=FAB&chapter=waiting-budget"],
   "hosting": "GitHub Pages static files"
 }
