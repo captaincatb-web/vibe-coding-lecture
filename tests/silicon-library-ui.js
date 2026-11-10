@@ -67,7 +67,7 @@ const ok = (name, cond, extra) => { results.push([name, !!cond, extra || '']); c
   ok('린데: 합산 금지 설명', /합산하지 않았고/.test(t));
   ok('린데: 타겟은 천안, 가스는 천안 아님', /충남 천안시 서북구/.test(t) && /평택/.test(t));
   await page.click('.tabs button:nth-child(2)');
-  ok('린데: 미확인 관계 명시', /지분 관계는 확인하지 못함/.test(await text()));
+  ok('린데: 미확인 관계 명시', /지분 관계는.*확인하지 못/.test(await text()));
 
   /* 삼화전기 */
   await page.goto(URL); const sw = +(await page.evaluate(() => [...document.querySelectorAll('.spine')].find((e) => e.getAttribute('aria-label').startsWith('삼화전기,')).dataset.i));

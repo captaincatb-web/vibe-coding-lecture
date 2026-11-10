@@ -10,6 +10,7 @@
 <link rel="stylesheet" href="src/shelf.css">
 <link rel="stylesheet" href="src/reading.css">
 <script src="src/reading-core.js"></script>
+<script src="src/company-supplements.js"></script>
 <script src="src/company-core.js"></script>
 <link rel="stylesheet" href="src/company.css">
 <link rel="stylesheet" href="src/textbook.css">
@@ -121,7 +122,7 @@ h1 { font-family: var(--serif); font-size: 1.95rem; line-height: 1.3; margin: 0 
 .spine .code { font-size: 9.5px; letter-spacing: .04em; opacity: .8; margin-bottom: 6px; font-variant-numeric: tabular-nums; }
 ul.rel { list-style: none; margin-left: 0; }
 ul.rel li { margin-bottom: 6px; }
-ul.rel a { text-decoration: none; }
+ul.rel a { text-decoration: underline; text-underline-offset: 3px; }
 .cover .foot { margin-top: auto; font-size: 12.5px; opacity: .85; }
 .cover .conf { display: inline-block; background: rgba(255,255,255,.18); padding: 2px 8px; border-radius: 3px; font-weight: 600; }
 .leaf { padding: 30px 34px 22px; display: flex; flex-direction: column; min-width: 0; }
@@ -238,7 +239,7 @@ dl.facts dd { margin: 0; }
 .stage p { font-size: 13px; color: var(--muted); margin: 4px 0 8px; }
 .chips { display: flex; flex-wrap: wrap; gap: 5px; }
 .mchip { display: inline-flex; align-items: center; gap: 6px; border-radius: 4px; padding: 3px 8px; font-size: 13px; font-weight: 600; text-decoration: none; color: var(--spine-fg); background: var(--c); }
-.mchip small { font-weight: 400; opacity: .8; font-size: 11px; }
+.mchip small { font-weight: 400; opacity: 1; font-size: 11px; }
 .mchip .d { width: 7px; height: 7px; border-radius: 50%; border: 1.5px solid var(--spine-fg); flex: none; }
 .mchip .d.A { background: var(--spine-fg); } .mchip .d.B { background: linear-gradient(90deg, var(--spine-fg) 50%, transparent 50%); }
 .mchip:hover, .mchip:focus-visible { filter: brightness(1.12); outline: 2px solid var(--accent); outline-offset: 1px; }
@@ -1375,22 +1376,42 @@ dl.facts dd { margin: 0; }
     return source && /^https?:\/\//i.test(source[1]) ? '<a class="company-source-link" data-source-id="' + esc(id) + '" href="' + esc(source[1]) + '" target="_blank" rel="noopener noreferrer" aria-label="' + esc(source[0] + ' · 기존 등록 자료, 새 탭') + '" title="' + esc(source[0]) + '">' + esc(text) + '</a>' : '';
   }
   function companyCitations(profile, ids) {
+    if (!ids.length) return '<p class="company-citations">회사·제품을 대조할 등록 출처 없음</p>';
     var order = companySourceIds(profile);
     return '<p class="company-citations">등록근거 ' + ids.map(function (id) { return companySourceAnchor(id, '[' + (order.indexOf(id) + 1) + ']'); }).join(' ') + '</p>';
   }
   function companyEvidence(profile) {
-    return '<details class="company-evidence"><summary>등록 자료와 해설의 범위</summary><p>' + esc(window.SiliconCompanyCore.scope) + ' · 편집 ' + esc(window.SiliconCompanyCore.editedAt) + '</p><p>제품·사업의 기존 수록 내용과 교육용 해석을 연결했습니다. 자료의 등록은 새 원문 대조나 현재 고객 승인·양산 공급의 확인을 뜻하지 않습니다. 사실별 검증 상태와 원래 확인일은 참고자료에서 따로 봅니다.</p><ol>' + companySourceIds(profile).map(function (id) { return '<li>' + companySourceAnchor(id, S[id][0]) + '</li>'; }).join('') + '</ol></details>';
+    var refs = companySourceIds(profile);
+    return '<details class="company-evidence"><summary>등록 자료와 해설의 범위</summary><p>' + esc(window.SiliconCompanyCore.scope) + ' · 편집 ' + esc(window.SiliconCompanyCore.editedAt) + '</p><p>제품·사업의 기존 수록 내용과 교육용 해석을 연결했습니다. 자료의 등록은 새 원문 대조나 현재 고객 승인·양산 공급의 확인을 뜻하지 않습니다. 사실별 검증 상태와 원래 확인일은 참고자료에서 따로 봅니다.</p>' + (refs.length ? '<ol>' + refs.map(function (id) { return '<li>' + companySourceAnchor(id, S[id][0]) + '</li>'; }).join('') + '</ol>' : '<p class="company-unverified">이 기록은 회사·제품을 대조할 등록 출처가 없습니다. 목록 표기·확인할 질문과 교육용 가정을 구분해 표시했으며 제조·고객·납품을 확인한 내용이 아닙니다.</p>') + '</details>';
   }
   function companyMaterials(profile) {
-    return '<section class="product-questions company-materials" data-company-materials="' + profile.id + '"><h3>이 회사의 제품을 나누어 읽기</h3><p>' + esc(profile.intro) + '</p><div class="company-material-grid">' + profile.materials.map(function (item) { return '<article><h4>' + esc(item.name) + '</h4><p><b>수록된 역할</b> ' + esc(item.role) + '</p><p>' + esc(item.focus) + '</p>' + companyCitations(profile, item.sources) + '</article>'; }).join('') + '</div><h4>이 회사에 맞춘 확인 질문</h4>' + list(profile.questions) + companyEvidence(profile) + '</section>';
+    return '<section class="product-questions company-materials" data-company-materials="' + profile.id + '"><h3>' + (profile.evidence_limited ? '목록 표기와 확인할 항목' : '이 회사의 제품·사업을 나누어 읽기') + '</h3><p>' + esc(profile.intro) + '</p><div class="company-material-grid">' + profile.materials.map(function (item) { return '<article><h4>' + esc(item.name) + '</h4><p><b>' + (profile.evidence_limited ? '현재 확인 범위' : '수록된 역할') + '</b> ' + esc(item.role) + '</p><p>' + esc(item.focus) + '</p>' + companyCitations(profile, item.sources) + '</article>'; }).join('') + '</div><h4>이 회사에 맞춘 확인 질문</h4>' + list(profile.questions) + companyEvidence(profile) + '</section>';
+  }
+  function companyComparisonLinks(profile) {
+    return '<nav class="company-comparison-links" aria-label="이 회사의 품목별 비교와 해설">' + profile.product_ids.map(function (key) {
+      var count = window.SiliconCompanyCore.forProduct(key).length;
+      return '<a href="#x-' + esc(key) + '">' + esc(TX[key].t) + (count > 1 ? ' · ' + count + '개 기록 비교' : ' · 원리와 수록 범위') + '</a>';
+    }).join('') + '</nav>';
   }
   function companyChapter(profile) {
-    return '<section class="company-chapter" data-company-chapter="' + profile.id + '"><p class="company-eyebrow">COMPANY NOTEBOOK</p><h3 tabindex="-1">' + esc(profile.theme) + '</h3><p class="company-intro">' + esc(profile.intro) + '</p>' + profile.chapters.map(function (chapter, i) { return '<section class="company-section"><h4>' + (i + 1) + '. ' + esc(chapter.title) + '</h4>' + chapter.paragraphs.map(function (text) { return '<p>' + esc(text) + '</p>'; }).join('') + companyCitations(profile, chapter.sources) + '</section>'; }).join('') + '<section class="company-case"><h4>학습 사례 · ' + esc(profile.example.title) + '</h4><p>' + esc(profile.example.situation) + '</p><details><summary>' + esc(profile.example.question) + '</summary><p>' + esc(profile.example.answer) + '</p></details></section><section class="company-peers"><h4>다른 회사와 비교하며 읽기</h4>' + profile.peers.map(function (peer) { var other = window.SiliconCompanyCore.get(peer.id), i = idxOf(other.name); return '<p><a href="#b' + i + '">' + esc(other.name) + '</a> · ' + esc(peer.text) + '</p>'; }).join('') + '<p><a href="#x-pre">전구체 5개사의 제품·기술·사업 비교표 →</a></p></section>' + companyEvidence(profile) + '</section>';
+    var h = '<section class="company-chapter" data-company-chapter="' + profile.id + '"><p class="company-eyebrow">COMPANY NOTEBOOK</p><h3 tabindex="-1">' + esc(profile.theme) + '</h3><p class="company-intro">' + esc(profile.intro) + '</p>';
+    if (profile.evidence_limited) h += '<p class="company-unverified">자료 확인이 필요한 기록입니다. 목록의 이름·품목과 교육용 질문을 구분해 읽어 주세요.</p>';
+    h += profile.chapters.map(function (chapter, i) {
+      return '<section class="company-section"><h4>' + (i + 1) + '. ' + esc(chapter.title) + '</h4>' + chapter.paragraphs.map(function (text) { return '<p>' + esc(text) + '</p>'; }).join('') + companyCitations(profile, chapter.sources) + '</section>';
+    }).join('');
+    h += '<section class="company-case"><h4>학습 사례 · ' + esc(profile.example.title) + '</h4><p>' + esc(profile.example.situation) + '</p><details><summary>' + esc(profile.example.question) + '</summary><p>' + esc(profile.example.answer) + '</p></details></section>';
+    h += '<section class="company-peers"><h4>다른 회사·역할과 비교하며 읽기</h4>' + profile.peers.map(function (peer) {
+      var other = window.SiliconCompanyCore.get(peer.id), i = idxOf(other.name);
+      return '<p><a href="#b' + i + '">' + esc(other.name) + '</a> · ' + esc(peer.text) + '</p>';
+    }).join('') + companyComparisonLinks(profile) + '</section>';
+    return h + companyEvidence(profile) + '</section>';
   }
   function companyComparison(key) {
-    var profiles = window.SiliconCompanyCore ? window.SiliconCompanyCore.forProduct(key) : [];
-    if (!profiles.length) return '';
-    return '<section class="company-comparison"><h3>전구체 회사, 무엇이 다를까?</h3><p>기존 등록 자료를 바탕으로 제품·기술·사업을 읽는 축을 비교합니다. 각 회사 이름을 누르면 해당 책의 해설로 이어집니다. 좁은 화면에서는 표를 좌우로 움직여 볼 수 있습니다.</p><div class="company-comparison-scroll" tabindex="0" role="region" aria-label="전구체 5개사 비교 표 · 좌우 스크롤"><table><caption>전구체 5개사의 서로 다른 읽기 중심축</caption><thead><tr><th scope="col">회사</th><th scope="col">수록 제품·소재</th><th scope="col">기술을 읽는 축</th><th scope="col">사업을 읽는 축</th><th scope="col">먼저 확인할 질문</th></tr></thead><tbody>' + profiles.map(function (profile) { return '<tr data-company-row="' + profile.id + '"><th scope="row"><a href="#b' + idxOf(profile.name) + '">' + esc(profile.name) + '</a></th>' + [profile.compare.material, profile.compare.axis, profile.compare.business, profile.compare.question].map(function (text) { return '<td>' + esc(text) + '</td>'; }).join('') + '</tr>'; }).join('') + '</tbody></table></div></section>';
+    var profiles = window.SiliconCompanyCore ? window.SiliconCompanyCore.forProduct(key) : [], title = TX[key].t;
+    if (profiles.length < 2) return '';
+    return '<section class="company-comparison"><h3>' + esc(title) + ' 회사별 읽기 비교</h3><p>이 품목에 연결된 기록의 제품·기술·사업 중심축을 비교합니다. 표에는 각 회사의 인접 사업도 포함하므로 상세 용도는 해당 책에서 나누어 읽으세요. 이름을 누르면 책으로 이어지며 좁은 화면에서는 표 안을 좌우로 움직일 수 있습니다.</p><div class="company-comparison-scroll" tabindex="0" role="region" aria-label="' + esc(title) + ' ' + profiles.length + '개 기록 비교 표 · 좌우 스크롤"><table><caption>' + esc(title) + ' 연결 기록 ' + profiles.length + '개 · 서로 다른 읽기 중심축</caption><thead><tr><th scope="col">회사 기록</th><th scope="col">수록 제품·기능</th><th scope="col">기술을 읽는 축</th><th scope="col">사업을 읽는 축</th><th scope="col">먼저 확인할 질문</th></tr></thead><tbody>' + profiles.map(function (profile) {
+      return '<tr data-company-row="' + profile.id + '"><th scope="row"><a href="#b' + idxOf(profile.name) + '">' + esc(profile.name) + '</a>' + (profile.evidence_limited ? '<small class="company-evidence-badge">제품 근거 확인 전</small>' : '') + '</th>' + [profile.compare.material, profile.compare.axis, profile.compare.business, profile.compare.question].map(function (text) { return '<td>' + esc(text) + '</td>'; }).join('') + '</tr>';
+    }).join('') + '</tbody></table></div></section>';
   }
   function bookReadingGuide(b) {
     var keys = (TXN[b.n] || []).filter(function (k) { return TX[k]; });
@@ -1436,7 +1457,7 @@ dl.facts dd { margin: 0; }
     if (b.ref) B.forEach(function (x, k) { if (x.n === b.ref) refBook = k; });
     var P = [];
     var xa = X[b.n] || {}, profile = companyProfile(b);
-    var ov = (profile ? '<div class="sumbox company-overview"><b>이 회사의 중심축</b><p>' + esc(profile.theme) + '</p><p class="sm">' + esc(profile.intro) + '</p><button type="button" class="btn" data-company-chapter>이 회사의 기술장 읽기 →</button> <a href="#x-pre">전구체 5개사 비교</a></div>' : xa.ana ? '<div class="sumbox"><b>핵심 요약</b><p>' + esc(xa.ana.c) + '</p><p class="sm">' + esc(xa.ana.e) + "</p></div>" : "") + "<h3>회사 개요</h3><p>" + esc(profile ? profile.tagline : b.one) + "</p>";
+    var ov = (profile ? '<div class="sumbox company-overview"><b>이 회사의 중심축</b><p>' + esc(profile.theme) + '</p><p class="sm">' + esc(profile.intro) + '</p><button type="button" class="btn" data-company-chapter>이 회사의 기술장 읽기 →</button>' + companyComparisonLinks(profile) + '</div>' : xa.ana ? '<div class="sumbox"><b>핵심 요약</b><p>' + esc(xa.ana.c) + '</p><p class="sm">' + esc(xa.ana.e) + "</p></div>" : "") + "<h3>회사 개요</h3><p>" + esc(profile ? profile.tagline : b.one) + "</p>";
     if (b.facts.length) ov += '<dl class="facts">' + b.facts.map(function (f) { return "<dt>" + esc(f[0]) + "</dt><dd>" + esc(f[1]) + "</dd>"; }).join("") + "</dl>";
     else ov += '<p class="empty">이번 조사에서 회사 기본 정보를 확인하지 못했습니다.</p>';
     ov += '<dl class="facts"><dt>목록상 지역</dt><dd>' + esc(b.reg) + '</dd><dt>목록상 품목</dt><dd>' + esc(b.item) + '</dd><dt>신뢰도</dt><dd><span class="chip ' + b.conf + '">' + chips[b.conf] + '</span></dd></dl>';
@@ -1902,8 +1923,11 @@ dl.facts dd { margin: 0; }
   /* 기술 백과: #tech 목록, #t-공정, #x-제품기술 */
   var STAGE2P = { "웨이퍼": "wafer", "노광": "photo", "식각·세정": "etch", "증착·배선": "dep", "CMP": "cmp", "테스트": "test", "패키징": "pkg" };
   var LV = ["입문", "실무", "심화"];
-  function libraryDateText() { return window.SiliconWeeklyCore ? window.SiliconWeeklyCore.dateText(window.SiliconWeeklyCore.data.as_of) : "2026.11.08"; }
-  function head(sub) { return '<div class="kicker"><time class="library-date" datetime="' + libraryDateText().replace(/\./g, "-") + '" title="서재 편집·주간 자료 확인 기준일입니다. 개별 기업 사실의 확인일은 참고자료에 표시합니다.">' + libraryDateText() + ' 기준</time></div><h1>실리콘 서재</h1><p class="sub-t">충청권 반도체 소부장 지식 라이브러리</p>' + sub; }
+  function libraryDateText() {
+    var dates = [window.SiliconCompanyCore && window.SiliconCompanyCore.editedAt, window.SiliconWeeklyCore && window.SiliconWeeklyCore.data && window.SiliconWeeklyCore.data.as_of].filter(function (date) { return typeof date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(date); }).sort();
+    return dates.length ? dates[dates.length - 1].replace(/-/g, '.') : '2026.11.10';
+  }
+  function head(sub) { return '<div class="kicker"><time class="library-date" datetime="' + libraryDateText().replace(/\./g, "-") + '" title="기록된 콘텐츠 편집일과 주간 자료 확인일 중 최근 날짜입니다. 개별 기업 사실의 확인일과 자료 수집일은 각 영역에서 따로 확인하세요.">' + libraryDateText() + ' 기준</time></div><h1>실리콘 서재</h1><p class="sub-t">충청권 반도체 소부장 지식 라이브러리</p>' + sub; }
   function txLink(k) { var x = TX[k]; return x ? '<a class="kchip" href="#x-' + k + '">' + esc(x.t) + "</a>" : ""; }
   function pLink(id) { var p = procById(id); return p ? '<a class="kchip p" href="#t-' + id + '">' + esc(p.n) + "</a>" : ""; }
   function sbList(keys) { return '<ul class="rel">' + keys.map(function (c) { var s = SB[c], local = window.SiliconTextbookCore && window.SiliconTextbookCore.get(c); return s ? '<li>' + (local ? '<a href="' + window.SiliconTextbookCore.route(c) + '"><b>' + esc(local.title) + '</b> · 서재에서 읽기 →</a><br><small>' + esc(local.subtitle) + '</small> · ' : '') + '<a href="' + s[2] + '" target="_blank" rel="noopener noreferrer">' + esc(s[0]) + ' · 외부 참고 (새 탭)</a></li>' : ""; }).join("") + "</ul>"; }

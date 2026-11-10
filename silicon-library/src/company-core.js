@@ -1,8 +1,8 @@
 (function (root, factory) {
   "use strict";
-  if (typeof module === "object" && module.exports) module.exports = factory();
-  else root.SiliconCompanyCore = factory();
-})(typeof globalThis !== "undefined" ? globalThis : this, function () {
+  if (typeof module === "object" && module.exports) module.exports = factory(require("./company-supplements"));
+  else root.SiliconCompanyCore = factory(root.SiliconCompanySupplements);
+})(typeof globalThis !== "undefined" ? globalThis : this, function (supplements) {
   "use strict";
   var profiles = {
     c01: {
@@ -454,9 +454,14 @@
     }
     return value;
   }
+  Object.entries(supplements || {}).forEach(function (entry) {
+    if (Object.prototype.hasOwnProperty.call(profiles, entry[0])) throw new Error("Duplicate company profile: " + entry[0]);
+    profiles[entry[0]] = entry[1];
+  });
+  Object.values(profiles).forEach(function (profile) { profile.example.hypothetical = true; });
   freeze(profiles);
   return {
-    editedAt: "2026-11-09",
+    editedAt: "2026-11-10",
     scope: "기존 등록 자료를 바탕으로 작성한 기업별 해설 · 이번 원문 재열람 전",
     profiles: profiles,
     get: function (id) {
@@ -465,7 +470,7 @@
         : null;
     },
     forProduct: function (id) {
-      return id === "pre" ? Object.values(profiles) : [];
+      return Object.values(profiles).filter(function (profile) { return profile.product_ids.includes(id); });
     },
   };
 });

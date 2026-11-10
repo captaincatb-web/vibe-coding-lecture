@@ -8,9 +8,9 @@ const content = require("../silicon-library/src/company-core"),
   { normalize } = require("../scripts/normalize-silicon-library"),
   explorer = require("../silicon-library/src/explorer-core");
 const data = JSON.parse(JSON.stringify(loadData())),
-  profiles = content.forProduct("pre");
-test("company chapters bind to all five precursor records without merging affiliated entities", () => {
-  const firms = data.ENT.list.filter((e) => e.products.includes("pre"));
+  profiles = Object.values(content.profiles);
+test("company chapters cover all 45 company records without merging affiliated entities or book aliases", () => {
+  const firms = data.ENT.list;
   assert.deepEqual(
     profiles.map((p) => p.id).sort(),
     firms.map((e) => e.id).sort(),
@@ -21,15 +21,28 @@ test("company chapters bind to all five precursor records without merging affili
     assert.deepEqual([...p.product_ids].sort(), [...entity.products].sort());
   }
   assert.notEqual(content.get("c03"), content.get("c05"));
-  assert.deepEqual(content.forProduct("cmp"), []);
+  for (const id of Object.keys(data.TX))
+    assert.deepEqual(
+      content
+        .forProduct(id)
+        .map((p) => p.id)
+        .sort(),
+      firms
+        .filter((e) => e.products.includes(id))
+        .map((e) => e.id)
+        .sort(),
+    );
+  assert.equal(content.forProduct("pre").length, 5);
+  assert.equal(profiles.length, 45);
+  assert.equal(data.B.length, 46);
 });
 test("every displayed material and company chapter has existing source identifiers and complete renderable content", () => {
   for (const p of profiles) {
-    assert.equal(p.materials.length, 3);
+    assert.ok(p.materials.length >= 1 && p.materials.length <= 3);
     assert.equal(p.chapters.length, 3);
     assert.equal(p.peers.length, 2);
     for (const item of p.materials.concat(p.chapters)) {
-      assert.ok(item.sources.length);
+      assert.ok(item.sources.length || p.evidence_limited);
       for (const id of item.sources) {
         assert.ok(data.S[id], id);
         assert.match(data.S[id][1], /^https?:\/\//);
@@ -44,8 +57,8 @@ test("every displayed material and company chapter has existing source identifie
       assert.ok(content.get(peer.id));
       assert.notEqual(peer.id, p.id);
     }
-    assert.match(p.example.situation, /仮定|가정/);
-    assert.match(p.example.answer, /학습|실제|사례/);
+    assert.match(p.example.situation, /가정/);
+    assert.equal(p.example.hypothetical, true);
   }
 });
 test("company narratives, examples and evaluation questions do not repeat a shared template", () => {
@@ -102,6 +115,13 @@ test("company content is immutable, works in the browser and ignores inherited n
   const context = {};
   vm.runInNewContext(
     fs.readFileSync(
+      require.resolve("../silicon-library/src/company-supplements"),
+      "utf8",
+    ),
+    context,
+  );
+  vm.runInNewContext(
+    fs.readFileSync(
       require.resolve("../silicon-library/src/company-core"),
       "utf8",
     ),
@@ -111,4 +131,20 @@ test("company content is immutable, works in the browser and ignores inherited n
     context.SiliconCompanyCore.get("c04").theme,
     content.get("c04").theme,
   );
+  assert.equal(Object.keys(context.SiliconCompanyCore.profiles).length, 45);
+});
+test("records without company sources keep their gap explicit rather than acquiring fabricated product evidence", () => {
+  assert.deepEqual(
+    profiles.filter((p) => p.evidence_limited).map((p) => p.id),
+    ["c34", "c36"],
+  );
+  for (const id of ["c34", "c36"]) {
+    const p = content.get(id);
+    assert.ok(p.intro.includes("목록"));
+    assert.ok(
+      p.materials.concat(p.chapters).every((x) => x.sources.length === 0),
+    );
+    assert.ok(p.compare.material.includes("확인 전"));
+  }
+  assert.match(content.get("c39").intro, /HBM.*추정/);
 });

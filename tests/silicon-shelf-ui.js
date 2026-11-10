@@ -214,14 +214,26 @@ function ok(name, condition) {
       }),
     );
     await page.locator("#q").fill("TSE");
-    await page.locator(".spine:not([hidden])").click();
+    const searchMatches = await page
+      .locator(".spine:not([hidden])")
+      .evaluateAll((nodes) => nodes.map((node) => node.dataset.i));
+    await page
+      .getByRole("button", {
+        name: "TSE, Board/소켓 등, 자료 확인",
+        exact: true,
+      })
+      .click();
     await page.locator(".cover h1").waitFor();
     await page.getByRole("button", { name: "← 책장으로", exact: true }).click();
     await page.locator("#q").waitFor();
     ok(
       "book search remains usable when session storage is unavailable",
       (await page.locator("#q").inputValue()) === "TSE" &&
-        (await page.locator(".spine:not([hidden])").count()) === 1,
+        JSON.stringify(
+          await page
+            .locator(".spine:not([hidden])")
+            .evaluateAll((nodes) => nodes.map((node) => node.dataset.i)),
+        ) === JSON.stringify(searchMatches),
     );
     await page.locator("#shelf-reset").click();
     await page.goto(url);

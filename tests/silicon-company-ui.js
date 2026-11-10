@@ -30,7 +30,8 @@ function ok(name, condition) {
       errors = [];
     page.on("pageerror", (e) => errors.push(String(e)));
     const narratives = [];
-    for (const p of content.forProduct("pre")) {
+    const profiles = Object.values(content.profiles);
+    for (const p of profiles) {
       const i = data.B.findIndex((b) => b.n === p.name);
       await page.goto(url + "#b" + i);
       await page.locator(".company-overview").waitFor();
@@ -109,20 +110,71 @@ function ok(name, condition) {
               ),
             )),
       );
+      if (p.evidence_limited)
+        ok(
+          p.name +
+            " does not fabricate source links or verified product evidence",
+          (await page.locator(".company-source-link").count()) === 0 &&
+            (await page
+              .locator(".company-evidence .company-unverified")
+              .isVisible()),
+        );
       await page.getByRole("button", { name: /사업·제품$/ }).click();
       const businessText = await page.locator(".company-materials").innerText();
       ok(
         p.name +
-          " business page explains three material groups and its own questions",
-        (await page.locator(".company-material-grid article").count()) === 3 &&
+          " business page explains its documented material groups and own questions",
+        (await page.locator(".company-material-grid article").count()) ===
+          p.materials.length &&
           p.questions.every((q) => businessText.includes(q)) &&
           (await page.locator(".company-legacy").getAttribute("open")) === null,
       );
+      await page.setViewportSize({ width: 400, height: 900 });
+      ok(
+        p.name + " product and evidence layout fits a mobile viewport",
+        await page.evaluate(
+          () => document.documentElement.scrollWidth <= innerWidth + 1,
+        ),
+      );
+      await page.setViewportSize({ width: 1280, height: 900 });
     }
     ok(
-      "five company books no longer have identical chapter bodies",
-      new Set(narratives).size === 5,
+      "all company records have distinct chapter bodies",
+      new Set(narratives).size === profiles.length,
     );
+    for (const key of [
+      "gasDep",
+      "gasEtch",
+      "gasBulk",
+      "cmp",
+      "substrate",
+      "probe",
+      "oring",
+      "sisic",
+      "clean",
+    ]) {
+      await page.goto(url + "#x-" + key);
+      await page.locator(".company-comparison").waitFor();
+      const ids = await page
+        .locator("[data-company-row]")
+        .evaluateAll((rows) => rows.map((r) => r.dataset.companyRow).sort());
+      ok(
+        "product comparison includes exactly its linked company records: " +
+          key,
+        JSON.stringify(ids) ===
+          JSON.stringify(
+            content
+              .forProduct(key)
+              .map((p) => p.id)
+              .sort(),
+          ),
+      );
+      if (["oring", "sisic"].includes(key))
+        ok(
+          "unverified product mapping stays visible in comparison: " + key,
+          (await page.locator(".company-evidence-badge").count()) === 1,
+        );
+    }
     await page.goto(url + "#x-pre");
     await page.locator(".company-comparison").waitFor();
     ok(

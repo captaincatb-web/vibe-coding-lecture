@@ -178,6 +178,7 @@ function ok(name, condition) {
     );
     await page.goto(url + book("AMMK").hash);
     await page.getByRole("button", { name: /핵심 기술$/ }).click();
+    await page.locator(".company-common > summary").first().click();
     ok(
       "embedded HBM film chapter preserves uncertainty for temperature and layers",
       /250℃/.test(await page.locator(".book-number-notice").innerText()) &&
@@ -185,6 +186,7 @@ function ok(name, condition) {
     );
     await page.goto(url + book("한솔아이원스").hash);
     await page.getByRole("button", { name: /핵심 기술$/ }).click();
+    await page.locator(".company-common > summary").first().click();
     ok(
       "embedded cleaning chapter distinguishes equipment parts from wafer cleaning",
       /웨이퍼를 씻는 세정 공정 재료가 아닙니다/.test(

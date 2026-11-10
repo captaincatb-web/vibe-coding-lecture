@@ -1,6 +1,6 @@
 {
-  "release": "silicon-library-2.8-company-chapters-20261109",
-  "application_base_commit": "341b4b5259076870a914b0baf9fd5996e61733f4",
-  "entrypoints": ["#explore", "#labs", "#learn", "#textbooks", "#updates", "#x-pre"],
+  "release": "silicon-library-2.9-all-company-chapters-20261110",
+  "application_base_commit": "e8089abb21fe80bdf5f34ee0843deb6e86e29df8",
+  "entrypoints": ["#explore", "#labs", "#learn", "#textbooks", "#updates", "#x-pre", "#x-gasEtch", "#x-cmp", "#x-oring"],
   "hosting": "GitHub Pages static files"
 }

@@ -88,7 +88,7 @@
 }
 .company-material-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 160px), 1fr));
   gap: 12px;
 }
 .company-material-grid article {
@@ -106,6 +106,25 @@
 }
 .company-comparison {
   margin: 28px 0;
+}
+.company-comparison-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+  margin: 12px 0;
+  font-size: 13px;
+}
+.company-evidence-badge {
+  display: block;
+  margin-top: 6px;
+  color: var(--muted);
+  font-weight: 400;
+}
+.company-unverified {
+  padding: 12px;
+  border-inline-start: 3px solid var(--accent);
+  background: var(--wall);
+  color: var(--fg);
 }
 .company-comparison-scroll {
   overflow-x: auto;

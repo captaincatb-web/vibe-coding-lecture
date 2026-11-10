@@ -2,7 +2,9 @@
 const assert = require("node:assert/strict"),
   { chromium } = require("playwright");
 const data = require("../silicon-library/data/weekly-updates.json"),
-  core = require("../silicon-library/src/weekly-core");
+  core = require("../silicon-library/src/weekly-core"),
+  editorial = require("../silicon-library/src/company-core"),
+  editionDate = [data.as_of, editorial.editedAt].sort().at(-1);
 const url = process.env.SL_TEST_URL || "http://127.0.0.1:8767/silicon-library/";
 let passed = 0;
 function ok(name, condition) {
@@ -31,11 +33,11 @@ function ok(name, condition) {
     await page.goto(url);
     await page.locator(".weekly-materials").waitFor();
     ok(
-      "header displays the actual stored edition date, not a hard-coded October date",
+      "header uses the latest recorded editorial or successful collection date",
       (await page.locator(".library-date").innerText()) ===
-        core.dateText(data.as_of) + " 기준" &&
+        core.dateText(editionDate) + " 기준" &&
         (await page.locator(".library-date").getAttribute("datetime")) ===
-          data.as_of,
+          editionDate,
     );
     ok(
       "homepage publishes collected metadata with its weekly schedule",
@@ -80,7 +82,7 @@ function ok(name, condition) {
     ok(
       "company cover uses the same current edition date",
       (await page.locator(".cover .foot").innerText()).includes(
-        core.dateText(data.as_of),
+        core.dateText(editionDate),
       ),
     );
     await page.goto(url + "#textbook?book=IND");
